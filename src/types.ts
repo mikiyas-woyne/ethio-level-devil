@@ -122,7 +122,9 @@ export interface CrumblingTileState {
   tileX: number;
   tileY: number;
   timer: number; // 0.3s
-  state: 'idle' | 'shaking' | 'crumbled';
+  state: 'idle' | 'shaking' | 'crumbled' | 'falling';
+  y?: number;
+  vy?: number;
 }
 
 export interface ParticleState {

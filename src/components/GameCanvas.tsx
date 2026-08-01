@@ -195,7 +195,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     // Spawn traps
     trapsRef.current = (level.customTraps || []).map((t) => {
       if (t.type === 'pop_up_spikes') {
-        return { ...t, state: 'idle', timer: 0 };
+        return { ...t, state: 'idle', timer: 0, currentY: t.tileY * 16 + 16 };
       } else if (t.type === 'falling_ceiling') {
         return { ...t, currentY: t.startY, state: 'idle', timer: 0 };
       } else if (t.type === 'moving_wall') {
@@ -431,8 +431,10 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       // Pop Up Spikes Trigger
       if (trap.type === 'pop_up_spikes') {
         const triggerPos = trap.triggerX * 16;
+        const targetY = trap.tileY * 16;
+        const hiddenY = targetY + 16;
+        
         let pNear = false;
-
         playersRef.current.forEach((p) => {
           if (p.isAlive && p.x > triggerPos) {
             pNear = true;
@@ -441,12 +443,14 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 
         if (pNear && trap.state === 'idle') {
           trap.state = 'warning';
-          trap.timer = 9; // ~0.15s warning duration
+          trap.timer = 12; // ~0.2s warning duration
           audio.playSFX('click');
         }
 
         if (trap.state === 'warning') {
           trap.timer--;
+          // Jitter slightly above the floor block level
+          trap.currentY = targetY + 12.5 + Math.sin(activeFrameRef.current * 1.5) * 1.5;
           if (trap.timer <= 0) {
             trap.state = 'active';
             trap.timer = 120; // remain active for 2 seconds
@@ -455,30 +459,38 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 
         if (trap.state === 'active') {
           trap.timer--;
+          // Smoothly slide spikes up
+          trap.currentY = Math.max(targetY, (trap.currentY || hiddenY) - 3.8);
+          
           if (trap.timer <= 0) {
             trap.state = 'retracting';
             trap.timer = 15;
           }
 
-          // Check spike collision
-          playersRef.current.forEach((p, idx) => {
-            if (!p.isAlive) return;
-            const spikeHitbox = {
-              x: trap.tileX * 16,
-              y: trap.tileY * 16,
-              w: 16,
-              h: 16,
-            };
-            if (isOverlapping(p.x, p.y, p.width, p.height, spikeHitbox.x, spikeHitbox.y, spikeHitbox.w, spikeHitbox.h)) {
-              killPlayer(idx);
-            }
-          });
+          // Check spike collision (only kill if the spike has emerged enough to touch the feet)
+          if ((trap.currentY || hiddenY) < targetY + 8) {
+            playersRef.current.forEach((p, idx) => {
+              if (!p.isAlive) return;
+              const spikeHitbox = {
+                x: trap.tileX * 16,
+                y: targetY,
+                w: 16,
+                h: 16,
+              };
+              if (isOverlapping(p.x, p.y, p.width, p.height, spikeHitbox.x, spikeHitbox.y, spikeHitbox.w, spikeHitbox.h)) {
+                killPlayer(idx);
+              }
+            });
+          }
         }
 
         if (trap.state === 'retracting') {
           trap.timer--;
+          // Smoothly slide spikes back into the floor
+          trap.currentY = Math.min(hiddenY, (trap.currentY || targetY) + 1.5);
           if (trap.timer <= 0) {
             trap.state = 'idle';
+            trap.currentY = hiddenY;
           }
         }
       }
@@ -583,7 +595,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
         }
       }
 
-      // Patrol Buzzsaws
+      // Patrol Buzzsaws (Spiked wooden wheels)
       if (trap.type === 'buzzsaw') {
         if (activeFrameRef.current % 15 === 0) {
           // Play hum if close to player
@@ -594,6 +606,9 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
             }
           });
         }
+
+        const prevX = trap.x;
+        const prevY = trap.y;
 
         // Horizontal patrolling
         if (trap.startX !== trap.targetX) {
@@ -613,6 +628,27 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
           } else if (trap.direction === -1 && trap.y <= trap.startY) {
             trap.direction = 1;
           }
+        }
+
+        // Emit warm sand/dust particles behind the wheel rotation
+        const isMoving = Math.abs(trap.x - prevX) > 0.01 || Math.abs(trap.y - prevY) > 0.01;
+        if (isMoving && activeFrameRef.current % 2 === 0) {
+          const dustX = trap.x + 16;
+          const dustY = trap.y + 16 + (trap.radius || 16);
+          const moveDirX = trap.x > prevX ? 1 : (trap.x < prevX ? -1 : 0);
+          const pushDirection = moveDirX !== 0 ? -moveDirX : (Math.random() > 0.5 ? 1 : -1);
+
+          particlesRef.current.push({
+            x: dustX + (Math.random() * 6 - 3),
+            y: dustY - 1,
+            vx: pushDirection * (Math.random() * 1.5 + 0.3),
+            vy: -Math.random() * 0.8 - 0.2,
+            color: Math.random() > 0.5 ? '#d97706' : '#eab308',
+            size: Math.random() * 2.8 + 1.2,
+            alpha: 0.85,
+            life: 0,
+            maxLife: Math.random() * 15 + 8,
+          });
         }
 
         // Check saw collision with players
@@ -726,22 +762,27 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       });
     });
 
-    // 6. Update Crumbling/Collapsing Platforms
+    // 6. Update Crumbling/Collapsing Platforms (Smooth fall off screen)
     crumblingTilesRef.current = crumblingTilesRef.current
       .map((block) => {
         if (block.state === 'shaking') {
           block.timer -= 1 / 60;
           if (block.timer <= 0) {
-            block.state = 'crumbled';
-            // destroy the tile on grid
+            block.state = 'falling';
+            block.y = block.tileY * 16;
+            block.vy = 0;
+            // destroy the tile on grid so player falls through
             currentGridRef.current[block.tileY][block.tileX] = 0;
             audio.playSFX('death'); // crumble sound
             createSparkles(block.tileX * 16 + 8, block.tileY * 16 + 8, '#BF360C');
           }
+        } else if (block.state === 'falling') {
+          block.y = (block.y || 0) + (block.vy || 0);
+          block.vy = (block.vy || 0) + 0.28; // gravity for falling block
         }
         return block;
       })
-      .filter((b) => b.state !== 'crumbled');
+      .filter((b) => b.state !== 'falling' || (b.y || 0) < 288);
 
     // 7. Process Player Movement & Collisions
     let anyPlayerDeadAndTimerExpired = false;
@@ -1148,7 +1189,12 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     for (let r = 0; r < 17; r++) {
       for (let c = 0; c < 30; c++) {
         const tile = currentGridRef.current[r][c];
-        const tx = c * 16;
+        
+        // Compute visual shaking offset for crumbling tiles
+        const crumble = crumblingTilesRef.current.find((b) => b.tileX === c && b.tileY === r && b.state === 'shaking');
+        const shakeX = crumble ? Math.sin(activeFrameRef.current * 1.6) * 1.4 : 0;
+
+        const tx = c * 16 + shakeX;
         const ty = r * 16;
 
         switch (tile) {
@@ -1425,11 +1471,27 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
             ctx.fill();
             
             ctx.restore();
-            break;
-          }
         }
       }
     }
+
+    // B2. Draw Falling Crumbling Blocks
+    crumblingTilesRef.current.forEach((block) => {
+      if (block.state === 'falling') {
+        const tx = block.tileX * 16;
+        const ty = block.y !== undefined ? block.y : block.tileY * 16;
+
+        // Draw standard floor block styling at its falling Y coordinate
+        ctx.fillStyle = '#29130b';
+        ctx.fillRect(tx, ty, 16, 16);
+        // Highlight top lip
+        ctx.fillStyle = '#452013';
+        ctx.fillRect(tx, ty, 16, 2.5);
+        // Bottom shadow line
+        ctx.fillStyle = '#140804';
+        ctx.fillRect(tx, ty + 14.5, 16, 1.5);
+      }
+    });
 
     // C. Draw Door/Portal (Arched Emerald vortex gateway)
     const dx = doorPosRef.current.x;
@@ -1507,7 +1569,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       if (trap.type === 'pop_up_spikes') {
         // Red pop-up warning spikes
         ctx.fillStyle = '#ef4444';
-        const sy = trap.state === 'active' ? ty : (trap.state === 'warning' ? ty + 10 : ty + 16);
+        const sy = trap.currentY !== undefined ? trap.currentY : ty + 16;
         if (trap.state !== 'idle') {
           ctx.beginPath();
           ctx.moveTo(tx, ty + 16);
@@ -1546,41 +1608,94 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       }
 
       if (trap.type === 'buzzsaw') {
-        // High fidelity rotating buzzsaw
         ctx.save();
         ctx.translate(trap.x + 16, trap.y + 16);
-        ctx.rotate((activeFrameRef.current * 16 * Math.PI) / 180);
-        
-        // Blur background ring
-        ctx.strokeStyle = 'rgba(239, 68, 68, 0.1)';
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.arc(0, 0, trap.radius, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.rotate((activeFrameRef.current * 7.5 * Math.PI) / 180); // Slower, more impactful rotation
 
-        // Steel teeth
-        ctx.fillStyle = '#64748b';
-        const teethCount = 10;
-        for (let i = 0; i < teethCount; i++) {
-          ctx.rotate((Math.PI * 2) / teethCount);
+        const radius = trap.radius || 16;
+
+        // 1. Spikes (8 metallic spikes protruding from the wooden rim)
+        const spikeCount = 8;
+        for (let i = 0; i < spikeCount; i++) {
+          ctx.save();
+          ctx.rotate((i * Math.PI * 2) / spikeCount);
+
+          const baseWidth = 5.2;
+          const spikeHeight = 6.2;
+
+          // Draw 3D-shaded metallic spikes (Left side shadow, Right side highlight)
+          ctx.fillStyle = '#9ca3af'; // Dark silver shadow
           ctx.beginPath();
-          ctx.moveTo(0, -trap.radius + 3);
-          ctx.lineTo(5, -trap.radius);
-          ctx.lineTo(-4, -trap.radius - 3);
+          ctx.moveTo(-baseWidth / 2, -radius + 2);
+          ctx.lineTo(0, -radius - spikeHeight);
+          ctx.lineTo(0, -radius + 2);
           ctx.closePath();
           ctx.fill();
+
+          ctx.fillStyle = '#f3f4f6'; // Bright silver highlight
+          ctx.beginPath();
+          ctx.moveTo(0, -radius + 2);
+          ctx.lineTo(0, -radius - spikeHeight);
+          ctx.lineTo(baseWidth / 2, -radius + 2);
+          ctx.closePath();
+          ctx.fill();
+
+          // Outer tip highlights
+          ctx.strokeStyle = '#e5e7eb';
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(-baseWidth / 2, -radius + 2);
+          ctx.lineTo(0, -radius - spikeHeight);
+          ctx.lineTo(baseWidth / 2, -radius + 2);
+          ctx.stroke();
+
+          ctx.restore();
         }
 
-        // Inner circular saw core
-        ctx.fillStyle = '#cbd5e0';
+        // 2. Wooden Wheel Rim (Dark brown ring)
+        ctx.fillStyle = '#451a03'; 
         ctx.beginPath();
-        ctx.arc(0, 0, trap.radius - 3.5, 0, Math.PI * 2);
+        ctx.arc(0, 0, radius - 1, 0, Math.PI * 2);
         ctx.fill();
-        
-        ctx.fillStyle = '#2d3748';
+
+        // 3. Wooden Inner Face (Medium warm brown)
+        ctx.fillStyle = '#78350f'; 
         ctx.beginPath();
-        ctx.arc(0, 0, 3, 0, Math.PI * 2);
+        ctx.arc(0, 0, radius - 3.2, 0, Math.PI * 2);
         ctx.fill();
+
+        // Inner circular band/grain line
+        ctx.strokeStyle = '#451a03';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius - 6.5, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 4. Golden Star Pattern (8-point star around the center core)
+        ctx.fillStyle = '#eab308'; // Bright gold
+        const starPoints = 8;
+        ctx.beginPath();
+        for (let i = 0; i < starPoints * 2; i++) {
+          const angle = (i * Math.PI) / starPoints;
+          const r = i % 2 === 0 ? 7.2 : 3.8;
+          ctx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r);
+        }
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = '#ca8a04';
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+
+        // 5. Central Gold Core Rivet
+        ctx.fillStyle = '#fbbf24'; 
+        ctx.beginPath();
+        ctx.arc(0, 0, 3.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Core reflection glint
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(-0.8, -1.2, 0.8, 0.8);
 
         ctx.restore();
       }
