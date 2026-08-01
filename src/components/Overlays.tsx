@@ -5,7 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trophy, Star, ArrowRight, RotateCcw, Home, HelpCircle, Film } from 'lucide-react';
+import { Trophy, Star, ArrowRight, RotateCcw, Home, HelpCircle, Film, Sparkles, AlertCircle } from 'lucide-react';
 import { audio } from '../utils/audio';
 
 interface LevelCompleteOverlayProps {
@@ -31,7 +31,6 @@ export const LevelCompleteOverlay: React.FC<LevelCompleteOverlayProps> = ({
   isLastLevel,
   keysFoundCount,
 }) => {
-  // Format speedrun timer
   const formatTimer = (ms: number) => {
     const totalSecs = Math.floor(ms / 1000);
     const m = Math.floor(totalSecs / 60).toString().padStart(2, '0');
@@ -42,73 +41,88 @@ export const LevelCompleteOverlay: React.FC<LevelCompleteOverlayProps> = ({
 
   const hasUnlockSecretEnding = isLastLevel && keysFoundCount === 10;
 
+  // Funny roast depending on deaths
+  const getRoast = () => {
+    if (deaths === 0) return '🏅 PERFECT RUN! Are you a speedrunner?';
+    if (deaths <= 2) return '👍 Decent. Only a few betrayals!';
+    if (deaths <= 5) return '😐 You fell for the obvious traps, didn\'t you?';
+    if (deaths <= 10) return '💀 Dying is part of the experience. A big part for you.';
+    return '🔥 Pure Rage! Level Devil completely broke you.';
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="absolute inset-0 bg-neutral-950/85 flex flex-col items-center justify-center text-white p-6 z-50 rounded-lg select-none"
+      className="absolute inset-0 bg-neutral-950/80 flex flex-col items-center justify-center text-white p-6 z-50 rounded-xl select-none backdrop-blur-sm"
     >
       <motion.div
-        initial={{ scale: 0.9, y: 15 }}
+        initial={{ scale: 0.9, y: 30 }}
         animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.9, y: -15 }}
-        className="w-full max-w-sm bg-neutral-900 border border-neutral-800 p-6 rounded-xl text-center shadow-2xl flex flex-col items-center"
+        exit={{ scale: 0.9, y: -30 }}
+        transition={{ type: 'spring', damping: 20 }}
+        className="w-full max-w-sm bg-neutral-900/90 border border-white/10 p-6 rounded-2xl text-center shadow-2xl flex flex-col items-center backdrop-blur-xl"
       >
         {/* Glow Stars Animation */}
-        <div className="flex gap-2 mb-4 justify-center">
+        <div className="flex gap-2.5 mb-6 justify-center">
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.1, type: 'spring' }}
+            initial={{ scale: 0, rotate: -30 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ delay: 0.15, type: 'spring' }}
           >
-            <Star size={24} className="text-amber-500 fill-amber-500" />
+            <Star size={24} className="text-amber-400 fill-amber-400 filter drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
           </motion.div>
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1.3 }}
-            transition={{ delay: 0.2, type: 'spring' }}
+            initial={{ scale: 0, y: 10 }}
+            animate={{ scale: 1.2, y: -4 }}
+            transition={{ delay: 0.25, type: 'spring' }}
             className="relative"
           >
-            <Star size={32} className="text-amber-500 fill-amber-500 -mt-2" />
+            <Star size={36} className="text-amber-400 fill-amber-400 filter drop-shadow-[0_0_12px_rgba(245,158,11,0.6)]" />
           </motion.div>
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.3, type: 'spring' }}
+            initial={{ scale: 0, rotate: 30 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ delay: 0.35, type: 'spring' }}
           >
-            <Star size={24} className="text-amber-500 fill-amber-500" />
+            <Star size={24} className="text-amber-400 fill-amber-400 filter drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
           </motion.div>
         </div>
 
-        <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-orange-500">
+        <span className="text-[10px] font-mono font-black uppercase tracking-[0.25em] text-orange-500">
           Stage {levelNumber} Cleared
         </span>
-        <h2 className="text-2xl font-display font-bold text-neutral-100 mt-1 mb-6">
+        <h2 className="text-2xl font-black text-white mt-1.5 mb-5 tracking-wide">
           {levelName}
         </h2>
 
         {/* Scorecard Stats block */}
-        <div className="w-full space-y-2.5 bg-neutral-950/60 border border-neutral-850 p-4 rounded-lg text-sm mb-6 font-sans">
+        <div className="w-full space-y-3 bg-neutral-950/60 border border-white/5 p-4 rounded-xl text-xs mb-5 font-sans">
           <div className="flex justify-between items-center text-neutral-400">
             <span>Deaths on level:</span>
-            <strong className="text-rose-400 font-mono font-bold">💀 {deaths}</strong>
+            <strong className="text-red-400 font-mono font-bold text-sm">💀 {deaths}</strong>
           </div>
           {timeMs !== undefined && (
             <div className="flex justify-between items-center text-neutral-400">
               <span>Completed Time:</span>
-              <strong className="text-amber-400 font-mono font-bold">⏱️ {formatTimer(timeMs)}</strong>
+              <strong className="text-amber-400 font-mono font-bold text-sm">⏱️ {formatTimer(timeMs)}</strong>
             </div>
           )}
+          <div className="text-[10px] text-orange-400/90 font-bold border-t border-white/5 pt-2.5 text-center leading-normal">
+            {getRoast()}
+          </div>
         </div>
 
         {/* Custom secret true ending check message */}
         {isLastLevel && (
-          <div className="mb-6 p-3 rounded-lg text-xs font-semibold leading-relaxed bg-amber-950/40 border border-amber-900/50 text-amber-200">
+          <div className="w-full mb-5 p-3 rounded-xl text-xs font-bold leading-normal bg-amber-950/30 border border-amber-500/20 text-amber-200">
             {hasUnlockSecretEnding ? (
-              <span>👑 ALL 10 KEYS COLLECTED! Entering the True Simulation Glitch Ending...</span>
+              <span className="flex items-center justify-center gap-1.5 animate-pulse">
+                <Sparkles size={14} /> ALL 10 KEYS COLLECTED! ENTER TRUE ENDING...
+              </span>
             ) : (
-              <span>🔒 Secret Ending Locked. Collect all 10 Golden Keys hidden in preceding worlds. Current: {keysFoundCount}/10</span>
+              <span>Locked: True Ending requires all 10 Golden Keys. Current: {keysFoundCount}/10</span>
             )}
           </div>
         )}
@@ -116,48 +130,56 @@ export const LevelCompleteOverlay: React.FC<LevelCompleteOverlayProps> = ({
         {/* Buttons Nav controls */}
         <div className="w-full space-y-2">
           {!isLastLevel && (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => {
                 audio.playSFX('click');
                 onNextLevel();
               }}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 border border-orange-500 rounded-lg text-sm font-bold text-white transition shadow-lg shadow-orange-950/30"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3.5 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 border border-orange-400/20 rounded-xl text-xs font-extrabold text-white transition shadow-lg shadow-orange-950/20 cursor-pointer"
             >
-              Next Level <ArrowRight size={16} />
-            </button>
+              Next Level <ArrowRight size={14} />
+            </motion.button>
           )}
 
           {isLastLevel && hasUnlockSecretEnding && (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => {
                 audio.playSFX('click');
                 onNextLevel();
               }}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 border border-purple-500 rounded-lg text-sm font-bold text-white transition shadow-lg shadow-purple-950/30"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 border border-purple-500/20 rounded-xl text-xs font-extrabold text-white transition shadow-lg shadow-purple-950/20 cursor-pointer animate-pulse"
             >
-              TRUE SECRET ENDING <Trophy size={16} />
-            </button>
+              TRUE SECRET ENDING <Trophy size={14} />
+            </motion.button>
           )}
 
-          <div className="grid grid-cols-2 gap-2">
-            <button
+          <div className="grid grid-cols-2 gap-2.5">
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
               onClick={() => {
                 audio.playSFX('click');
                 onReplay();
               }}
-              className="flex items-center justify-center gap-1.5 px-3 py-2 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 rounded-lg text-xs font-semibold transition text-neutral-200"
+              className="flex items-center justify-center gap-1.5 px-3 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-bold transition text-neutral-200 cursor-pointer"
             >
-              <RotateCcw size={14} /> Replay
-            </button>
-            <button
+              <RotateCcw size={13} /> Replay
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
               onClick={() => {
                 audio.playSFX('click');
                 onMainMenu();
               }}
-              className="flex items-center justify-center gap-1.5 px-3 py-2 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 rounded-lg text-xs font-semibold transition text-neutral-200"
+              className="flex items-center justify-center gap-1.5 px-3 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-bold transition text-neutral-200 cursor-pointer"
             >
-              <Home size={14} /> Menu
-            </button>
+              <Home size={13} /> Menu
+            </motion.button>
           </div>
         </div>
       </motion.div>
@@ -191,10 +213,10 @@ export const SkipPromptOverlay: React.FC<SkipPromptOverlayProps> = ({
       setAdProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          onSkipConfirm(); // confirm skip once ad completed!
+          onSkipConfirm(); // skip once ad completed!
           return 100;
         }
-        return prev + 1.5; // slow build
+        return prev + 1.5;
       });
     }, 45);
 
@@ -206,33 +228,37 @@ export const SkipPromptOverlay: React.FC<SkipPromptOverlayProps> = ({
       <div className="absolute bottom-4 right-4 z-40">
         {!isPlayingAd ? (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 10 }}
+            initial={{ opacity: 0, scale: 0.9, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 10 }}
-            className="bg-neutral-900 border border-neutral-800 p-4 rounded-xl shadow-2xl flex items-center gap-4 text-white max-w-xs font-sans border-l-4 border-l-orange-500"
+            exit={{ opacity: 0, scale: 0.9, y: 15 }}
+            className="bg-neutral-900/90 border border-white/10 p-4 rounded-2xl shadow-2xl flex items-center gap-4 text-white max-w-[280px] font-sans backdrop-blur-xl border-l-4 border-l-orange-500"
           >
-            <div className="w-10 h-10 rounded-full bg-neutral-950 flex items-center justify-center text-orange-500">
+            <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 flex-shrink-0">
               <HelpCircle size={20} />
             </div>
             <div className="flex-grow text-left">
-              <div className="text-xs font-bold text-neutral-200">Stuck on this level?</div>
-              <div className="text-[10px] text-neutral-500">Skip this level for free</div>
-              <div className="flex gap-2 mt-2">
-                <button
+              <div className="text-xs font-bold text-neutral-100">Stuck on this level?</div>
+              <div className="text-[10px] text-neutral-500 mt-0.5">Skip this level for free</div>
+              <div className="flex gap-2 mt-3">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={startAdSkip}
-                  className="flex items-center gap-1 px-2.5 py-1 bg-orange-600 hover:bg-orange-500 font-bold rounded text-[10px] text-white transition"
+                  className="flex items-center gap-1 px-3 py-1.5 bg-orange-600 hover:bg-orange-500 font-bold rounded-lg text-[10px] text-white transition cursor-pointer"
                 >
-                  <Film size={10} /> Skip Level
-                </button>
-                <button
+                  <Film size={10} /> Skip Stage
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => {
                     audio.playSFX('click');
                     onDismiss();
                   }}
-                  className="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 rounded text-[10px] text-neutral-400 transition"
+                  className="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-[10px] text-neutral-400 border border-white/5 transition cursor-pointer"
                 >
-                  No, thanks
-                </button>
+                  Cancel
+                </motion.button>
               </div>
             </div>
           </motion.div>
@@ -244,23 +270,28 @@ export const SkipPromptOverlay: React.FC<SkipPromptOverlayProps> = ({
             className="fixed inset-0 bg-neutral-950 z-50 flex flex-col items-center justify-center p-6 select-none"
           >
             <div className="w-full max-w-sm text-center">
-              <div className="w-16 h-16 bg-neutral-900 border border-neutral-800 rounded-2xl flex items-center justify-center mx-auto mb-4 text-orange-500 animate-pulse text-2xl">
+              {/* Premium Simulated Brand Header */}
+              <div className="flex items-center justify-center gap-2 mb-8 bg-white/5 border border-white/5 py-2 px-4 rounded-xl max-w-xs mx-auto text-[10px] text-neutral-400 font-bold uppercase tracking-wider">
+                <AlertCircle size={12} className="text-orange-500" /> Sponsored Promotion
+              </div>
+
+              <div className="w-20 h-20 bg-neutral-900 border border-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6 text-orange-500 animate-bounce text-3xl shadow-xl shadow-orange-950/10">
                 📺
               </div>
-              <h3 className="text-lg font-display font-bold mb-1">PROMOTIONAL OFFER</h3>
-              <p className="text-xs text-neutral-500 mb-6 font-sans">
-                Skipping level... Ad will finish in a few seconds.
+              <h3 className="text-xl font-black mb-1.5 tracking-wide">LEVEL DEVIL ADVISORY</h3>
+              <p className="text-xs text-neutral-400 mb-8 max-w-xs mx-auto leading-relaxed">
+                Skipping level... Rewarded skip will be granted immediately when progress finishes.
               </p>
 
               {/* Progress Bar */}
-              <div className="w-full h-2 bg-neutral-900 border border-neutral-800 rounded-full overflow-hidden mb-2">
+              <div className="w-full h-3 bg-neutral-900 border border-white/5 rounded-full overflow-hidden mb-3 p-[2px]">
                 <div
-                  className="h-full bg-orange-500 rounded-full transition-all"
+                  className="h-full bg-gradient-to-r from-orange-500 to-red-500 rounded-full transition-all"
                   style={{ width: `${adProgress}%` }}
                 />
               </div>
 
-              <div className="text-[10px] font-mono text-neutral-600 uppercase tracking-widest text-right">
+              <div className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest text-right font-bold">
                 {Math.ceil((100 - adProgress) / 30)}s REMAINING
               </div>
             </div>
@@ -287,46 +318,52 @@ export const PauseOverlay: React.FC<PauseOverlayProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="absolute inset-0 bg-neutral-950/85 flex flex-col items-center justify-center text-white p-6 z-50 rounded-lg select-none"
+      className="absolute inset-0 bg-neutral-950/80 flex flex-col items-center justify-center text-white p-6 z-50 rounded-xl select-none backdrop-blur-sm"
     >
       <motion.div
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
         exit={{ scale: 0.9 }}
-        className="w-full max-w-xs bg-neutral-900 border border-neutral-850 p-6 rounded-xl text-center shadow-2xl"
+        className="w-full max-w-xs bg-neutral-900/90 border border-white/10 p-6 rounded-2xl text-center shadow-2xl backdrop-blur-xl"
       >
-        <h2 className="text-xl font-display font-bold mb-6 text-neutral-300 tracking-wider uppercase">
+        <h2 className="text-xl font-black mb-6 text-neutral-200 tracking-wider uppercase flex items-center justify-center gap-2">
           ⏸️ PAUSED
         </h2>
 
-        <div className="space-y-2 flex flex-col">
-          <button
+        <div className="space-y-2.5 flex flex-col">
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => {
               audio.playSFX('click');
               onKeepPlaying();
             }}
-            className="w-full px-4 py-2.5 bg-neutral-850 hover:bg-neutral-800 border border-neutral-750 rounded-lg text-xs font-bold transition text-neutral-100"
+            className="w-full px-4 py-3 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 border border-orange-400/20 rounded-xl text-xs font-extrabold transition text-white cursor-pointer shadow-lg shadow-orange-950/10"
           >
             Resume Game
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => {
               audio.playSFX('click');
               onRestart();
             }}
-            className="w-full px-4 py-2.5 bg-neutral-850 hover:bg-neutral-800 border border-neutral-750 rounded-lg text-xs font-bold transition text-neutral-100"
+            className="w-full px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-bold transition text-neutral-100 cursor-pointer"
           >
             Restart Level (R)
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => {
               audio.playSFX('click');
               onMainMenu();
             }}
-            className="w-full px-4 py-2.5 bg-neutral-850 hover:bg-neutral-800 border border-neutral-750 rounded-lg text-xs font-bold transition text-neutral-100"
+            className="w-full px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-bold transition text-neutral-300 cursor-pointer"
           >
             Exit to Main Menu
-          </button>
+          </motion.button>
         </div>
       </motion.div>
     </motion.div>

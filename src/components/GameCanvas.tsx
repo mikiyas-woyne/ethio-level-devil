@@ -1113,7 +1113,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     createSparkles(p.x + p.width / 2, p.y + p.height / 2, '#4CAF50');
   };
 
-  // HTML5 Canvas Graphics Rendering
+  // HTML5 Canvas Graphics Rendering (Redesigned with Premium Vector Aesthetics)
   const renderGame = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -1130,9 +1130,19 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       ctx.translate(dx, dy);
     }
 
-    // A. Draw Background (Level Devil signature burnt-orange sky)
-    ctx.fillStyle = '#CF6839';
+    // A. Draw Background (Level Devil signature warm sunset gradient)
+    const skyGrad = ctx.createLinearGradient(0, 0, 0, 272);
+    skyGrad.addColorStop(0, '#f97316'); // Warm orange
+    skyGrad.addColorStop(0.6, '#ea580c');
+    skyGrad.addColorStop(1, '#b45309'); // Darker bottom
+    ctx.fillStyle = skyGrad;
     ctx.fillRect(0, 0, 480, 272);
+
+    // Dynamic horizontal sun rays/dust in background
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
+    ctx.fillRect(0, 40, 480, 20);
+    ctx.fillRect(0, 110, 480, 35);
+    ctx.fillRect(0, 190, 480, 15);
 
     // B. Draw Level Grid
     for (let r = 0; r < 17; r++) {
@@ -1142,126 +1152,278 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
         const ty = r * 16;
 
         switch (tile) {
-          case 1: {
-            // FLOOR: Level Devil dark chocolate brown ground
-            ctx.fillStyle = '#351C12';
-            ctx.fillRect(tx, ty, 16, 16);
-            break;
-          }
+          case 1:
           case 2: {
-            // WALL: Level Devil dark chocolate brown wall
-            ctx.fillStyle = '#351C12';
+            // FLOOR/WALL: Dark structural chocolate brown blocks with top shadow highlights
+            ctx.fillStyle = '#29130b';
             ctx.fillRect(tx, ty, 16, 16);
+            // Highlight top lip
+            ctx.fillStyle = '#452013';
+            ctx.fillRect(tx, ty, 16, 2.5);
+            // Bottom shadow line
+            ctx.fillStyle = '#140804';
+            ctx.fillRect(tx, ty + 14.5, 16, 1.5);
             break;
           }
           case 3: {
-            // SPIKE UP: warning red triangles
-            ctx.fillStyle = '#D50000';
+            // SPIKE UP: Metallic facets with highlight shine and ruby red base
+            ctx.fillStyle = '#2d3748'; // Shadow facet
             ctx.beginPath();
             ctx.moveTo(tx, ty + 16);
+            ctx.lineTo(tx + 8, ty);
+            ctx.lineTo(tx + 8, ty + 16);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = '#4a5568'; // Light facet
+            ctx.beginPath();
+            ctx.moveTo(tx + 8, ty + 16);
             ctx.lineTo(tx + 8, ty);
             ctx.lineTo(tx + 16, ty + 16);
             ctx.closePath();
             ctx.fill();
+
+            ctx.strokeStyle = '#cbd5e0'; // Shine edge
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(tx, ty + 16);
+            ctx.lineTo(tx + 8, ty);
+            ctx.stroke();
+
+            ctx.fillStyle = '#ef4444'; // Red base trim
+            ctx.fillRect(tx, ty + 15, 16, 1);
             break;
           }
           case 4: {
             // SPIKE DOWN
-            ctx.fillStyle = '#D50000';
+            ctx.fillStyle = '#2d3748';
             ctx.beginPath();
             ctx.moveTo(tx, ty);
+            ctx.lineTo(tx + 8, ty + 16);
+            ctx.lineTo(tx + 8, ty);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = '#4a5568';
+            ctx.beginPath();
+            ctx.moveTo(tx + 8, ty);
             ctx.lineTo(tx + 8, ty + 16);
             ctx.lineTo(tx + 16, ty);
             ctx.closePath();
             ctx.fill();
+
+            ctx.strokeStyle = '#cbd5e0';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(tx, ty);
+            ctx.lineTo(tx + 8, ty + 16);
+            ctx.stroke();
+
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(tx, ty, 16, 1);
             break;
           }
           case 5: {
             // SPIKE LEFT
-            ctx.fillStyle = '#D50000';
+            ctx.fillStyle = '#2d3748';
             ctx.beginPath();
             ctx.moveTo(tx + 16, ty);
+            ctx.lineTo(tx, ty + 8);
+            ctx.lineTo(tx + 16, ty + 8);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = '#4a5568';
+            ctx.beginPath();
+            ctx.moveTo(tx + 16, ty + 8);
             ctx.lineTo(tx, ty + 8);
             ctx.lineTo(tx + 16, ty + 16);
             ctx.closePath();
             ctx.fill();
+
+            ctx.strokeStyle = '#cbd5e0';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(tx + 16, ty);
+            ctx.lineTo(tx, ty + 8);
+            ctx.stroke();
+
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(tx + 15, ty, 1, 16);
             break;
           }
           case 6: {
             // SPIKE RIGHT
-            ctx.fillStyle = '#D50000';
+            ctx.fillStyle = '#2d3748';
             ctx.beginPath();
             ctx.moveTo(tx, ty);
+            ctx.lineTo(tx + 16, ty + 8);
+            ctx.lineTo(tx, ty + 8);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = '#4a5568';
+            ctx.beginPath();
+            ctx.moveTo(tx, ty + 8);
             ctx.lineTo(tx + 16, ty + 8);
             ctx.lineTo(tx, ty + 16);
             ctx.closePath();
             ctx.fill();
+
+            ctx.strokeStyle = '#cbd5e0';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(tx, ty);
+            ctx.lineTo(tx + 16, ty + 8);
+            ctx.stroke();
+
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(tx, ty, 1, 16);
             break;
           }
           case 8: {
-            // SPRING launcher
-            ctx.fillStyle = '#381D38'; // Dark base
-            ctx.fillRect(tx + 4, ty + 8, 8, 8);
-            ctx.fillStyle = '#15803D'; // Green launch cap
-            ctx.fillRect(tx + 1, ty + 4, 14, 4);
+            // SPRING launcher: detailed compression mechanism
+            ctx.fillStyle = '#1e293b'; // dark metal base
+            ctx.fillRect(tx + 2, ty + 12, 12, 4);
+
+            ctx.strokeStyle = '#94a3b8'; // steel coil wire
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(tx + 5, ty + 12);
+            ctx.lineTo(tx + 11, ty + 9);
+            ctx.lineTo(tx + 5, ty + 6);
+            ctx.lineTo(tx + 11, ty + 4.5);
+            ctx.stroke();
+
+            ctx.fillStyle = '#10b981'; // Emerald launcher cap
+            ctx.fillRect(tx + 1, ty + 2.5, 14, 2.5);
+            ctx.fillStyle = '#34d399'; // green cap highlight
+            ctx.fillRect(tx + 1, ty + 2.5, 14, 0.8);
             break;
           }
+          case 10:
           case 11:
           case 12: {
-            // COIN (Real / Fake)
-            const bobOffset = Math.sin(activeFrameRef.current * 0.1) * 2;
-            ctx.fillStyle = '#FAC835'; // Gold
-            ctx.beginPath();
-            ctx.arc(tx + 8, ty + 8 + bobOffset, 4.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(tx + 6, ty + 5 + bobOffset, 2, 2);
+            // COLLECTIBLE KEY / COINS: Spinning golden vectors
+            const bobOffset = Math.sin(activeFrameRef.current * 0.08) * 2.2;
+            const kx = tx + 8;
+            const ky = ty + 8 + bobOffset;
+
+            ctx.save();
+            ctx.translate(kx, ky);
+
+            if (tile === 10) {
+              // Detailed golden key
+              ctx.rotate((activeFrameRef.current * 1.8 * Math.PI) / 180);
+              ctx.fillStyle = '#fbbf24';
+              // Head
+              ctx.beginPath();
+              ctx.arc(0, -3, 3, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.fillStyle = skyGrad; // cut inside head
+              ctx.beginPath();
+              ctx.arc(0, -3, 1.2, 0, Math.PI * 2);
+              ctx.fill();
+
+              // Shaft
+              ctx.fillStyle = '#fbbf24';
+              ctx.fillRect(-0.8, -1, 1.6, 8);
+              // Teeth
+              ctx.fillRect(0.8, 3, 2, 1.2);
+              ctx.fillRect(0.8, 5.2, 2, 1.2);
+            } else {
+              // Real (11) and Fake (12) Coin: Rotating shiny discs
+              ctx.rotate((activeFrameRef.current * 3 * Math.PI) / 180);
+              ctx.fillStyle = tile === 11 ? '#f59e0b' : '#94a3b8'; // Gold vs Silver-grey
+              ctx.beginPath();
+              ctx.arc(0, 0, 4.5, 0, Math.PI * 2);
+              ctx.fill();
+              // Inner pattern
+              ctx.fillStyle = tile === 11 ? '#fbbf24' : '#cbd5e0';
+              ctx.beginPath();
+              ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
+              ctx.fill();
+              // Highlight shine glint
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(-1.5, -2, 1, 1);
+            }
+
+            ctx.restore();
             break;
           }
-          case 14: {
-            // Turret Left
-            ctx.fillStyle = '#381D38';
-            ctx.fillRect(tx + 4, ty + 2, 12, 12);
-            ctx.fillStyle = '#212121';
-            ctx.fillRect(tx, ty + 6, 6, 4);
-            break;
-          }
+          case 14:
           case 15: {
-            // Turret Right
-            ctx.fillStyle = '#381D38';
-            ctx.fillRect(tx, ty + 2, 12, 12);
-            ctx.fillStyle = '#212121';
-            ctx.fillRect(tx + 10, ty + 6, 6, 4);
+            // TURRETS: Steel mechanical casings
+            const isLeft = tile === 14;
+            ctx.fillStyle = '#1e293b'; // Base steel block
+            ctx.fillRect(tx + (isLeft ? 4 : 0), ty + 2, 12, 12);
+            ctx.fillStyle = '#475569';
+            ctx.fillRect(tx + (isLeft ? 6 : 2), ty + 4, 8, 8);
+            
+            // Cannon barrel
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(tx + (isLeft ? 0 : 10), ty + 6, 6, 4);
             break;
           }
           case 17: {
-            // Breakable wall
-            ctx.fillStyle = '#8A3416';
+            // BREAKABLE WALL: Cracked brick wall layout
+            ctx.fillStyle = '#5c2211';
             ctx.fillRect(tx, ty, 16, 16);
-            ctx.fillStyle = '#FAC835';
+            ctx.fillStyle = '#8f331b';
             ctx.fillRect(tx, ty, 16, 2);
-            ctx.strokeStyle = '#501D0B';
+            // Draw mortar crack lines
+            ctx.strokeStyle = '#290f07';
+            ctx.lineWidth = 1;
             ctx.strokeRect(tx, ty, 16, 16);
+            ctx.beginPath();
+            ctx.moveTo(tx + 8, ty);
+            ctx.lineTo(tx + 8, ty + 8);
+            ctx.lineTo(tx + 16, ty + 8);
+            ctx.moveTo(tx, ty + 8);
+            ctx.lineTo(tx + 4, ty + 8);
+            ctx.lineTo(tx + 4, ty + 16);
+            ctx.stroke();
             break;
           }
           case 18: {
-            // Rhythm platforms
+            // RHYTHM PLATFORM: Pulsing grid neon platforms
             const isPlatformActive = Math.floor(activeFrameRef.current / (level.rhythmInterval || 60)) % 2 === 0;
             ctx.save();
-            ctx.globalAlpha = isPlatformActive ? 1.0 : 0.25;
-            ctx.fillStyle = '#7C4DFF';
+            ctx.globalAlpha = isPlatformActive ? 1.0 : 0.22;
+            
+            // Neon cyan block
+            ctx.fillStyle = '#06b6d4';
             ctx.fillRect(tx, ty, 16, 16);
-            ctx.strokeStyle = '#FFFFFF';
+            
+            ctx.strokeStyle = '#e0f2fe';
+            ctx.lineWidth = 1.2;
             ctx.strokeRect(tx, ty, 16, 16);
+            
+            // Inner grid tech lines
+            ctx.fillStyle = '#22d3ee';
+            ctx.fillRect(tx + 3, ty + 3, 10, 10);
             ctx.restore();
             break;
           }
           case 20: {
-            // Gravity Flip zone
+            // GRAVITY FLIP ZONE: Glowing translucent field
             ctx.save();
-            ctx.globalAlpha = 0.4;
-            ctx.fillStyle = '#E040FB';
+            ctx.globalAlpha = 0.25 + Math.sin(activeFrameRef.current * 0.1) * 0.08;
+            ctx.fillStyle = '#d946ef';
             ctx.fillRect(tx, ty, 16, 16);
+            ctx.strokeStyle = '#f472b6';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(tx, ty, 16, 16);
+            
+            // Draw floating arrow inside zone
+            ctx.fillStyle = '#f472b6';
+            ctx.beginPath();
+            ctx.moveTo(tx + 8, ty + (isGravityFlippedRef.current ? 4 : 12));
+            ctx.lineTo(tx + 4, ty + (isGravityFlippedRef.current ? 10 : 6));
+            ctx.lineTo(tx + 12, ty + (isGravityFlippedRef.current ? 10 : 6));
+            ctx.closePath();
+            ctx.fill();
+            
             ctx.restore();
             break;
           }
@@ -1269,172 +1431,238 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       }
     }
 
-    // CHEVRON ARROWS ON MAIN GROUND BLOCK (> > > > > >) - Exact match to reference image
-    ctx.strokeStyle = '#4A1C0A'; // Dark brown chevron stroke
-    ctx.lineWidth = 3.5;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-
-    // C. Draw Door at doorPosRef.current (Level Devil Green Arched Landscape Portal)
+    // C. Draw Door/Portal (Arched Emerald vortex gateway)
     const dx = doorPosRef.current.x;
     const dy = doorPosRef.current.y;
 
-    // Green arched outer frame
-    ctx.fillStyle = '#2EA052';
+    // Green arched outer gate post
+    ctx.fillStyle = '#065f46';
     ctx.beginPath();
     ctx.arc(dx + 8, dy + 8, 8, Math.PI, 0);
     ctx.rect(dx, dy + 8, 16, 24);
     ctx.fill();
 
-    // Inner landscape portal
+    ctx.fillStyle = '#059669'; // Mid shade
+    ctx.beginPath();
+    ctx.arc(dx + 8, dy + 8, 6.8, Math.PI, 0);
+    ctx.rect(dx + 1.2, dy + 8, 13.6, 22.8);
+    ctx.fill();
+
+    // Swirling portal void
     ctx.save();
     ctx.beginPath();
-    ctx.arc(dx + 8, dy + 8, 6, Math.PI, 0);
-    ctx.rect(dx + 2, dy + 8, 12, 22);
+    ctx.arc(dx + 8, dy + 8, 5, Math.PI, 0);
+    ctx.rect(dx + 3, dy + 8, 10, 22);
     ctx.clip();
 
-    // Sky inside door
-    ctx.fillStyle = '#5DADE2';
-    ctx.fillRect(dx + 2, dy + 2, 12, 28);
+    ctx.fillStyle = '#022c22'; // deep green void base
+    ctx.fillRect(dx + 3, dy + 3, 10, 27);
 
-    // Green hills inside door
-    ctx.fillStyle = '#2ECC71';
+    // Swirling portal concentric lines
+    ctx.translate(dx + 8, dy + 14);
+    ctx.rotate((activeFrameRef.current * 4 * Math.PI) / 180);
+    ctx.strokeStyle = '#34d399';
+    ctx.lineWidth = 1.2;
     ctx.beginPath();
-    ctx.arc(dx + 4, dy + 26, 8, 0, Math.PI * 2);
-    ctx.arc(dx + 12, dy + 28, 8, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.arc(0, 0, 5, 0, Math.PI * 2);
+    ctx.stroke();
 
-    // Small tree inside door
-    ctx.fillStyle = '#795548';
-    ctx.fillRect(dx + 10, dy + 20, 2, 6);
-    ctx.fillStyle = '#27AE60';
+    ctx.strokeStyle = '#059669';
     ctx.beginPath();
-    ctx.arc(dx + 11, dy + 18, 3.5, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.arc(0, 0, 9, 0, Math.PI * 2);
+    ctx.stroke();
 
     ctx.restore();
 
-    // D. Top-Left ESC Button UI (exact match to Level Devil screenshot)
-    const btnX = 10;
-    const btnY = 8;
-    ctx.fillStyle = '#351C12'; // Dark brown box
-    ctx.fillRect(btnX, btnY, 14, 14);
+    // Golden lock keyhole if stage locked
+    if (level.keyIndex !== undefined && !keysCollected[level.keyIndex]) {
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(dx + 8, dy + 13, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillRect(dx + 7.2, dy + 13, 1.6, 4.2);
+    }
 
-    // Yellow left triangle arrow
-    ctx.fillStyle = '#FAC835';
+    // D. Pause Indicator esc button UI
+    const btnX = 12;
+    const btnY = 10;
+    ctx.fillStyle = '#29130b';
+    ctx.fillRect(btnX, btnY, 15, 14);
+    ctx.fillStyle = '#fbbf24';
     ctx.beginPath();
-    ctx.moveTo(btnX + 10, btnY + 3);
-    ctx.lineTo(btnX + 4, btnY + 7);
-    ctx.lineTo(btnX + 10, btnY + 11);
+    ctx.moveTo(btnX + 11, btnY + 3.5);
+    ctx.lineTo(btnX + 4.5, btnY + 7);
+    ctx.lineTo(btnX + 11, btnY + 10.5);
     ctx.closePath();
     ctx.fill();
-
-    // "esc" text under button
-    ctx.fillStyle = '#FAC835';
-    ctx.font = 'bold 9px monospace';
+    ctx.font = 'bold 9px Outfit, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('esc', btnX + 7, btnY + 23);
+    ctx.fillText('esc', btnX + 7.5, btnY + 23);
 
-    // D. Draw Pop up Spikes & Custom Traps
+    // E. Draw Pop up Spikes & Obstacle traps
     trapsRef.current.forEach((trap) => {
       const tx = trap.tileX * 16;
       const ty = trap.tileY * 16;
 
       if (trap.type === 'pop_up_spikes') {
-        ctx.fillStyle = '#D50000'; // Bright warning red
-        if (trap.state === 'warning') {
-          const shakeOffset = Math.sin(activeFrameRef.current * 0.8) * 2;
+        // Red pop-up warning spikes
+        ctx.fillStyle = '#ef4444';
+        const sy = trap.state === 'active' ? ty : (trap.state === 'warning' ? ty + 10 : ty + 16);
+        if (trap.state !== 'idle') {
           ctx.beginPath();
           ctx.moveTo(tx, ty + 16);
-          ctx.lineTo(tx + 8, ty + 12 + shakeOffset);
+          ctx.lineTo(tx + 8, sy);
           ctx.lineTo(tx + 16, ty + 16);
           ctx.closePath();
           ctx.fill();
-        } else if (trap.state === 'active') {
+          
+          // Spike outline highlights
+          ctx.strokeStyle = '#f87171';
+          ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(tx, ty + 16);
-          ctx.lineTo(tx + 8, ty);
-          ctx.lineTo(tx + 16, ty + 16);
-          ctx.closePath();
-          ctx.fill();
-        } else if (trap.state === 'retracting') {
-          ctx.beginPath();
-          ctx.moveTo(tx, ty + 16);
-          ctx.lineTo(tx + 8, ty + 8);
-          ctx.lineTo(tx + 16, ty + 16);
-          ctx.closePath();
-          ctx.fill();
+          ctx.lineTo(tx + 8, sy);
+          ctx.stroke();
         }
       }
 
       if (trap.type === 'falling_ceiling') {
-        ctx.fillStyle = '#8A3416';
+        // Concrete block with cracks
+        ctx.fillStyle = '#475569';
         ctx.fillRect(tx, trap.currentY, 16, 16);
-        ctx.fillStyle = '#FAC835';
+        ctx.fillStyle = '#64748b';
+        ctx.fillRect(tx, trap.currentY, 16, 2.5);
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 1.2;
         ctx.strokeRect(tx, trap.currentY, 16, 16);
       }
 
       if (trap.type === 'moving_wall') {
-        ctx.fillStyle = '#381D38';
+        // Concrete moving wall crusher
+        ctx.fillStyle = '#334155';
         ctx.fillRect(trap.currentX, trap.currentY, trap.width, trap.height);
+        ctx.strokeStyle = '#1e293b';
+        ctx.strokeRect(trap.currentX, trap.currentY, trap.width, trap.height);
       }
 
       if (trap.type === 'buzzsaw') {
+        // High fidelity rotating buzzsaw
         ctx.save();
         ctx.translate(trap.x + 16, trap.y + 16);
-        ctx.rotate((activeFrameRef.current * 15 * Math.PI) / 180);
-        ctx.fillStyle = '#ECEFF1';
+        ctx.rotate((activeFrameRef.current * 16 * Math.PI) / 180);
+        
+        // Blur background ring
+        ctx.strokeStyle = 'rgba(239, 68, 68, 0.1)';
+        ctx.lineWidth = 4;
         ctx.beginPath();
         ctx.arc(0, 0, trap.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#D50000';
+        ctx.stroke();
+
+        // Steel teeth
+        ctx.fillStyle = '#64748b';
+        const teethCount = 10;
+        for (let i = 0; i < teethCount; i++) {
+          ctx.rotate((Math.PI * 2) / teethCount);
+          ctx.beginPath();
+          ctx.moveTo(0, -trap.radius + 3);
+          ctx.lineTo(5, -trap.radius);
+          ctx.lineTo(-4, -trap.radius - 3);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        // Inner circular saw core
+        ctx.fillStyle = '#cbd5e0';
         ctx.beginPath();
-        ctx.arc(0, 0, 4, 0, Math.PI * 2);
+        ctx.arc(0, 0, trap.radius - 3.5, 0, Math.PI * 2);
         ctx.fill();
+        
+        ctx.fillStyle = '#2d3748';
+        ctx.beginPath();
+        ctx.arc(0, 0, 3, 0, Math.PI * 2);
+        ctx.fill();
+
         ctx.restore();
       }
     });
 
-    // E. Draw Crates
+    // F. Draw Crates
     cratesRef.current.forEach((crate) => {
-      ctx.fillStyle = '#8A3416';
+      // Textured wooden box
+      ctx.fillStyle = '#78350f';
       ctx.fillRect(crate.x, crate.y, crate.width, crate.height);
-      ctx.strokeStyle = '#FAC835';
+      ctx.strokeStyle = '#b45309';
+      ctx.lineWidth = 1.5;
       ctx.strokeRect(crate.x, crate.y, crate.width, crate.height);
+      
+      // Crisscross boards
+      ctx.beginPath();
+      ctx.moveTo(crate.x + 2, crate.y + 2);
+      ctx.lineTo(crate.x + crate.width - 2, crate.y + crate.height - 2);
+      ctx.moveTo(crate.x + crate.width - 2, crate.y + 2);
+      ctx.lineTo(crate.x + 2, crate.y + crate.height - 2);
+      ctx.stroke();
     });
 
-    // F. Draw Bullets
+    // G. Draw Bullets
     bulletsRef.current.forEach((bullet) => {
-      ctx.fillStyle = '#212121';
+      ctx.fillStyle = '#0f172a';
       ctx.fillRect(bullet.x, bullet.y, 6, 4);
     });
 
-    // G. Draw Bombs
+    // H. Draw Bombs
     bombsRef.current.forEach((bomb) => {
       if (bomb.isExploded) return;
       const bx = bomb.tileX * 16 + 8;
       const by = bomb.tileY * 16 + 8;
-      ctx.fillStyle = bomb.isLit && activeFrameRef.current % 10 < 5 ? '#D50000' : '#212121';
+      
+      // Lit blinking animation
+      ctx.fillStyle = bomb.isLit && activeFrameRef.current % 12 < 6 ? '#ef4444' : '#1e293b';
       ctx.beginPath();
-      ctx.arc(bx, by, 6, 0, Math.PI * 2);
+      ctx.arc(bx, by, 5.5, 0, Math.PI * 2);
       ctx.fill();
+
+      // Spark fuse
+      if (bomb.isLit) {
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(bx, by - 5);
+        ctx.quadraticCurveTo(bx + 4, by - 9, bx + 5 + Math.sin(activeFrameRef.current * 0.8) * 1.5, by - 10);
+        ctx.stroke();
+      }
     });
 
-    // H. Draw Absolute Keys
+    // I. Draw Absolute Keys
     if (level.keyLocation && isKeyAvailableRef.current) {
       const kx = level.keyLocation.x * 16 + 8;
-      const ky = level.keyLocation.y * 16 + 8 + Math.sin(activeFrameRef.current * 0.1) * 2;
-      ctx.fillStyle = '#FAC835';
+      const ky = level.keyLocation.y * 16 + 8 + Math.sin(activeFrameRef.current * 0.08) * 2;
+      
+      ctx.save();
+      ctx.translate(kx, ky);
+      ctx.rotate((activeFrameRef.current * 1.8 * Math.PI) / 180);
+      
+      ctx.fillStyle = '#fbbf24';
       ctx.beginPath();
-      ctx.arc(kx, ky, 6, 0, Math.PI * 2);
+      ctx.arc(0, -3, 3, 0, Math.PI * 2);
       ctx.fill();
+      ctx.fillStyle = skyGrad;
+      ctx.beginPath();
+      ctx.arc(0, -3, 1.2, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(-0.8, -1, 1.6, 8);
+      ctx.fillRect(0.8, 3, 2, 1.2);
+      ctx.fillRect(0.8, 5.2, 2, 1.2);
+      
+      ctx.restore();
     }
 
-    // I. Draw Anime Protagonist Character (Blue Coat, Messy Black Spiky Hair, Maroon Shirt, Dark Pants)
+    // J. Draw Anime Player with Squash & Stretch + Cape sways
     playersRef.current.forEach((p) => {
       if (!p.isAlive) return;
 
-      // Update facing direction
       if (p.vx > 0.1) p.facingRight = true;
       else if (p.vx < -0.1) p.facingRight = false;
       if (p.facingRight === undefined) p.facingRight = true;
@@ -1442,173 +1670,135 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       ctx.save();
 
       const cx = p.x + p.width / 2;
-      const bottomY = p.y + p.height; // ground contact
+      const bottomY = p.y + p.height;
       const isMoving = Math.abs(p.vx) > 0.15;
       const isJumping = !p.isGrounded;
       const frame = activeFrameRef.current;
+
+      // Squash and Stretch Logic
+      p.squashTimer = p.squashTimer || 0;
+      if (p.isGrounded) {
+        if (p.wasJumping) {
+          p.squashTimer = 10;
+          p.wasJumping = false;
+        }
+      } else {
+        p.wasJumping = true;
+      }
+      if (p.squashTimer > 0) p.squashTimer--;
+
+      let scaleY = 1.0;
+      let scaleX = 1.0;
+
+      if (p.isGrounded && p.squashTimer > 0) {
+        // Squashed on land
+        scaleY = 1.0 - (p.squashTimer / 10) * 0.15;
+        scaleX = 1.0 + (p.squashTimer / 10) * 0.15;
+      } else if (!p.isGrounded) {
+        // Stretched in mid-air
+        scaleY = 1.0 + Math.min(0.2, Math.abs(p.vy) * 0.04);
+        scaleX = 1.0 - Math.min(0.15, Math.abs(p.vy) * 0.03);
+      }
 
       ctx.translate(cx, bottomY);
       if (!p.facingRight) {
         ctx.scale(-1, 1);
       }
 
-      // Color scheme from sprite sheet:
-      const coatColor = p.isP2 ? '#7C3AED' : '#0284C7'; // Blue coat for P1, Purple for P2
-      const coatDark = p.isP2 ? '#5B21B6' : '#0369A1';
-      const shirtColor = '#881337'; // Maroon / burgundy shirt
-      const pantsColor = '#1F2937'; // Dark charcoal pants
-      const skinColor = '#FED7AA'; // Peach skin
-      const hairColor = '#1E232A'; // Messy spiky black hair
-      const hairHighlight = '#3F3F46';
-      const eyeColor = '#2563EB'; // Blue anime eye
+      // Coat theme colors
+      const coatColor = p.isP2 ? '#8b5cf6' : '#f97316'; // P1: Devil Orange, P2: Purple
+      const coatDark = p.isP2 ? '#6d28d9' : '#c2410c';
+      const pantsColor = '#1e293b';
+      const skinColor = '#ffedd5';
+      const hairColor = '#0f172a';
+      const scarfColor = '#ef4444'; // Red scarf
 
-      // Animation parameters
       const runCycle = Math.sin(frame * 0.4);
-      const coatFlap = isMoving ? Math.sin(frame * 0.5) * 2.5 : Math.sin(frame * 0.1) * 0.8;
+      const scarfSway = Math.sin(frame * 0.25) * 3;
 
-      // 1. Coat Back Flap (flapping behind character)
-      ctx.fillStyle = coatDark;
+      // 1. Red flowing scarf/cape
+      ctx.fillStyle = scarfColor;
       ctx.beginPath();
-      if (isJumping) {
-        ctx.moveTo(-2, -10);
-        ctx.lineTo(-9, -12 + coatFlap);
-        ctx.lineTo(-6, -4 + coatFlap);
-        ctx.lineTo(-2, -5);
-      } else if (isMoving) {
-        ctx.moveTo(-2, -10);
-        ctx.lineTo(-8 - Math.abs(p.vx) * 1.5, -6 + coatFlap);
-        ctx.lineTo(-6, -2 + coatFlap);
-        ctx.lineTo(-2, -5);
-      } else {
-        ctx.moveTo(-2, -9);
-        ctx.lineTo(-5, -3 + coatFlap);
-        ctx.lineTo(-1, -3);
-      }
+      ctx.moveTo(-1.5 * scaleX, -13 * scaleY);
+      ctx.quadraticCurveTo(-6 * scaleX + scarfSway, -10 * scaleY, -10 * scaleX + scarfSway, -12 * scaleY);
+      ctx.lineTo(-9 * scaleX + scarfSway, -8 * scaleY);
+      ctx.quadraticCurveTo(-5 * scaleX + scarfSway, -9 * scaleY, -1 * scaleX, -10 * scaleY);
       ctx.closePath();
       ctx.fill();
 
-      // 2. Legs & Pants
+      // 2. Legs & Boots
       ctx.fillStyle = pantsColor;
       if (isJumping) {
-        // Mid-air bent knees / split stance
-        ctx.fillRect(-4, -6, 3, 5);
-        ctx.fillRect(1, -7, 3, 6);
-        // Boots
-        ctx.fillStyle = '#111827';
-        ctx.fillRect(-5, -2, 4, 2);
-        ctx.fillRect(1, -2, 4, 2);
+        ctx.fillRect(-3.5 * scaleX, -7 * scaleY, 2.5 * scaleX, 5 * scaleY);
+        ctx.fillRect(1 * scaleX, -7 * scaleY, 2.5 * scaleX, 5 * scaleY);
+        ctx.fillStyle = '#020617';
+        ctx.fillRect(-4.5 * scaleX, -2 * scaleY, 3.5 * scaleX, 2 * scaleY);
+        ctx.fillRect(0.5 * scaleX, -2 * scaleY, 3.5 * scaleX, 2 * scaleY);
       } else if (isMoving) {
-        // Running leg animation
-        const legLeftX = -3.5 + runCycle * 3;
-        const legRightX = 0.5 - runCycle * 3;
-        ctx.fillRect(legLeftX, -7, 3, 5.5);
-        ctx.fillRect(legRightX, -7, 3, 5.5);
-        // Boots
-        ctx.fillStyle = '#111827';
-        ctx.fillRect(legLeftX - 1, -2, 4, 2);
-        ctx.fillRect(legRightX, -2, 4, 2);
+        const leftLegOffset = runCycle * 3;
+        ctx.fillRect((-3 + leftLegOffset) * scaleX, -7 * scaleY, 2.5 * scaleX, 5.5 * scaleY);
+        ctx.fillRect((0.5 - leftLegOffset) * scaleX, -7 * scaleY, 2.5 * scaleX, 5.5 * scaleY);
+        ctx.fillStyle = '#020617';
+        ctx.fillRect((-4 + leftLegOffset) * scaleX, -1.8 * scaleY, 3.5 * scaleX, 1.8 * scaleY);
+        ctx.fillRect((-0.5 - leftLegOffset) * scaleX, -1.8 * scaleY, 3.5 * scaleX, 1.8 * scaleY);
       } else {
-        // Standing legs
-        ctx.fillRect(-3.5, -6, 3, 5);
-        ctx.fillRect(0.5, -6, 3, 5);
-        // Boots
-        ctx.fillStyle = '#111827';
-        ctx.fillRect(-4, -1, 4, 2);
-        ctx.fillRect(0, -1, 4, 2);
+        ctx.fillRect(-3.5 * scaleX, -6 * scaleY, 2.5 * scaleX, 5 * scaleY);
+        ctx.fillRect(0.5 * scaleX, -6 * scaleY, 2.5 * scaleX, 5 * scaleY);
+        ctx.fillStyle = '#020617';
+        ctx.fillRect(-4 * scaleX, -1 * scaleY, 3.2 * scaleX, 1.2 * scaleY);
+        ctx.fillRect(0.2 * scaleX, -1 * scaleY, 3.2 * scaleX, 1.2 * scaleY);
       }
 
-      // 3. Inner Shirt (Maroon / Burgundy)
-      ctx.fillStyle = shirtColor;
-      ctx.fillRect(-2, -12, 4.5, 6);
-
-      // 4. Blue Coat / Jacket Body
+      // 3. Torso & Coat
       ctx.fillStyle = coatColor;
-      // Left lapel
-      ctx.beginPath();
-      ctx.moveTo(-4, -13);
-      ctx.lineTo(-1, -13);
-      ctx.lineTo(-2, -5);
-      ctx.lineTo(-5, -6);
-      ctx.closePath();
-      ctx.fill();
-
-      // Right lapel
-      ctx.beginPath();
-      ctx.moveTo(1, -13);
-      ctx.lineTo(4, -13);
-      ctx.lineTo(5, -6);
-      ctx.lineTo(2, -5);
-      ctx.closePath();
-      ctx.fill();
-
-      // Coat Hood/Collar behind neck
+      ctx.fillRect(-3 * scaleX, -14 * scaleY, 6 * scaleX, 8 * scaleY);
+      
+      // Collar detail
       ctx.fillStyle = coatDark;
-      ctx.fillRect(-3.5, -14, 7, 2);
+      ctx.fillRect(-3 * scaleX, -15 * scaleY, 6 * scaleX, 1.5 * scaleY);
 
-      // 5. Arms & Sleeves
+      // 4. Arms
       ctx.fillStyle = coatColor;
       if (isJumping) {
-        // Arms up / spread out
-        ctx.fillRect(-5, -13, 3, 5);
-        ctx.fillRect(2, -13, 3, 5);
-        ctx.fillStyle = skinColor;
-        ctx.fillRect(-5, -15, 2, 2);
-        ctx.fillRect(3, -15, 2, 2);
-      } else if (isMoving) {
-        // Running arm pumping
-        const armX = 1 + runCycle * 2.5;
-        ctx.fillRect(armX, -11, 3, 5);
-        ctx.fillStyle = skinColor;
-        ctx.fillRect(armX + 0.5, -7, 2, 2);
+        ctx.fillRect(-5 * scaleX, -13 * scaleY, 2.2 * scaleX, 5 * scaleY);
+        ctx.fillRect(2.8 * scaleX, -13 * scaleY, 2.2 * scaleX, 5 * scaleY);
       } else {
-        // Idle arm at side
-        ctx.fillRect(1, -11, 2.5, 5);
-        ctx.fillStyle = skinColor;
-        ctx.fillRect(1.5, -7, 2, 2);
+        const armSwing = isMoving ? runCycle * 1.5 : 0;
+        ctx.fillRect((2.2 + armSwing) * scaleX, -12 * scaleY, 2.2 * scaleX, 5 * scaleY);
       }
 
-      // 6. Head & Face Skin Tone
+      // 5. Head & Skin
       ctx.fillStyle = skinColor;
-      ctx.fillRect(-2.5, -19, 6, 6); // face block
-      ctx.fillRect(2, -17, 2, 3); // nose/jaw contour
+      ctx.fillRect(-2.2 * scaleX, -20 * scaleY, 4.4 * scaleX, 5 * scaleY);
 
-      // Anime Eye
-      ctx.fillStyle = eyeColor;
-      ctx.fillRect(1.5, -17, 1.8, 2.5);
-      ctx.fillStyle = '#FFFFFF'; // Eye shine highlight
-      ctx.fillRect(2, -17, 1, 1);
+      // Cute blinking eye
+      ctx.fillStyle = p.isP2 ? '#8b5cf6' : '#3b82f6';
+      ctx.fillRect(1.2 * scaleX, -18 * scaleY, 1.5 * scaleX, 2 * scaleY);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(1.5 * scaleX, -18 * scaleY, 0.7 * scaleX, 0.7 * scaleY);
 
-      // 7. Spiky Messy Anime Hair (matching sprite sheet)
+      // 6. Hair
       ctx.fillStyle = hairColor;
-      // Hair dome
       ctx.beginPath();
-      ctx.arc(0, -18, 4.5, Math.PI, 0);
+      ctx.arc(0, -19.5 * scaleY, 4 * scaleX, Math.PI, 0);
       ctx.fill();
 
-      // Spiky tufts
+      // Messy spikes
       ctx.beginPath();
-      ctx.moveTo(-4, -18);
-      ctx.lineTo(-1, -14.5); // front bangs spike down
-      ctx.lineTo(1, -18);
-      ctx.lineTo(2.8, -15.5); // second bang spike
-      ctx.lineTo(4, -17);
-      ctx.lineTo(5, -19.5); // side spike
-      ctx.lineTo(3, -22); // top right spike
-      ctx.lineTo(0, -22.5); // top center spike
-      ctx.lineTo(-3, -21.5); // top left spike
-      ctx.lineTo(-5, -18); // back spike
+      ctx.moveTo(-4 * scaleX, -19.5 * scaleY);
+      ctx.lineTo(-1 * scaleX, -15.5 * scaleY);
+      ctx.lineTo(2.2 * scaleX, -19 * scaleY);
+      ctx.lineTo(3.2 * scaleX, -16 * scaleY);
+      ctx.lineTo(4.5 * scaleX, -20.5 * scaleY);
+      ctx.lineTo(2 * scaleX, -23 * scaleY);
+      ctx.lineTo(-1 * scaleX, -22.5 * scaleY);
       ctx.closePath();
       ctx.fill();
-
-      // Hair highlights
-      ctx.fillStyle = hairHighlight;
-      ctx.fillRect(-1.5, -21.5, 2, 2);
-      ctx.fillRect(1, -20.5, 1.5, 1.5);
 
       ctx.restore();
     });
 
-    // J. Draw Particles
+    // K. Draw Particles
     particlesRef.current.forEach((p) => {
       ctx.save();
       ctx.globalAlpha = p.alpha;
@@ -1617,14 +1807,78 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       ctx.restore();
     });
 
-    // K. Draw environmental warning overlay if controls inverted
+    // L. Draw Ambient glow lighting & screen vignette
+    drawAmbientLighting();
+
+    // M. Inverted Warning overlay
     if (isInvertedControlsRef.current) {
-      ctx.fillStyle = 'rgba(255, 23, 68, 0.08)';
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.08)';
       ctx.fillRect(0, 0, 480, 272);
     }
 
     ctx.restore();
   };
+
+  // Light composite and vignette helper
+  const drawAmbientLighting = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // 1. Dark Vignette border
+    const vignette = ctx.createRadialGradient(240, 136, 130, 240, 136, 260);
+    vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    vignette.addColorStop(1, 'rgba(0, 0, 0, 0.42)');
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, 480, 272);
+
+    // 2. Translucent Ambient Screen-composite Glows
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+
+    // Player glows (Orange)
+    playersRef.current.forEach((p) => {
+      if (!p.isAlive) return;
+      const playerGlow = ctx.createRadialGradient(p.x + p.width / 2, p.y + p.height / 2, 2, p.x + p.width / 2, p.y + p.height / 2, 38);
+      playerGlow.addColorStop(0, 'rgba(251, 146, 60, 0.16)');
+      playerGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = playerGlow;
+      ctx.beginPath();
+      ctx.arc(p.x + p.width / 2, p.y + p.height / 2, 38, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Green portal exit glow
+    const portalGlow = ctx.createRadialGradient(doorPosRef.current.x + 8, doorPosRef.current.y + 16, 4, doorPosRef.current.x + 8, doorPosRef.current.y + 16, 52);
+    portalGlow.addColorStop(0, 'rgba(52, 211, 153, 0.22)');
+    portalGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = portalGlow;
+    ctx.beginPath();
+    ctx.arc(doorPosRef.current.x + 8, doorPosRef.current.y + 16, 52, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Golden keys/coins glows
+    for (let r = 0; r < 17; r++) {
+      for (let c = 0; c < 30; c++) {
+        const tile = currentGridRef.current[r][c];
+        if (tile === 10 || tile === 11) {
+          const kx = c * 16 + 8;
+          const ky = r * 16 + 8;
+          const keyGlow = ctx.createRadialGradient(kx, ky, 2, kx, ky, 22);
+          keyGlow.addColorStop(0, 'rgba(251, 191, 36, 0.22)');
+          keyGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          ctx.fillStyle = keyGlow;
+          ctx.beginPath();
+          ctx.arc(kx, ky, 22, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    ctx.restore();
+  };
+
 
   // Human-readable speedrun timer formatter
   const formatTimer = (ms: number) => {
