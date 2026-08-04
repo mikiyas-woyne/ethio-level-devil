@@ -1694,24 +1694,156 @@ class Saw {
     this.y = lerp(a2.y, b2.y, this.f);
   }
   solids() { return []; }
-  kills() { return [R(this.x - this.r * 0.66, this.y - this.r * 0.66, this.r * 1.32, this.r * 1.32)]; }
+  kills() {
+    // Spiked wheel hazard kill radius matching outer spike perimeter
+    const kR = this.r * 1.15;
+    return [R(this.x - kR, this.y - kR, kR * 2, kR * 2)];
+  }
   draw() {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.spin);
-    ctx.fillStyle = theme.ink;
-    const teeth = 10;
+
+    const r = this.r;
+
+    // 1. Draw 8 Silver Metallic Triangular Spikes around perimeter
+    const numSpikes = 8;
+    for (let i = 0; i < numSpikes; i++) {
+      const angle = (i / numSpikes) * Math.PI * 2;
+      ctx.save();
+      ctx.rotate(angle);
+
+      const spikeLen = r * 0.62;
+      const spikeBaseW = r * 0.28;
+
+      // Spike Base Bracket / Collar
+      ctx.fillStyle = "#3A3A3A";
+      ctx.beginPath();
+      ctx.rect(-spikeBaseW * 0.55, r * 0.78, spikeBaseW * 1.1, r * 0.22);
+      ctx.fill();
+
+      // Spike Main Metallic Blade with gradient for silver luster
+      const grad = ctx.createLinearGradient(-spikeBaseW * 0.5, r * 0.9, spikeBaseW * 0.5, r + spikeLen);
+      grad.addColorStop(0, "#D6D6D6");
+      grad.addColorStop(0.35, "#FFFFFF");
+      grad.addColorStop(0.7, "#9E9E9E");
+      grad.addColorStop(1, "#4F4F4F");
+
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(-spikeBaseW * 0.5, r * 0.95);
+      ctx.lineTo(0, r + spikeLen);
+      ctx.lineTo(spikeBaseW * 0.5, r * 0.95);
+      ctx.closePath();
+      ctx.fill();
+
+      // Center Ridge Highlight on Spike
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
+      ctx.lineWidth = Math.max(1, r * 0.05);
+      ctx.beginPath();
+      ctx.moveTo(0, r * 0.95);
+      ctx.lineTo(0, r + spikeLen * 0.88);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    // 2. Outer Dark Wood Wheel Rim
     ctx.beginPath();
-    for (let i = 0; i < teeth; i++) {
-      const a0 = (i / teeth) * Math.PI * 2;
-      const a1 = ((i + 0.5) / teeth) * Math.PI * 2;
-      ctx.lineTo(Math.cos(a0) * this.r, Math.sin(a0) * this.r);
-      ctx.lineTo(Math.cos(a1) * this.r * 0.74, Math.sin(a1) * this.r * 0.74);
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.fillStyle = "#4E2F17";
+    ctx.fill();
+    ctx.lineWidth = Math.max(1.5, r * 0.08);
+    ctx.strokeStyle = "#2B170A";
+    ctx.stroke();
+
+    // 3. Inner Wood Face (Warm Brown Grain)
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 0.85, 0, Math.PI * 2);
+    const woodGrad = ctx.createRadialGradient(0, 0, r * 0.15, 0, 0, r * 0.85);
+    woodGrad.addColorStop(0, "#A86E33");
+    woodGrad.addColorStop(0.7, "#7A4A1F");
+    woodGrad.addColorStop(1, "#593311");
+    ctx.fillStyle = woodGrad;
+    ctx.fill();
+    ctx.strokeStyle = "#381E09";
+    ctx.lineWidth = Math.max(1, r * 0.05);
+    ctx.stroke();
+
+    // Plank lines on wooden face
+    ctx.strokeStyle = "rgba(40, 20, 5, 0.4)";
+    ctx.lineWidth = Math.max(1, r * 0.04);
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.6, -r * 0.3); ctx.lineTo(r * 0.6, -r * 0.3);
+    ctx.moveTo(-r * 0.75, 0); ctx.lineTo(r * 0.75, 0);
+    ctx.moveTo(-r * 0.6, r * 0.3); ctx.lineTo(r * 0.6, r * 0.3);
+    ctx.stroke();
+
+    // 4. Golden Rivets / Metal Studs on Rim
+    const numRivets = 8;
+    for (let i = 0; i < numRivets; i++) {
+      const a = (i / numRivets) * Math.PI * 2 + (Math.PI / numRivets);
+      const rx = Math.cos(a) * (r * 0.72);
+      const ry = Math.sin(a) * (r * 0.72);
+      ctx.beginPath();
+      ctx.arc(rx, ry, Math.max(1.2, r * 0.065), 0, Math.PI * 2);
+      ctx.fillStyle = "#E8B446";
+      ctx.fill();
+      ctx.strokeStyle = "#6E4E16";
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+    }
+
+    // 5. Golden 8-Pointed Star Motif in Center
+    const starOuter = r * 0.52;
+    const starInner = r * 0.26;
+    const starPoints = 8;
+    ctx.beginPath();
+    for (let i = 0; i < starPoints * 2; i++) {
+      const a = (i / (starPoints * 2)) * Math.PI * 2;
+      const rad = i % 2 === 0 ? starOuter : starInner;
+      const sx = Math.cos(a) * rad;
+      const sy = Math.sin(a) * rad;
+      if (i === 0) ctx.moveTo(sx, sy);
+      else ctx.lineTo(sx, sy);
     }
     ctx.closePath();
+    const goldGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, starOuter);
+    goldGrad.addColorStop(0, "#FFF099");
+    goldGrad.addColorStop(0.5, "#EBB42C");
+    goldGrad.addColorStop(1, "#A37410");
+    ctx.fillStyle = goldGrad;
     ctx.fill();
-    ctx.fillStyle = theme.paper;
-    ctx.beginPath(); ctx.arc(0, 0, this.r * 0.26, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#5C3E04";
+    ctx.lineWidth = Math.max(1, r * 0.04);
+    ctx.stroke();
+
+    // Concentric Ring inside Star
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 0.34, 0, Math.PI * 2);
+    ctx.strokeStyle = "#7A5205";
+    ctx.lineWidth = Math.max(1, r * 0.035);
+    ctx.stroke();
+
+    // 6. Center Raised Metallic Gold Boss/Dome
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 0.22, 0, Math.PI * 2);
+    const bossGrad = ctx.createRadialGradient(-r * 0.06, -r * 0.06, 0, 0, 0, r * 0.22);
+    bossGrad.addColorStop(0, "#FFF6C2");
+    bossGrad.addColorStop(0.5, "#EEB93B");
+    bossGrad.addColorStop(1, "#8A5F0C");
+    ctx.fillStyle = bossGrad;
+    ctx.fill();
+    ctx.strokeStyle = "#4F3505";
+    ctx.lineWidth = Math.max(1, r * 0.04);
+    ctx.stroke();
+
+    // Shiny Specular Highlight on Center Boss
+    ctx.beginPath();
+    ctx.arc(-r * 0.06, -r * 0.06, r * 0.065, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+    ctx.fill();
+
     ctx.restore();
   }
 }
@@ -3133,28 +3265,35 @@ const LEVELS = [
       ],
     }),
   },
-  // ---------------------------------------------------- 30 (NEW: finale)
+  // ---------------------------------------------------- 30 (NEW: SPIKED WHEEL CHAMPION)
   {
-    name: "THE LAST COFFEE",
+    name: "THE SPIKED WHEEL CHAMPION",
     build: () => ({
       spawn: { x: 50, y: 440 },
-      door: new Door(
-        [
-          { x: 884, y: 416 },
-          { x: 110, y: 236 },
-        ],
-        { fleeDist: 78 }
-      ),
-      solids: [floorSeg(0, 250), floorSeg(700, 960), R(40, 300, 210, 16), roof(30), wallL(), wallR()],
+      door: new Door([{ x: 884, y: 416 }]),
+      solids: [
+        floorSeg(0, 200),
+        R(240, 390, 130, 16),
+        R(410, 300, 120, 16),
+        R(580, 210, 120, 16),
+        floorSeg(740, 960),
+        roof(30),
+        wallL(),
+        wallR()
+      ],
       traps: [
-        new JebenaBounce(R(150, 34, 60, 38), R(120, 220, 60, 260), { shakeTime: 0.1, floorY: 480 }),
-        new MovingPlatform(R(280, 452, 100, 16), { toX: 560, speed: 100, pause: 0.35 }),
-        new Saw([{ x: 470, y: 150 }, { x: 470, y: 430 }], { r: 22, speed: 190 }),
-        new Laser({ x: 610, y: 30, len: 418, vertical: true, period: 1.9, warn: 0.45, fire: 0.4 }),
-        new PopSpikes(806, 480, 66, R(720, 330, 16, 150), { delay: 0.05 }),
-        new RunwaySpikes(250, 540, 450, { dir: "up", size: 44, speed: 180 }),
-        new Note(150, 250, "the devil's last laugh"),
-        new Note(480, 430, "Wait, what? Spikes can run?!", { size: 12 }),
+        // Spiked Wooden Wheel 1 patrolling the bottom gap
+        new Saw([{ x: 200, y: 460 }, { x: 400, y: 460 }], { r: 24, speed: 120 }),
+        // Spiked Wooden Wheel 2 patrolling vertically between platforms
+        new Saw([{ x: 380, y: 150 }, { x: 380, y: 380 }], { r: 24, speed: 150 }),
+        // Spiked Wooden Wheel 3 guarding upper platform transition
+        new Saw([{ x: 550, y: 150 }, { x: 720, y: 150 }], { r: 22, speed: 140 }),
+        // Moving platform for a smooth, skill-based crossing
+        new MovingPlatform(R(550, 360, 110, 16), { toX: 680, speed: 85, pause: 0.3 }),
+        // Pop spikes near door platform requiring timed jump
+        new PopSpikes(830, 480, 60, R(760, 350, 20, 150), { delay: 0.05 }),
+        new Note(120, 430, "no trampolines, pure skill!"),
+        new Note(450, 270, "watch out for the spiked wheels!"),
       ],
     }),
   },
