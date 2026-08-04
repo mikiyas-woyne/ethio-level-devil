@@ -2766,8 +2766,8 @@ class Note {
 // ================================================================ LEVELS
 const floorSeg = (x0, x1, y = 480) => R(x0, y, x1 - x0, H - y);
 const wallL = () => R(-40, -200, 40, H + 400);
-const wallR = () => R(W, -200, 40, H + 400);
-const roof = (h = 30) => R(0, 0, W, h);
+const wallR = (w = W) => R(w, -200, 40, H + 400);
+const roof = (h = 30, w = W) => R(0, 0, w, h);
 
 const LEVELS = [
   // ---------------------------------------------------- 1
@@ -3300,22 +3300,71 @@ const LEVELS = [
 ];
 
 const MITMITA_LEVELS = [
-  // 1: SPICY WELCOME
+  // 1: SPICY HORIZON GAUNTLET (LEVEL 31)
   {
-    name: "SPICY WELCOME",
+    name: "SPICY HORIZON GAUNTLET",
     build: () => ({
-      spawn: { x: 55, y: 440 },
-      door: new Door([{ x: 884, y: 416 }]),
-      solids: [floorSeg(0, 360), floorSeg(760, 960), wallL(), wallR()],
+      w: 2400,
+      spawn: { x: 60, y: 440 },
+      door: new FleeingDoor(
+        [{ x: 2300, y: 416 }, { x: 2150, y: 236 }, { x: 2280, y: 196 }],
+        { fleeDist: 100 }
+      ),
+      solids: [
+        // Section 1: 0 - 600
+        floorSeg(0, 320),
+        floorSeg(420, 620),
+        // Section 2: 600 - 1200
+        floorSeg(720, 960),
+        floorSeg(1080, 1300),
+        R(880, 320, 120, 16),
+        // Section 3: 1200 - 1800
+        floorSeg(1420, 1700),
+        R(1220, 260, 140, 16),
+        R(1550, 320, 140, 16),
+        // Section 4: 1800 - 2400
+        floorSeg(1820, 2050),
+        floorSeg(2180, 2400),
+        R(2080, 260, 180, 16),
+        roof(30, 2400),
+        wallL(),
+        wallR(2400),
+      ],
       traps: [
-        new StaticSpikes(360, 540, 400, { dir: "up", size: 46 }),
-        new FireBrazier(240, 480, { w: 50, flameH: 42, period: 1.8, holdOut: 0.6, phase: 0.0 }),
-        new CollapseFloor(R(360, 480, 160, 60), R(320, 300, 20, 180)),
-        new SlidingHole(520, 760, { gapW: 90, startGap: 700, speed: 200, trigger: R(440, 300, 20, 180) }),
-        new FireBrazier(680, 480, { w: 50, flameH: 42, period: 1.8, holdOut: 0.6, phase: 0.8 }),
-        new FallBlock(R(820, 40, 70, 40), R(780, 300, 70, 180)),
-        new PopSpikes(840, 480, 50, R(790, 300, 20, 180), { period: 0 }),
-        new Note(150, 430, "🌶️ Mitmita: JUMP OVER FIRE!"),
+        // --- SECTION 1 SURPRISES (x: 0 - 600) ---
+        new Note(140, 420, "🌶️ Level 31: The 2400px Marathon!"),
+        // Spiked Wooden Wheel patrolling first gap
+        new Saw([{ x: 280, y: 460 }, { x: 420, y: 460 }], { r: 24, speed: 140 }),
+        // Surprise 1: False collapsing floor right after landing
+        new CollapseFloor(R(430, 480, 120, 60), R(400, 300, 20, 180)),
+        new Spring(360, 480, { power: -1050 }),
+
+        // --- SECTION 2 SURPRISES (x: 600 - 1200) ---
+        new Note(750, 420, "DODGE THE FLAMES!"),
+        new FireBrazier(640, 480, { w: 50, flameH: 45, period: 1.6, holdOut: 0.5, phase: 0.0 }),
+        // Surprise 2: Falling ceiling crusher when player gets close
+        new FallBlock(R(820, 40, 80, 40), R(780, 300, 60, 180)),
+        // Pepper dash item for extra speed across the middle chasm
+        new MitmitaPepperDash(930, 290),
+        new StaticSpikes(960, 540, 120, { dir: "up", size: 46 }),
+
+        // --- SECTION 3 SURPRISES (x: 1200 - 1800) ---
+        new Note(1300, 230, "SURPRISE TELEPORT!"),
+        // Surprise 3: Teleporter that warps player over the double Spiked Wheels
+        new Teleporter(1180, 432, 1250, 212, { w: 32, h: 48, twoWay: false }),
+        new Saw([{ x: 1350, y: 150 }, { x: 1350, y: 430 }], { r: 24, speed: 180 }),
+        new Saw([{ x: 1500, y: 430 }, { x: 1500, y: 150 }], { r: 24, speed: 180 }),
+        // Conveyor belt pushes player backward towards spikes
+        new Conveyor(R(1420, 480, 280, 60), { dir: -1, force: 200 }),
+        new PopSpikes(1620, 480, 60, R(1520, 300, 20, 180), { delay: 0.05 }),
+
+        // --- SECTION 4 SURPRISES (x: 1800 - 2400) ---
+        new Note(1900, 420, "ALMOST THERE... OR ARE YOU?"),
+        new Laser({ x: 1950, y: 30, len: 418, vertical: true, period: 1.8, warn: 0.4, fire: 0.4 }),
+        // Surprise 4: Shifting floor block that rises when player approaches
+        new ShiftingFloorBlock(2050, 480, 120, 60, { targetY: 340, trigger: R(1920, 300, 20, 180), speed: 200 }),
+        new FireBrazier(2220, 480, { w: 50, flameH: 45, period: 1.6, holdOut: 0.5, phase: 0.3 }),
+        new Note(2280, 170, "🏆 YOU CONQUERED LEVEL 31!"),
       ],
     }),
   },
@@ -4413,7 +4462,7 @@ class ShiftingFloorBlock {
 }
 
 function makeTerrainUpAndDown(level, levelIndex) {
-  if (levelIndex === 29 || levelIndex === 59) {
+  if (levelIndex === 29 || levelIndex === 30 || levelIndex === 59 || level.w) {
     return level;
   }
 
@@ -5782,19 +5831,32 @@ const Game = {
     ctx.save();
     ctx.clearRect(0, 0, W, H);
 
-    // Render Ethiopian cultural and historical background varying per level (Simien, Axum, Lalibela, Gondar, Harar)
+    // Calculate horizontal camera offset for wide levels
+    const levelW = this.level?.w || W;
+    const pX = this.player ? this.player.x + this.player.w / 2 : 0;
+    const camX = clamp(pX - W / 2, 0, Math.max(0, levelW - W));
+    this.camX = camX;
+
+    // Render Ethiopian cultural and historical background varying per level
     drawEthiopianBackground(this.levelIndex || 0);
 
+    ctx.save();
     if (this.shakeAmt > 0) {
       ctx.translate(rand(-this.shakeAmt, this.shakeAmt), rand(-this.shakeAmt, this.shakeAmt));
     }
+
+    // World Space rendering with camera transform
+    ctx.save();
+    ctx.translate(-camX, 0);
 
     if (this.level) {
       ctx.strokeStyle = theme.grid;
       ctx.lineWidth = 1;
       ctx.beginPath();
-      for (let x = 0; x <= W; x += 48) { ctx.moveTo(x, 0); ctx.lineTo(x, H); }
-      for (let y = 0; y <= H; y += 48) { ctx.moveTo(0, y); ctx.lineTo(W, y); }
+      const gridStart = Math.floor(camX / 48) * 48;
+      const gridEnd = camX + W + 48;
+      for (let x = gridStart; x <= gridEnd; x += 48) { ctx.moveTo(x, 0); ctx.lineTo(x, H); }
+      for (let y = 0; y <= H; y += 48) { ctx.moveTo(gridStart, y); ctx.lineTo(gridEnd, y); }
       ctx.stroke();
 
       ctx.save();
@@ -5811,7 +5873,7 @@ const Game = {
 
       // Draw ground solids with rich terracotta earth and geometric Ethiopian pattern trim
       for (const s of this.level.solids) {
-        if (s.x < -20 || s.x > W) continue;
+        if (s.x + s.w < camX - 100 || s.x > camX + W + 100) continue;
         ctx.save();
         drawEarthRect(s);
         ctx.restore();
@@ -5822,62 +5884,64 @@ const Game = {
       if (this.state === "play" || this.state === "win" || this.state === "betweenLevels") this.drawPlayer();
 
       drawParticles();
-
-      // Top-Middle Real-Time Ge'ez Death Counter (when enabled)
-      if (showDeathCounter && (this.state === "play" || this.state === "win" || this.state === "betweenLevels" || this.state === "dead")) {
-        drawGeezDeathCounter(this.deaths || 0);
-      }
-
-      // Top-Left ESC button
-      ctx.save();
-      const btnX = 18, btnY = 16;
-      ctx.fillStyle = "#351C12";
-      roundRect(btnX, btnY, 28, 28, 4);
-      ctx.fill();
-
-      ctx.fillStyle = "#FAC835";
-      ctx.beginPath();
-      ctx.moveTo(btnX + 19, btnY + 7);
-      ctx.lineTo(btnX + 8, btnY + 14);
-      ctx.lineTo(btnX + 19, btnY + 21);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = "#FAC835";
-      ctx.font = "bold 13px 'Outfit', sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("esc", btnX + 14, btnY + 42);
-      ctx.restore();
-
-      // vignette
-      const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.34, W / 2, H / 2, H * 0.95);
-      vg.addColorStop(0, "rgba(0,0,0,0)");
-      vg.addColorStop(1, theme.vignette);
-      ctx.fillStyle = vg;
-      ctx.fillRect(0, 0, W, H);
-
-      if (this.state === "dead" || this.state === "respawning") {
-        const a = clamp(this.deathT * 4, 0, 1);
-        ctx.globalAlpha = a;
-        ctx.fillStyle = theme.danger;
-        ctx.font = `900 58px ${FONT}`;
-        ctx.textAlign = "center";
-        const wob = Math.sin(this.time * 30) * 2 * (1 - this.deathT);
-        ctx.fillText(this.deathLine, W / 2 + wob, H / 2 - 30);
-        ctx.globalAlpha = 1;
-      }
-
-      if (this.state === "win" || this.state === "betweenLevels") {
-        const a = clamp(this.winT * 5, 0, 1);
-        ctx.globalAlpha = a;
-        ctx.fillStyle = theme.accent;
-        ctx.font = `900 52px ${FONT}`;
-        ctx.textAlign = "center";
-        const pack = LEVEL_PACKS[currentPackId] || LEVEL_PACKS.karya;
-        ctx.fillText(this.levelIndex + 1 >= pack.levels.length ? "አሸነፍክ!" : "FINE. NEXT.", W / 2, H / 2 - 40);
-        ctx.globalAlpha = 1;
-      }
     }
+    ctx.restore(); // end world transform
+
+    // UI Overlay elements drawn in fixed screen space
+    if (showDeathCounter && (this.state === "play" || this.state === "win" || this.state === "betweenLevels" || this.state === "dead")) {
+      drawGeezDeathCounter(this.deaths || 0);
+    }
+
+    // Top-Left ESC button
+    ctx.save();
+    const btnX = 18, btnY = 16;
+    ctx.fillStyle = "#351C12";
+    roundRect(btnX, btnY, 28, 28, 4);
+    ctx.fill();
+
+    ctx.fillStyle = "#FAC835";
+    ctx.beginPath();
+    ctx.moveTo(btnX + 19, btnY + 7);
+    ctx.lineTo(btnX + 8, btnY + 14);
+    ctx.lineTo(btnX + 19, btnY + 21);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#FAC835";
+    ctx.font = "bold 13px 'Outfit', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("esc", btnX + 14, btnY + 42);
+    ctx.restore();
+
+    // vignette
+    const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.34, W / 2, H / 2, H * 0.95);
+    vg.addColorStop(0, "rgba(0,0,0,0)");
+    vg.addColorStop(1, theme.vignette);
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, 0, W, H);
+
+    if (this.state === "dead" || this.state === "respawning") {
+      const a = clamp(this.deathT * 4, 0, 1);
+      ctx.globalAlpha = a;
+      ctx.fillStyle = theme.danger;
+      ctx.font = `900 58px ${FONT}`;
+      ctx.textAlign = "center";
+      const wob = Math.sin(this.time * 30) * 2 * (1 - this.deathT);
+      ctx.fillText(this.deathLine, W / 2 + wob, H / 2 - 30);
+      ctx.globalAlpha = 1;
+    }
+
+    if (this.state === "win" || this.state === "betweenLevels") {
+      const a = clamp(this.winT * 5, 0, 1);
+      ctx.globalAlpha = a;
+      ctx.fillStyle = theme.accent;
+      ctx.font = `900 52px ${FONT}`;
+      ctx.textAlign = "center";
+      const pack = LEVEL_PACKS[currentPackId] || LEVEL_PACKS.karya;
+      ctx.fillText(this.levelIndex + 1 >= pack.levels.length ? "አሸነፍክ!" : "FINE. NEXT.", W / 2, H / 2 - 40);
+      ctx.globalAlpha = 1;
+    }
+
     ctx.restore();
 
     if (this.wipe > 0.001) {
@@ -5889,6 +5953,8 @@ const Game = {
       ctx.arc(W / 2, H / 2, Math.max(r, 0), 0, Math.PI * 2, true);
       ctx.fill();
     }
+
+    ctx.restore();
   },
 
   drawPlayer() {
