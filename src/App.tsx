@@ -47,12 +47,12 @@ export default function App() {
             <span id="hud-levelnum" className="pill">
               1
             </span>
-            <span id="hud-levelname">ምንም ነገር የለም</span>
+            <span id="hud-levelname">NOTHING TO SEE HERE</span>
           </div>
           <div className="hud-right">
-            <button id="btn-pause" className="pause-btn" aria-label="Pause game" title="አቁም (ESC / P)">
+            <button id="btn-pause" className="pause-btn" aria-label="Pause game" title="Pause Game (ESC / P)">
               <span className="pause-icon">⏸</span>
-              <span className="pause-text">አቁም</span>
+              <span className="pause-text">PAUSE</span>
             </button>
           </div>
         </div>
@@ -61,51 +61,51 @@ export default function App() {
         <div id="pause-menu" className="hidden">
           <div className="menu-inner pause-inner">
             <div className="pause-badge">ቃርያ</div>
-            <h2 className="pause-title">ጨዋታው ቆሟል</h2>
-            <p id="pause-level-info" className="pause-sub">ደረጃ 1: ምንም ነገር የለም</p>
+            <h2 className="pause-title">GAME PAUSED</h2>
+            <p id="pause-level-info" className="pause-sub">LEVEL 1: NOTHING TO SEE HERE</p>
 
             {/* Death Stats Card inside Pause Menu */}
             <div className="pause-stats-card">
               <div className="pause-stat-geez">
-                <span className="geez-label">የሞት ብዛት (በግዕዝ)</span>
+                <span className="geez-label">የሞት ብዛት</span>
                 <span id="pause-geez-deaths" className="geez-numeral">0</span>
               </div>
               <div className="pause-stat-total">
                 <span className="skull">&#9760;</span>
-                <span id="pause-total-deaths">0</span> አጠቃላይ የሞት ብዛት
+                <span id="pause-total-deaths">0</span> TOTAL DEATHS
               </div>
             </div>
 
             {/* Primary Action Buttons */}
             <div className="pause-actions">
               <button id="pause-resume-btn" className="pause-action-btn primary">
-                ▶ ቀጥል
+                ▶ RESUME
               </button>
               <button id="pause-restart-btn" className="pause-action-btn secondary">
-                ↻ ደረጃውን እንደገና ጀምር
+                ↻ RESTART LEVEL
               </button>
               <button id="pause-menu-btn" className="pause-action-btn danger">
-                ☰ ዋና ማውጫ
+                ☰ MAIN MENU
               </button>
             </div>
 
             {/* Settings & Options inside Pause Menu */}
-            <div className="pause-settings-title">ማስተካከያዎች እና አማራጮች</div>
+            <div className="pause-settings-title">SETTINGS & OPTIONS</div>
             <div className="pause-settings-grid">
-              <button id="pbtn-char" className="p-setting-btn" title="ገጸ ባህሪ ቀይር">
-                <span id="pic-char">🧑🏽 ገጸ ባህሪ</span>
+              <button id="pbtn-char" className="p-setting-btn" title="Toggle Character">
+                <span id="pic-char">🧑🏽 Character</span>
               </button>
-              <button id="pbtn-counter" className="p-setting-btn" title="የግዕዝ ቁጥር ማሳያ">
-                <span id="pic-counter">🇪🇹 የግዕዝ ቁጥር</span>
+              <button id="pbtn-counter" className="p-setting-btn" title="Toggle Ge'ez Death Display">
+                <span id="pic-counter">🇪🇹 Ge'ez Counter</span>
               </button>
-              <button id="pbtn-theme" className="p-setting-btn" title="ገጽታ ቀይር">
-                <span id="pic-theme">🌙 ገጽታ</span>
+              <button id="pbtn-theme" className="p-setting-btn" title="Toggle Light/Dark Theme">
+                <span id="pic-theme">🌙 Theme</span>
               </button>
-              <button id="pbtn-mute" className="p-setting-btn" title="ድምፅ ማብሪያ/ማጥፊያ">
-                <span id="pic-mute">🔊 ድምፅ</span>
+              <button id="pbtn-mute" className="p-setting-btn" title="Toggle Sound">
+                <span id="pic-mute">🔊 Sound</span>
               </button>
-              <button id="pbtn-fs" className="p-setting-btn" title="ሙሉ ስክሪን">
-                <span id="pic-fs">⛶ ሙሉ ስክሪን</span>
+              <button id="pbtn-fs" className="p-setting-btn" title="Toggle Fullscreen">
+                <span id="pic-fs">⛶ Fullscreen</span>
               </button>
             </div>
           </div>
@@ -121,22 +121,22 @@ export default function App() {
               <span className="title-amharic">ቃርያ</span>
               <span className="title-english">ETHIO LEVEL DEVIL</span>
             </h1>
-            <p className="subtitle">100 አስደናቂ ደረጃዎች · የኢትዮጵያ ጉዞ</p>
-            <div className="culture-route" aria-label="የኢትዮጵያ ታሪካዊ ቦታዎች">
-              <span>ሰሜን</span><i></i><span>አክሱም</span><i></i><span>ላሊበላ</span><i></i><span>ጎንደር</span><i></i><span>ሐረር</span><i></i><span>ጣና</span>
+            <p className="subtitle">60 unpredictable levels · one Ethiopian journey</p>
+            <div className="culture-route" aria-label="Ethiopian places featured in the game">
+              <span>SIMIEN</span><i></i><span>AXUM</span><i></i><span>LALIBELA</span><i></i><span>GONDAR</span><i></i><span>HARAR</span><i></i><span>TANA</span>
             </div>
 
-            <button id="play-btn">ጉዞውን ጀምር</button>
+            <button id="play-btn">START JOURNEY</button>
             <div className="grid-heading">
-              <span id="grid-label">ቃርያ ኢትዮ ዴቪል (100 ደረጃዎች)</span>
+              <span>60 LEVEL CAMPAIGN</span>
               <span className="grid-heading-amharic">ኢትዮጵያ</span>
             </div>
             <div id="level-grid"></div>
             <p className="menu-deaths">
-              የሞት ብዛት: <span id="menu-deaths">0</span>
+              የሞት ብዛት · total deaths: <span id="menu-deaths">0</span>
             </p>
             <p className="controls-hint">
-              &larr; &rarr; / A D ተንቀሳቀስ &nbsp;&middot;&nbsp; &uarr; / W / SPACE ዝለል &nbsp;&middot;&nbsp; T ገጽታ ቀይር
+              &larr; &rarr; / A D move &nbsp;&middot;&nbsp; &uarr; / W / SPACE jump &nbsp;&middot;&nbsp; T theme
             </p>
           </div>
         </div>
@@ -145,13 +145,13 @@ export default function App() {
         <div id="end-screen" className="hidden">
           <div className="menu-inner">
             <h1 className="end-title">
-              እንኳን ደስ አለዎት!<br />ቃርያ ኢትዮ ዴቪልን አሸነፉ
+              YOU CONQUERED<br />ETHIO LEVEL DEVIL
             </h1>
-            <p className="end-sub">እንኳን ደስ አለዎት · በኢትዮጵያ ጉዞዎ ታላቅ ድል ተቀዳጅተዋል::</p>
+            <p className="end-sub">እንኳን ደስ አለዎት · victory across Ethiopia.</p>
             <p className="end-stats">
-              በአጠቃላይ <span id="end-deaths">0</span> ጊዜ ሞተዋል:: <span id="end-roast"></span>
+              you died <span id="end-deaths">0</span> times. <span id="end-roast"></span>
             </p>
-            <button id="end-menu-btn">ወደ ዋና ማውጫ ተመለስ</button>
+            <button id="end-menu-btn">BACK TO MENU</button>
           </div>
         </div>
       </div>
@@ -159,7 +159,7 @@ export default function App() {
       {/* TOUCH CONTROLS (mobile only) */}
       <div id="touch-controls" className="hidden">
         <div className="tc-group tc-move">
-          <button id="tc-left" className="tc-btn" aria-label="ወደ ግራ">
+          <button id="tc-left" className="tc-btn" aria-label="Move left">
             <svg viewBox="0 0 24 24" width="30" height="30">
               <path
                 d="M15 5 L7 12 L15 19"
@@ -171,7 +171,7 @@ export default function App() {
               />
             </svg>
           </button>
-          <button id="tc-right" className="tc-btn" aria-label="ወደ ቀኝ">
+          <button id="tc-right" className="tc-btn" aria-label="Move right">
             <svg viewBox="0 0 24 24" width="30" height="30">
               <path
                 d="M9 5 L17 12 L9 19"
@@ -185,7 +185,7 @@ export default function App() {
           </button>
         </div>
         <div className="tc-group tc-actions">
-          <button id="tc-restart" className="tc-btn tc-small" aria-label="ደረጃውን እንደገና ጀምር">
+          <button id="tc-restart" className="tc-btn tc-small" aria-label="Restart level">
             <svg viewBox="0 0 24 24" width="20" height="20">
               <path
                 d="M4 12 a8 8 0 1 1 2.4 5.7 M4 12 V6 M4 12 H10"
@@ -197,7 +197,7 @@ export default function App() {
               />
             </svg>
           </button>
-          <button id="tc-jump" className="tc-btn tc-jump" aria-label="ዝለል">
+          <button id="tc-jump" className="tc-btn tc-jump" aria-label="Jump">
             <svg viewBox="0 0 24 24" width="34" height="34">
               <path
                 d="M5 15 L12 7 L19 15"
@@ -209,16 +209,6 @@ export default function App() {
               />
             </svg>
           </button>
-        </div>
-      </div>
-
-      {/* Fullscreen Landscape Orientation Overlay (mobile portrait block) */}
-      <div id="rotate-overlay" className="rotate-overlay">
-        <div className="rotate-card">
-          <div className="rotate-icon">🔄</div>
-          <div className="rotate-amharic">እባክዎን ስልክዎን ያዞሩ</div>
-          <div className="rotate-english">እባክዎን ስልክዎን አግድም ያድርጉ (LANDSCAPE MODE)</div>
-          <div className="rotate-badge">🇪🇹 ቃርያ ETHIO LEVEL DEVIL 🌶️</div>
         </div>
       </div>
 

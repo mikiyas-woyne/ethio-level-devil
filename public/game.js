@@ -2781,9 +2781,9 @@ const LEVELS = [
       ),
       solids: [floorSeg(0, 400), floorSeg(500, 960), wallL(), wallR()],
       traps: [
-        new CollapseFloor(R(400, 480, 100, 60), R(400, 405, 100, 75), { delay: 0.38, shakeTime: 0.045 }),
+        new CollapseFloor(R(400, 480, 100, 60), R(400, 405, 100, 75), { delay: 0.01, shakeTime: 0.045 }),
         new FallBlock(R(608, 44, 62, 42), R(548, 240, 36, 240), { shakeTime: 0.06 }),
-        new PopSpikes(760, 480, 80, R(708, 330, 26, 150), { delay: 0.38 }),
+        new PopSpikes(760, 480, 80, R(708, 330, 26, 150), { delay: 0.06 }),
         new PopSpikes(532, 480, 58, R(650, 330, 24, 150), { delay: 1.15 }),
         new Saw([{ x: 250, y: 454 }, { x: 340, y: 454 }], { r: 17, speed: 92 }),
         new Note(210, 430, "easy as sharing injera :)"),
@@ -2792,46 +2792,40 @@ const LEVELS = [
   },
   // ---------------------------------------------------- 2
   {
-    name: "LEARN THE BASICS NATURALLY",
+    name: "BUNA BREAK? NOT YET",
     build: () => ({
       spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [
-        floorSeg(0, 200),
-        floorSeg(590, 710),
-        floorSeg(820, 960),
-        wallL(), wallR(), roof()
-      ],
+      door: new Door([{ x: 876, y: 416 }]),
+      solids: [floorSeg(0, 200), floorSeg(760, 960), wallL(), wallR()],
       traps: [
-        new StaticSpikes(200, 540, 80, { size: 32 }),
-        new MovingPlatform(R(280, 440, 90, 18), [{ x: 280, y: 440 }, { x: 380, y: 440 }], { speed: 70, pause: 0.3 }),
-        new CrumblePlatform(R(490, 420, 80, 18), { delay: 0.45 }),
-        new Checkpoint(630, 432),
-        new SuspiciousPlatform(R(720, 440, 90, 18)),
+        new CrumblePlatform(R(270, 408, 92, 16), { delay: 0.32 }),
+        new CrumblePlatform(R(430, 360, 92, 16), { delay: 0.32 }),
+        new CrumblePlatform(R(590, 408, 92, 16), { delay: 0.18 }),
+        new FallBlock(R(440, 40, 70, 42), R(430, 200, 92, 170), { floorY: 540 }),
+        new StaticSpikes(200, 540, 560, { size: 32 }),
+        new Saw([{ x: 540, y: 332 }, { x: 540, y: 408 }], { r: 18, speed: 86 }),
+        new PopSpikes(764, 480, 70, R(700, 330, 20, 150), { delay: 0.02 }),
+        new Note(310, 380, "they look sturdy", { angle: -0.05 }),
       ],
     }),
   },
   // ---------------------------------------------------- 3
   {
-    name: "BREAK YOUR CONFIDENCE",
+    name: "SIMIEN SWITCHBACK",
     build: () => ({
       spawn: { x: 50, y: 440 },
       door: new Door([{ x: 880, y: 416 }]),
-      solids: [
-        floorSeg(0, 220),
-        R(240, 440, 70, 20),
-        R(650, 400, 70, 18),
-        floorSeg(510, 960),
-        R(810, 0, 20, 260),
-        wallL(), wallR(), roof()
-      ],
+      solids: [floorSeg(0, 960), wallL(), wallR()],
       traps: [
-        new CrumblePlatform(R(330, 440, 80, 18), { delay: 0.25 }),
-        new PopSpikes(430, 480, 80, R(360, 300, 70, 150), { delay: 0.16 }),
-        new ShiftingFloorBlock(540, 320, 40, 160, { targetY: 480, speed: 45 }),
-        new KeyItem(680, 360, "level3_key"),
-        new Gate(R(820, 360, 20, 120), "level3_key"),
-        new FakeDoor(870, 180, { label: "EXIT?" }),
+        new ChasingThornVines(180, 760, { y: 480, maxH: 80, waveSpeed: 190 }),
+        new PopSpikes(220, 480, 64, null, { period: 1.7, phase: 0.0, holdOut: 0.75 }),
+        new PopSpikes(330, 480, 64, null, { period: 1.7, phase: 0.28, holdOut: 0.75 }),
+        new PopSpikes(440, 480, 64, null, { period: 1.7, phase: 0.56, holdOut: 0.75 }),
+        new PopSpikes(550, 480, 64, null, { period: 1.7, phase: 0.84, holdOut: 0.75 }),
+        new PopSpikes(660, 480, 64, null, { period: 1.7, phase: 1.12, holdOut: 0.75 }),
+        new PopSpikes(790, 480, 76, R(742, 330, 18, 150), { delay: 0.05 }),
+        new Pendulum(520, 38, { len: 300, amp: 0.42, speed: 1.25, r: 16 }),
+        new Note(120, 420, "run fast!", { angle: 0.04 }),
       ],
     }),
   },
@@ -2856,16 +2850,14 @@ const LEVELS = [
   // ---------------------------------------------------- 5  (NEW: moving platform)
   {
     name: "BLUE NILE EXPRESS",
-    handcrafted: true,
     build: () => ({
       spawn: { x: 60, y: 440 },
       door: new Door([{ x: 884, y: 416 }]),
-      solids: [floorSeg(0, 260), floorSeg(640, 960), wallL(), wallR()],
+      solids: [floorSeg(0, 300), floorSeg(620, 960), wallL(), wallR()],
       traps: [
-        new MovingPlatform(R(260, 452, 110, 18), { toX: 530, speed: 90, pause: 0.4 }),
-        new Checkpoint(660, 432),
-        new Note(140, 430, "በአባይ ወንዝ ላይ ጉዞ :)"),
-        new PopSpikes(780, 480, 50, R(680, 330, 20, 150), { delay: 0.38 }),
+        new MovingPlatform(R(300, 452, 100, 16), { toX: 520, speed: 95, pause: 0.5 }),
+        new Note(160, 430, "hop on. free ride :)"),
+        new PopSpikes(806, 480, 70, R(706, 330, 18, 150), { delay: 0.05 }),
       ],
     }),
   },
@@ -2902,7 +2894,7 @@ const LEVELS = [
         new Conveyor(R(300, 480, 320, 60), { dir: -1, force: 165 }),
         new FireBrazier(580, 480, { w: 70, h: 30, flameH: 60, period: 2.0, phase: 0.0 }),
         new Note(450, 430, "keep walking →"),
-        new PopSpikes(812, 480, 66, R(720, 330, 16, 150), { delay: 0.38 }),
+        new PopSpikes(812, 480, 66, R(720, 330, 16, 150), { delay: 0.04 }),
       ],
     }),
   },
@@ -2915,7 +2907,7 @@ const LEVELS = [
       solids: [wallL(), wallR()],
       traps: [
         new SlidingHole(0, 960, { gapW: 96, startGap: 760, speed: 150, trigger: R(120, 300, 20, 180) }),
-        new PopSpikes(806, 480, 64, R(756, 330, 16, 150), { delay: 0.38 }),
+        new PopSpikes(806, 480, 64, R(756, 330, 16, 150), { delay: 0.03 }),
         new Note(420, 420, "the hole is friendly", { angle: -0.03 }),
       ],
     }),
@@ -2963,7 +2955,7 @@ const LEVELS = [
         new BlinkPlatform(R(444, 400, 96, 16), { period: 1.7, onFrac: 0.62, phase: 0.34 }),
         new BlinkPlatform(R(588, 430, 96, 16), { period: 1.7, onFrac: 0.62, phase: 0.68 }),
         new Note(150, 430, "now you don't"),
-        new PopSpikes(806, 480, 66, R(720, 330, 16, 150), { delay: 0.38 }),
+        new PopSpikes(806, 480, 66, R(720, 330, 16, 150), { delay: 0.05 }),
       ],
     }),
   },
@@ -2994,7 +2986,7 @@ const LEVELS = [
         new Saw([{ x: 300, y: 444 }, { x: 640, y: 444 }], { r: 24, speed: 165 }),
         new Saw([{ x: 520, y: 90 }, { x: 520, y: 430 }], { r: 22, speed: 185 }),
         new Note(150, 430, "perfectly safe"),
-        new PopSpikes(820, 480, 64, R(740, 330, 16, 150), { delay: 0.38 }),
+        new PopSpikes(820, 480, 64, R(740, 330, 16, 150), { delay: 0.04 }),
       ],
     }),
   },
@@ -3026,7 +3018,7 @@ const LEVELS = [
         new Laser({ x: 480, y: 30, len: 418, vertical: true, period: 2.2, warn: 0.55, fire: 0.5, phase: 0.5 }),
         new Laser({ x: 660, y: 30, len: 418, vertical: true, period: 2.2, warn: 0.55, fire: 0.5, phase: 1.0 }),
         new Note(150, 430, "hold still"),
-        new PopSpikes(820, 480, 64, R(740, 330, 16, 150), { delay: 0.38 }),
+        new PopSpikes(820, 480, 64, R(740, 330, 16, 150), { delay: 0.04 }),
       ],
     }),
   },
@@ -3041,7 +3033,7 @@ const LEVELS = [
         new StaticSpikes(360, 540, 260, { dir: "up", size: 44 }),
         new Teleporter(300, 432, 648, 432, { w: 30, h: 48, twoWay: false }),
         new Note(170, 430, "step in →"),
-        new PopSpikes(806, 480, 66, R(720, 330, 16, 150), { delay: 0.38 }),
+        new PopSpikes(806, 480, 66, R(720, 330, 16, 150), { delay: 0.05 }),
       ],
     }),
   },
@@ -3057,7 +3049,7 @@ const LEVELS = [
         new Pendulum(470, 30, { len: 400, amp: 0.85, speed: 1.6, r: 18, phase: 1.1 }),
         new Pendulum(700, 30, { len: 400, amp: 0.85, speed: 1.6, r: 18, phase: 2.2 }),
         new Note(150, 430, "mind the swing"),
-        new PopSpikes(844, 480, 58, R(764, 330, 14, 150), { delay: 0.38 }),
+        new PopSpikes(844, 480, 58, R(764, 330, 14, 150), { delay: 0.04 }),
       ],
     }),
   },
@@ -3088,7 +3080,7 @@ const LEVELS = [
         new Button(330, 470, "g", { momentary: false }),
         new Gate(R(620, 300, 28, 180), "g"),
         new FakeDoor(720, 416, { label: "this way!" }),
-        new PopSpikes(812, 480, 66, R(740, 330, 16, 150), { delay: 0.38 }),
+        new PopSpikes(812, 480, 66, R(740, 330, 16, 150), { delay: 0.05 }),
         new Note(352, 440, "press to open the gate"),
       ],
     }),
@@ -3105,7 +3097,7 @@ const LEVELS = [
         new MovingPlatform(R(300, 452, 120, 16), { toY: 320, speed: 62, pause: 0.45 }),
         new MovingPlatform(R(560, 320, 120, 16), { toY: 452, speed: 62, pause: 0.45, phase: 0.5 }),
         new Note(150, 430, "going up ↑"),
-        new PopSpikes(812, 480, 64, R(740, 330, 16, 150), { delay: 0.38 }),
+        new PopSpikes(812, 480, 64, R(740, 330, 16, 150), { delay: 0.05 }),
       ],
     }),
   },
@@ -3122,7 +3114,7 @@ const LEVELS = [
         new Crusher(520, 90, { topY: 30, period: 1.7, phase: 0.85 }),
         new Crusher(660, 90, { topY: 30, period: 1.7, phase: 0.4 }),
         new Note(150, 430, "belt + hammers, fun"),
-        new PopSpikes(812, 480, 64, R(740, 330, 16, 150), { delay: 0.38 }),
+        new PopSpikes(812, 480, 64, R(740, 330, 16, 150), { delay: 0.04 }),
       ],
     }),
   },
@@ -3139,7 +3131,7 @@ const LEVELS = [
         new Spring(250, 480, { power: -1080 }),
         new Spring(600, 480, { power: -1080 }),
         new Note(150, 430, "run and bounce →"),
-        new PopSpikes(820, 480, 64, R(742, 330, 16, 150), { delay: 0.38 }),
+        new PopSpikes(820, 480, 64, R(742, 330, 16, 150), { delay: 0.05 }),
       ],
     }),
   },
@@ -3156,7 +3148,7 @@ const LEVELS = [
         new BlinkPlatform(R(540, 420, 100, 16), { period: 1.6, onFrac: 0.6, phase: 0.5 }),
         new Saw([{ x: 480, y: 150 }, { x: 480, y: 360 }], { r: 22, speed: 180 }),
         new Note(150, 430, "time it"),
-        new PopSpikes(806, 480, 66, R(720, 330, 16, 150), { delay: 0.38 }),
+        new PopSpikes(806, 480, 66, R(720, 330, 16, 150), { delay: 0.05 }),
       ],
     }),
   },
@@ -3188,7 +3180,7 @@ const LEVELS = [
         new MovingPlatform(R(320, 452, 100, 16), { toX: 520, speed: 95, pause: 0.4 }),
         new Teleporter(700, 432, 820, 222, { w: 30, h: 48, twoWay: false }),
         new Note(150, 430, "ride, then warp up"),
-        new PopSpikes(806, 260, 60, R(720, 180, 16, 80), { delay: 0.38 }),
+        new PopSpikes(806, 260, 60, R(720, 180, 16, 80), { delay: 0.05 }),
       ],
     }),
   },
@@ -3206,7 +3198,7 @@ const LEVELS = [
         new Laser({ x: 600, y: 30, len: 418, vertical: true, period: 1.8, warn: 0.45, fire: 0.4, phase: 0.0 }),
         new Laser({ x: 720, y: 30, len: 418, vertical: true, period: 1.8, warn: 0.45, fire: 0.4, phase: 0.9 }),
         new Note(150, 430, "feel the beat"),
-        new PopSpikes(844, 480, 58, R(770, 330, 14, 150), { delay: 0.38 }),
+        new PopSpikes(844, 480, 58, R(770, 330, 14, 150), { delay: 0.04 }),
       ],
     }),
   },
@@ -3224,7 +3216,7 @@ const LEVELS = [
         new Saw([{ x: 660, y: 150 }, { x: 660, y: 360 }], { r: 20, speed: 170 }),
         new Crusher(770, 90, { topY: 30, period: 1.8, phase: 0.3 }),
         new Note(150, 430, "a bit of everything"),
-        new PopSpikes(844, 480, 58, R(800, 330, 14, 150), { delay: 0.38 }),
+        new PopSpikes(844, 480, 58, R(800, 330, 14, 150), { delay: 0.04 }),
       ],
     }),
   },
@@ -3266,7 +3258,7 @@ const LEVELS = [
         new CollapseFloor(R(230, 480, 130, 60), R(170, 280, 24, 200)),
         new FallBlock(R(420, 40, 64, 42), R(400, 200, 104, 280)),
         new SlidingHole(500, 790, { gapW: 88, startGap: 740, speed: 135, trigger: R(470, 300, 20, 180) }),
-        new PopSpikes(800, 480, 70, R(750, 330, 20, 150), { delay: 0.38 }),
+        new PopSpikes(800, 480, 70, R(750, 330, 20, 150), { delay: 0.05 }),
         new PopSpikes(218, 336, 64, R(205, 240, 90, 96), { delay: 0.5 }),
         new Note(600, 430, "almost there :)"),
         new Note(105, 240, "ok fine. you earned it.", { size: 13 }),
@@ -3299,7 +3291,7 @@ const LEVELS = [
         // Moving platform for a smooth, skill-based crossing
         new MovingPlatform(R(550, 360, 110, 16), { toX: 680, speed: 85, pause: 0.3 }),
         // Pop spikes near door platform requiring timed jump
-        new PopSpikes(830, 480, 60, R(760, 350, 20, 150), { delay: 0.38 }),
+        new PopSpikes(830, 480, 60, R(760, 350, 20, 150), { delay: 0.05 }),
         new Note(120, 430, "no trampolines, pure skill!"),
         new Note(450, 270, "watch out for the spiked wheels!"),
       ],
@@ -3364,7 +3356,7 @@ const MITMITA_LEVELS = [
         new Saw([{ x: 1500, y: 430 }, { x: 1500, y: 150 }], { r: 24, speed: 180 }),
         // Conveyor belt pushes player backward towards spikes
         new Conveyor(R(1420, 480, 280, 60), { dir: -1, force: 200 }),
-        new PopSpikes(1620, 480, 60, R(1520, 300, 20, 180), { delay: 0.38 }),
+        new PopSpikes(1620, 480, 60, R(1520, 300, 20, 180), { delay: 0.05 }),
 
         // --- SECTION 4 SURPRISES (x: 1800 - 2400) ---
         new Note(1900, 420, "ALMOST THERE... OR ARE YOU?"),
@@ -4469,297 +4461,8 @@ class ShiftingFloorBlock {
   }
 }
 
-class Checkpoint {
-  constructor(x, y, opts = {}) {
-    this.x = x; this.y = y; this.w = 32; this.h = 48;
-    this.triggered = false;
-  }
-  reset() { this.triggered = false; }
-  update(dt, g) {
-    const p = g.player;
-    if (!this.triggered && aabb(p, R(this.x, this.y, this.w, this.h))) {
-      this.triggered = true;
-      p.spawnX = this.x;
-      p.spawnY = this.y - 4;
-      AudioFX.bounce();
-    }
-  }
-  solids() { return []; }
-  kills() { return []; }
-  draw() {
-    ctx.save();
-    ctx.fillStyle = "#8D6E63";
-    ctx.fillRect(this.x + 4, this.y, 4, 48);
-    ctx.fillStyle = this.triggered ? "#00E676" : "#FFC107";
-    ctx.beginPath();
-    ctx.moveTo(this.x + 8, this.y + 4);
-    ctx.lineTo(this.x + 28, this.y + 12);
-    ctx.lineTo(this.x + 8, this.y + 20);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-  }
-}
-
-class SuspiciousPlatform {
-  constructor(rect, opts = {}) {
-    this.rect = { ...rect };
-  }
-  reset() {}
-  update() {}
-  solids() { return [this.rect]; }
-  kills() { return []; }
-  draw() {
-    ctx.save();
-    ctx.fillStyle = "#3E2723";
-    roundRect(this.rect.x, this.rect.y, this.rect.w, this.rect.h, 4);
-    ctx.fill();
-    ctx.strokeStyle = "#E65100";
-    ctx.lineWidth = 2;
-    ctx.setLineDash([4, 4]);
-    ctx.strokeRect(this.rect.x, this.rect.y, this.rect.w, this.rect.h);
-    ctx.fillStyle = "#FFB74D";
-    ctx.font = "bold 10px sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("⚠ DANGER?", this.rect.x + this.rect.w / 2, this.rect.y + this.rect.h / 2);
-    ctx.restore();
-  }
-}
-
-class KeyItem {
-  constructor(x, y, key, opts = {}) {
-    this.x = x; this.y = y; this.r = 14;
-    this.key = key;
-    this.collected = false;
-  }
-  reset() { this.collected = false; }
-  update(dt, g) {
-    if (this.collected) return;
-    const p = g.player;
-    if (p && Math.hypot((p.x + p.w / 2) - this.x, (p.y + p.h / 2) - this.y) < this.r + 16) {
-      this.collected = true;
-      g.flags[this.key] = true;
-      AudioFX.bounce();
-    }
-  }
-  solids() { return []; }
-  kills() { return []; }
-  draw() {
-    if (this.collected) return;
-    ctx.save();
-    ctx.fillStyle = "#FFC107";
-    ctx.strokeStyle = "#FF8F00";
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = "#37474F";
-    ctx.font = "bold 12px sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("🔑", this.x, this.y);
-    ctx.restore();
-  }
-}
-
-class FakeCheckpoint {
-  constructor(x, y, opts = {}) {
-    this.x = x; this.y = y; this.w = 32; this.h = 48;
-    this.triggered = false;
-    this.spikeActive = false;
-  }
-  reset() { this.triggered = false; this.spikeActive = false; }
-  update(dt, g) {
-    const p = g.player;
-    if (!this.triggered && aabb(p, R(this.x, this.y, this.w, this.h))) {
-      this.triggered = true;
-      this.spikeActive = true;
-      AudioFX.bounce();
-      AudioFX.slam();
-      g.shake(7, 0.22);
-    }
-  }
-  solids() { return []; }
-  kills() {
-    if (this.spikeActive) return [R(this.x - 8, this.y + 12, this.w + 16, 32)];
-    return [];
-  }
-  draw() {
-    ctx.save();
-    ctx.fillStyle = "#8D6E63";
-    ctx.fillRect(this.x + 4, this.y, 4, 48);
-    ctx.fillStyle = this.triggered ? "#D50000" : "#4CAF50";
-    ctx.beginPath();
-    ctx.moveTo(this.x + 8, this.y + 4);
-    ctx.lineTo(this.x + 28, this.y + 12);
-    ctx.lineTo(this.x + 8, this.y + 20);
-    ctx.closePath();
-    ctx.fill();
-    if (this.spikeActive) {
-      drawSpear(ctx, this.x + 16, this.y + 36, "up", 32, 32);
-    }
-    ctx.restore();
-  }
-}
-
-class GravityFlipZone {
-  constructor(x, y, w, h, opts = {}) {
-    this.x = x; this.y = y; this.w = w; this.h = h;
-  }
-  reset() {}
-  update(dt, g) {
-    const p = g.player;
-    if (p && aabb(p, R(this.x, this.y, this.w, this.h))) {
-      p.gravityFlipped = true;
-    } else if (p) {
-      p.gravityFlipped = false;
-    }
-  }
-  solids() { return []; }
-  kills() { return []; }
-  draw() {
-    ctx.save();
-    ctx.fillStyle = "rgba(156, 39, 176, 0.12)";
-    ctx.fillRect(this.x, this.y, this.w, this.h);
-    ctx.strokeStyle = "#AB47BC";
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([6, 6]);
-    ctx.strokeRect(this.x, this.y, this.w, this.h);
-    ctx.restore();
-  }
-}
-
-class FakeCoin {
-  constructor(x, y, opts = {}) {
-    this.x = x; this.y = y; this.r = 14;
-    this.collected = false;
-    this.trap = opts.trap || null;
-  }
-  reset() { this.collected = false; }
-  update(dt, g) {
-    if (this.collected) return;
-    const p = g.player;
-    const dist = Math.hypot((p.x + p.w / 2) - this.x, (p.y + p.h / 2) - this.y);
-    if (dist < this.r + 16) {
-      this.collected = true;
-      AudioFX.bounce();
-      if (this.trap) {
-        this.trap.active = true;
-        this.trap.triggered = true;
-        AudioFX.slam();
-        g.shake(7, 0.25);
-      }
-    }
-  }
-  solids() { return []; }
-  kills() { return []; }
-  draw() {
-    if (this.collected) return;
-    ctx.save();
-    ctx.fillStyle = "#FFD700";
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = "#DAA520";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.fillStyle = "#B8860B";
-    ctx.font = "bold 12px sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("⯁", this.x, this.y);
-    ctx.restore();
-  }
-}
-
-class DelayedSpikes {
-  constructor(x, y, w, opts = {}) {
-    this.x = x; this.y = y; this.w = w; this.h = 40;
-    this.delay = opts.delay ?? 0.32;
-    this.timer = 0;
-    this.state = "idle";
-  }
-  reset() { this.state = "idle"; this.timer = 0; }
-  update(dt, g) {
-    const p = g.player;
-    if (this.state === "idle") {
-      if (p.grounded && p.x + p.w > this.x && p.x < this.x + this.w && Math.abs((p.y + p.h) - this.y) < 8) {
-        this.state = "warning";
-        this.timer = this.delay;
-        AudioFX.rumble();
-      }
-    } else if (this.state === "warning") {
-      this.timer -= dt;
-      if (this.timer <= 0) {
-        this.state = "active";
-        AudioFX.slam();
-        g.shake(6, 0.2);
-      }
-    }
-  }
-  solids() { return []; }
-  kills() {
-    if (this.state === "active") {
-      return [R(this.x + 4, this.y - 32, this.w - 8, 36)];
-    }
-    return [];
-  }
-  draw() {
-    ctx.save();
-    if (this.state === "warning") {
-      ctx.fillStyle = "rgba(255, 87, 34, 0.45)";
-      ctx.fillRect(this.x, this.y - 8, this.w, 8);
-    } else if (this.state === "active") {
-      const n = Math.max(2, Math.round(this.w / 18)), sw = this.w / n;
-      for (let i = 0; i < n; i++) {
-        const cx = this.x + i * sw + sw / 2;
-        drawSpear(ctx, cx, this.y, "up", 36, sw);
-      }
-    }
-    ctx.restore();
-  }
-}
-
-class MemoryPlatform {
-  constructor(rect, opts = {}) {
-    this.rect = rect;
-    this.disappearOnLeave = opts.disappearOnLeave ?? true;
-    this.touched = false;
-    this.vanished = false;
-  }
-  reset() { this.touched = false; this.vanished = false; }
-  update(dt, g) {
-    const p = g.player;
-    const standing = p.grounded && aabb(R(p.x, p.y + p.h, p.w, 4), this.rect);
-    if (standing) {
-      this.touched = true;
-    } else if (this.touched && !standing && this.disappearOnLeave) {
-      this.vanished = true;
-      AudioFX.bounce();
-    }
-  }
-  solids() {
-    if (this.vanished) return [];
-    return [this.rect];
-  }
-  kills() { return []; }
-  draw() {
-    if (this.vanished) return;
-    ctx.save();
-    ctx.fillStyle = this.touched ? "#D84315" : "#5D4037";
-    roundRect(this.rect.x, this.rect.y, this.rect.w, this.rect.h, 6);
-    ctx.fill();
-    ctx.strokeStyle = "#3E2723";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.restore();
-  }
-}
-
 function makeTerrainUpAndDown(level, levelIndex) {
-  if (levelIndex === 29 || levelIndex === 30 || levelIndex === 59 || levelIndex >= 60 || level.w || level.handcrafted) {
+  if (levelIndex === 29 || levelIndex === 30 || levelIndex === 59 || level.w) {
     return level;
   }
 
@@ -4909,754 +4612,22 @@ function makeTerrainUpAndDown(level, levelIndex) {
   return level;
 }
 
-// ================================================================ MEMORY & SUBVERSION LEVELS (61 - 80)
-const MEMORY_LEVELS = [
-  // 61: MEMORIES CAN BETRAY YOU
-  {
-    name: "61: MEMORIES CAN BETRAY YOU",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 300), floorSeg(400, 960), wallL(), wallR(), roof()],
-      traps: [
-        new MemoryPlatform(R(300, 480, 100, 20), { disappearOnLeave: true }),
-        new PopSpikes(400, 480, 60, R(350, 350, 30, 150), { delay: 0.38 }),
-        new FallBlock(R(600, 34, 70, 40), R(550, 200, 60, 200), { floorY: 540 }),
-        new Note(200, 420, "Remember Level 1? Don't trust this floor!"),
-      ],
-    }),
-  },
-  // 62: THE FAKE CHECKPOINT
-  {
-    name: "62: THE FAKE CHECKPOINT",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new FakeCheckpoint(450, 432),
-        new PopSpikes(430, 480, 80, R(400, 300, 40, 150), { delay: 0.1 }),
-        new Saw([{ x: 650, y: 454 }, { x: 780, y: 454 }], { r: 18, speed: 120 }),
-        new Note(380, 420, "Checkpoint! Or is it?"),
-      ],
-    }),
-  },
-  // 63: THE SUBVERTED SPRING
-  {
-    name: "63: THE SUBVERTED SPRING",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 350), floorSeg(650, 960), wallL(), wallR(), roof()],
-      traps: [
-        new ChiliSpring(300, 470, { vx: -350, vy: -450 }),
-        new StaticSpikes(350, 540, 300, { size: 32 }),
-        new MovingPlatform(R(400, 360, 120, 20), [{ x: 400, y: 360 }, { x: 550, y: 360 }], { speed: 90 }),
-        new Note(250, 420, "Spring into action!"),
-      ],
-    }),
-  },
-  // 64: LATE ACTIVATION SPIKES
-  {
-    name: "64: LATE ACTIVATION SPIKES",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new DelayedSpikes(250, 480, 140, { delay: 0.35 }),
-        new DelayedSpikes(500, 480, 140, { delay: 0.3 }),
-        new FallBlock(R(750, 34, 60, 40), R(700, 200, 50, 200), { floorY: 540 }),
-        new Note(200, 420, "Safe to stand... briefly."),
-      ],
-    }),
-  },
-  // 65: SAFE HAVEN IS A TRAP
-  {
-    name: "65: SAFE HAVEN IS A TRAP",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new PopSpikes(180, 480, 60, R(150, 300, 30, 150), { delay: 0.38 }),
-        new PopSpikes(650, 480, 60, R(620, 300, 30, 150), { delay: 0.38 }),
-        new ShiftingFloorBlock(380, 480, 180, 100, { targetY: 530, speed: 200 }),
-        new Saw([{ x: 470, y: 150 }, { x: 470, y: 420 }], { r: 22, speed: 180 }),
-        new Note(420, 420, "Rest zone!"),
-      ],
-    }),
-  },
-  // 66: REVERSING GRAVITY HALLWAY
-  {
-    name: "66: REVERSING GRAVITY HALLWAY",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new GravityFlipZone(300, 100, 300, 380),
-        new StaticSpikes(320, 30, 260, { size: 28, dir: "down" }),
-        new Saw([{ x: 450, y: 240 }, { x: 450, y: 380 }], { r: 18, speed: 100 }),
-        new Note(240, 420, "Mind your head!"),
-      ],
-    }),
-  },
-  // 67: THE FAKE COIN VAULT
-  {
-    name: "67: THE FAKE COIN VAULT",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new FakeCoin(300, 440, { trap: new Crusher(R(270, 34, 70, 50), R(250, 300, 40, 150), { speedDown: 500, floorY: 480 }) }),
-        new FakeCoin(550, 440, { trap: new PopSpikes(520, 480, 80, R(500, 300, 30, 150), { delay: 0.38 }) }),
-        new Note(220, 420, "Free gold coins!"),
-      ],
-    }),
-  },
-  // 68: VANISHING MEMORY STEPS
-  {
-    name: "68: VANISHING MEMORY STEPS",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 196 }]),
-      solids: [floorSeg(0, 200), floorSeg(800, 960), R(800, 260, 160, 20), wallL(), wallR(), roof()],
-      traps: [
-        new MemoryPlatform(R(250, 420, 90, 16)),
-        new MemoryPlatform(R(390, 360, 90, 16)),
-        new MemoryPlatform(R(530, 300, 90, 16)),
-        new MemoryPlatform(R(670, 240, 90, 16)),
-        new StaticSpikes(200, 540, 600, { size: 32 }),
-        new Note(120, 400, "Don't look back!"),
-      ],
-    }),
-  },
-  // 69: THE DOOR WAS A LIE
-  {
-    name: "69: THE DOOR WAS A LIE",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new FakeDoor(700, 416),
-        new PopSpikes(680, 480, 80, R(650, 300, 30, 150), { delay: 0.38 }),
-        new Saw([{ x: 400, y: 454 }, { x: 600, y: 454 }], { r: 18, speed: 110 }),
-        new Note(640, 390, "Exit right here!"),
-      ],
-    }),
-  },
-  // 70: AXUM MEMORY MAZE
-  {
-    name: "70: AXUM MEMORY MAZE",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 156 }]),
-      solids: [
-        floorSeg(0, 960),
-        R(200, 380, 560, 20),
-        R(200, 260, 560, 20),
-        R(780, 220, 180, 20),
-        wallL(), wallR(), roof()
-      ],
-      traps: [
-        new DelayedSpikes(300, 380, 100, { delay: 0.25 }),
-        new DelayedSpikes(500, 260, 100, { delay: 0.25 }),
-        new Saw([{ x: 350, y: 354 }, { x: 650, y: 354 }], { r: 16, speed: 130 }),
-        new Note(100, 420, "Ascend the Stela!"),
-      ],
-    }),
-  },
-  // 71: DISAPPEARING BRIDGE
-  {
-    name: "71: DISAPPEARING BRIDGE",
-    build: () => ({
-      handcrafted: true,
-      w: 1600,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 1500, y: 416 }]),
-      solids: [floorSeg(0, 250), floorSeg(1400, 1600), wallL(), wallR(1600), roof(30, 1600)],
-      traps: [
-        new CrumblePlatform(R(250, 480, 120, 20), { delay: 0.2 }),
-        new CrumblePlatform(R(400, 480, 120, 20), { delay: 0.2 }),
-        new CrumblePlatform(R(550, 480, 120, 20), { delay: 0.2 }),
-        new CrumblePlatform(R(700, 480, 120, 20), { delay: 0.2 }),
-        new CrumblePlatform(R(850, 480, 120, 20), { delay: 0.2 }),
-        new CrumblePlatform(R(1000, 480, 120, 20), { delay: 0.2 }),
-        new CrumblePlatform(R(1150, 480, 120, 20), { delay: 0.2 }),
-        new CrumblePlatform(R(1300, 480, 100, 20), { delay: 0.2 }),
-        new StaticSpikes(250, 540, 1150, { size: 32 }),
-        new Note(100, 420, "Keep running! Don't stop!"),
-      ],
-    }),
-  },
-  // 72: THE SHIFTING EXIT
-  {
-    name: "72: THE SHIFTING EXIT",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door(
-        [{ x: 880, y: 416 }, { x: 500, y: 416 }, { x: 150, y: 416 }],
-        { fleeDist: 100 }
-      ),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new PopSpikes(450, 480, 70, R(400, 300, 30, 150), { delay: 0.38 }),
-        new PopSpikes(120, 480, 70, R(80, 300, 30, 150), { delay: 0.38 }),
-        new Saw([{ x: 300, y: 454 }, { x: 700, y: 454 }], { r: 18, speed: 120 }),
-        new Note(400, 420, "Catch the door!"),
-      ],
-    }),
-  },
-  // 73: GRAVITY FLIP DANCE
-  {
-    name: "73: GRAVITY FLIP DANCE",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new GravityFlipZone(250, 50, 200, 430),
-        new GravityFlipZone(550, 50, 200, 430),
-        new StaticSpikes(260, 30, 180, { size: 28, dir: "down" }),
-        new StaticSpikes(560, 480, 180, { size: 28, dir: "up" }),
-        new Note(150, 420, "Up is down, down is up!"),
-      ],
-    }),
-  },
-  // 74: THE SECRET TUNNEL
-  {
-    name: "74: THE SECRET TUNNEL",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [
-        floorSeg(0, 200),
-        floorSeg(800, 960),
-        R(200, 360, 600, 20),
-        wallL(), wallR(), roof()
-      ],
-      traps: [
-        new StaticSpikes(200, 540, 600, { size: 32 }),
-        new Saw([{ x: 250, y: 334 }, { x: 750, y: 334 }], { r: 20, speed: 150 }),
-        new CrumblePlatform(R(350, 360, 100, 20), { delay: 0.15 }),
-        new CrumblePlatform(R(550, 360, 100, 20), { delay: 0.15 }),
-        new Note(100, 400, "Look closely below!"),
-      ],
-    }),
-  },
-  // 75: LALIBELA SUBVERSION
-  {
-    name: "75: LALIBELA SUBVERSION",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 196 }]),
-      solids: [floorSeg(0, 960), R(800, 260, 160, 20), wallL(), wallR(), roof()],
-      traps: [
-        new Crusher(R(300, 34, 80, 50), R(280, 200, 40, 200), { speedDown: 450, floorY: 480 }),
-        new Crusher(R(550, 34, 80, 50), R(530, 200, 40, 200), { speedDown: 450, floorY: 480 }),
-        new Spring(200, 470, { vy: -650 }),
-        new Note(120, 420, "Heavy stones ahead!"),
-      ],
-    }),
-  },
-  // 76: THE TRAP CHAIN REACTION
-  {
-    name: "76: THE TRAP CHAIN REACTION",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new Button(300, 472, {
-          onPress: (g) => {
-            AudioFX.slam();
-            g.shake(8, 0.3);
-          }
-        }),
-        new PopSpikes(400, 480, 70, R(280, 300, 40, 150), { delay: 0.38 }),
-        new FallBlock(R(550, 34, 70, 40), R(280, 300, 40, 150), { floorY: 540 }),
-        new Saw([{ x: 650, y: 454 }, { x: 800, y: 454 }], { r: 18, speed: 140 }),
-        new Note(220, 420, "Press button to unlock door... or not."),
-      ],
-    }),
-  },
-  // 77: REVERSE CONTROLS GAUNTLET
-  {
-    name: "77: REVERSE CONTROLS GAUNTLET",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new InvertZone(300, 100, 350, 380),
-        new Saw([{ x: 400, y: 454 }, { x: 550, y: 454 }], { r: 18, speed: 100 }),
-        new StaticSpikes(450, 480, 60, { size: 28 }),
-        new Note(240, 420, "Left is Right!"),
-      ],
-    }),
-  },
-  // 78: THE DECOY FINISH
-  {
-    name: "78: THE DECOY FINISH",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new FakeDoor(480, 416),
-        new PopSpikes(460, 480, 70, R(440, 300, 30, 150), { delay: 0.38 }),
-        new JebenaBounce(300, 450),
-        new Note(420, 390, "Door #1"),
-        new Note(820, 390, "Door #2"),
-      ],
-    }),
-  },
-  // 79: HARAR NIGHTMARE
-  {
-    name: "79: HARAR NIGHTMARE",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new Laser({ x: 300, y: 50 }, { x: 300, y: 480 }, { period: 2.2, activeDuration: 1.1 }),
-        new Laser({ x: 600, y: 50 }, { x: 600, y: 480 }, { period: 2.2, activeDuration: 1.1, offset: 1.1 }),
-        new DelayedSpikes(400, 480, 120, { delay: 0.3 }),
-        new Note(180, 420, "Dodge the lasers!"),
-      ],
-    }),
-  },
-  // 80: THE MEMORY CHAMPION
-  {
-    name: "80: THE MEMORY CHAMPION",
-    build: () => ({
-      handcrafted: true,
-      w: 2000,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 1900, y: 416 }]),
-      solids: [
-        floorSeg(0, 350), floorSeg(500, 1000), floorSeg(1200, 2000),
-        wallL(), wallR(2000), roof(30, 2000)
-      ],
-      traps: [
-        new FakeCheckpoint(300, 432),
-        new MemoryPlatform(R(350, 480, 150, 20)),
-        new GravityFlipZone(600, 50, 300, 430),
-        new Saw([{ x: 700, y: 200 }, { x: 850, y: 200 }], { r: 20, speed: 120 }),
-        new DelayedSpikes(1350, 480, 150, { delay: 0.28 }),
-        new Saw([{ x: 1600, y: 454 }, { x: 1800, y: 454 }], { r: 22, speed: 140 }),
-        new Note(100, 400, "MEMORY GAUNTLET CLEAR!"),
-      ],
-    }),
-  },
-];
-
-// ================================================================ ULTIMATE MASTERY LEVELS (81 - 100)
-const ULTIMATE_LEVELS = [
-  // 81: THE ULTIMATE IGNITION
-  {
-    name: "81: THE ULTIMATE IGNITION",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new MitmitaPepperDash(200, 440),
-        new FireBrazier(380, 480, 60),
-        new Saw([{ x: 500, y: 440 }, { x: 750, y: 440 }], { r: 22, speed: 160 }),
-        new Note(120, 420, "Grab the pepper and DASH!"),
-      ],
-    }),
-  },
-  // 82: CHASING VINES & LASER STORM
-  {
-    name: "82: CHASING VINES & LASER STORM",
-    build: () => ({
-      handcrafted: true,
-      w: 1800,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 1700, y: 416 }]),
-      solids: [floorSeg(0, 1800), wallL(), wallR(1800), roof(30, 1800)],
-      traps: [
-        new ChasingThornVines(200, 1600, { y: 480, maxH: 90, waveSpeed: 210 }),
-        new Laser({ x: 600, y: 30 }, { x: 600, y: 480 }, { period: 2.0, activeDuration: 1.0 }),
-        new Laser({ x: 1100, y: 30 }, { x: 1100, y: 480 }, { period: 2.0, activeDuration: 1.0, offset: 1.0 }),
-        new Note(100, 420, "Vines behind! Lasers ahead!"),
-      ],
-    }),
-  },
-  // 83: THE DUAL TURRET MATRIX
-  {
-    name: "83: THE DUAL TURRET MATRIX",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new Turret(250, 430, -1, { interval: 1.6, bulletSpeed: 220 }),
-        new Turret(700, 430, 1, { interval: 1.6, bulletSpeed: 220 }),
-        new BlinkPlatform(R(400, 360, 120, 20), { interval: 1.4 }),
-        new Note(200, 400, "Dodge bullets mid-air!"),
-      ],
-    }),
-  },
-  // 84: THE CRUMBLING SKYWAY
-  {
-    name: "84: THE CRUMBLING SKYWAY",
-    build: () => ({
-      handcrafted: true,
-      w: 1800,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 1700, y: 416 }]),
-      solids: [floorSeg(0, 250), floorSeg(1600, 1800), wallL(), wallR(1800), roof(30, 1800)],
-      traps: [
-        new CrumblePlatform(R(300, 420, 100, 18), { delay: 0.2 }),
-        new CrumblePlatform(R(500, 380, 100, 18), { delay: 0.2 }),
-        new CrumblePlatform(R(700, 340, 100, 18), { delay: 0.2 }),
-        new CrumblePlatform(R(900, 380, 100, 18), { delay: 0.2 }),
-        new CrumblePlatform(R(1100, 420, 100, 18), { delay: 0.2 }),
-        new CrumblePlatform(R(1350, 440, 120, 18), { delay: 0.2 }),
-        new StaticSpikes(250, 540, 1350, { size: 36 }),
-        new Note(100, 400, "Skyway traversal!"),
-      ],
-    }),
-  },
-  // 85: JEBENA BOUNCE MADNESS
-  {
-    name: "85: JEBENA BOUNCE MADNESS",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 196 }]),
-      solids: [floorSeg(0, 200), floorSeg(800, 960), R(800, 260, 160, 20), wallL(), wallR(), roof()],
-      traps: [
-        new JebenaBounce(250, 450, { boostVY: -680 }),
-        new JebenaBounce(500, 450, { boostVY: -680 }),
-        new Saw([{ x: 350, y: 250 }, { x: 650, y: 250 }], { r: 22, speed: 140 }),
-        new StaticSpikes(200, 540, 600, { size: 32 }),
-        new Note(100, 400, "Bounce high!"),
-      ],
-    }),
-  },
-  // 86: SLIDING HOLES & CEILING CRUSHERS
-  {
-    name: "86: SLIDING HOLES & CEILING CRUSHERS",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new SlidingHole(300, 600, { holeW: 100, speed: 80 }),
-        new Crusher(R(450, 34, 80, 50), R(430, 200, 40, 200), { speedDown: 480, floorY: 480 }),
-        new Note(180, 420, "Watch your step and your head!"),
-      ],
-    }),
-  },
-  // 87: THE PEPPER DASH GAUNTLET
-  {
-    name: "87: THE PEPPER DASH GAUNTLET",
-    build: () => ({
-      handcrafted: true,
-      w: 2200,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 2100, y: 416 }]),
-      solids: [floorSeg(0, 2200), wallL(), wallR(2200), roof(30, 2200)],
-      traps: [
-        new MitmitaPepperDash(200, 440),
-        new PopSpikes(500, 480, 120, R(400, 300, 40, 150), { delay: 0.38 }),
-        new PopSpikes(1000, 480, 120, R(900, 300, 40, 150), { delay: 0.38 }),
-        new PopSpikes(1500, 480, 120, R(1400, 300, 40, 150), { delay: 0.38 }),
-        new Note(100, 420, "SUPER PEPPER DASH!"),
-      ],
-    }),
-  },
-  // 88: PENDULUM & BRAZIER HARMONY
-  {
-    name: "88: PENDULUM & BRAZIER HARMONY",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new Pendulum(350, 60, 240, { maxAngle: 0.8, speed: 2.2 }),
-        new Pendulum(600, 60, 240, { maxAngle: 0.8, speed: 2.2, phase: Math.PI }),
-        new FireBrazier(475, 480, 60),
-        new Note(180, 420, "Time the swing!"),
-      ],
-    }),
-  },
-  // 89: THE SHIFTING CASTLE OF GONDAR
-  {
-    name: "89: THE SHIFTING CASTLE OF GONDAR",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 196 }]),
-      solids: [floorSeg(0, 200), floorSeg(800, 960), R(800, 260, 160, 20), wallL(), wallR(), roof()],
-      traps: [
-        new ShiftingFloorBlock(250, 480, 120, 100, { targetY: 420, speed: 90 }),
-        new ShiftingFloorBlock(450, 480, 120, 100, { targetY: 360, speed: 90 }),
-        new ShiftingFloorBlock(650, 480, 120, 100, { targetY: 300, speed: 90 }),
-        new StaticSpikes(200, 540, 600, { size: 32 }),
-        new Note(100, 400, "Castle of Gondar awaits!"),
-      ],
-    }),
-  },
-  // 90: THE FAKE EXIT GAUNTLET
-  {
-    name: "90: THE FAKE EXIT GAUNTLET",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new FakeDoor(300, 416),
-        new FakeDoor(550, 416),
-        new Saw([{ x: 250, y: 454 }, { x: 600, y: 454 }], { r: 18, speed: 130 }),
-        new PopSpikes(530, 480, 70, R(500, 300, 30, 150), { delay: 0.38 }),
-        new Note(400, 390, "Which door is real?"),
-      ],
-    }),
-  },
-  // 91: THE GRAVITY LASER GAUNTLET
-  {
-    name: "91: THE GRAVITY LASER GAUNTLET",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new GravityFlipZone(300, 50, 350, 430),
-        new Laser({ x: 475, y: 50 }, { x: 475, y: 480 }, { period: 1.8, activeDuration: 0.9 }),
-        new Note(180, 420, "Inverted laser dodging!"),
-      ],
-    }),
-  },
-  // 92: THE RUNWAY SPIKE STORM
-  {
-    name: "92: THE RUNWAY SPIKE STORM",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new RunwaySpikes(250, 700, 480, { count: 3, speed: 180 }),
-        new MovingPlatform(R(350, 360, 120, 20), [{ x: 350, y: 360 }, { x: 600, y: 360 }], { speed: 100 }),
-        new Note(180, 420, "Spikes on the runway!"),
-      ],
-    }),
-  },
-  // 93: THE INJERA BRIDGE MARATHON
-  {
-    name: "93: THE INJERA BRIDGE MARATHON",
-    build: () => ({
-      handcrafted: true,
-      w: 2400,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 2300, y: 416 }]),
-      solids: [floorSeg(0, 200), floorSeg(2200, 2400), wallL(), wallR(2400), roof(30, 2400)],
-      traps: [
-        new InjeraBridge(200, 2000, 480, { speed: 85 }),
-        new StaticSpikes(200, 540, 2000, { size: 36 }),
-        new PopSpikes(800, 480, 80, R(700, 300, 40, 150), { delay: 0.38 }),
-        new PopSpikes(1500, 480, 80, R(1400, 300, 40, 150), { delay: 0.38 }),
-        new Note(100, 420, "The 2400px Injera Bridge!"),
-      ],
-    }),
-  },
-  // 94: THE TELEPORT PUZZLE
-  {
-    name: "94: THE TELEPORT PUZZLE",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [
-        floorSeg(0, 300), floorSeg(700, 960), R(350, 320, 250, 20),
-        wallL(), wallR(), roof()
-      ],
-      traps: [
-        new Teleporter(250, 430, 450, 270),
-        new Teleporter(550, 270, 750, 430),
-        new StaticSpikes(300, 540, 400, { size: 32 }),
-        new Note(120, 400, "Teleport across the abyss!"),
-      ],
-    }),
-  },
-  // 95: THE TRIPLE SAW SYMPHONY
-  {
-    name: "95: THE TRIPLE SAW SYMPHONY",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 960), wallL(), wallR(), roof()],
-      traps: [
-        new Saw([{ x: 250, y: 454 }, { x: 450, y: 454 }], { r: 20, speed: 130 }),
-        new Saw([{ x: 450, y: 454 }, { x: 650, y: 454 }], { r: 20, speed: 130, tOffset: 0.5 }),
-        new Saw([{ x: 650, y: 454 }, { x: 850, y: 454 }], { r: 20, speed: 130, tOffset: 1.0 }),
-        new Note(180, 420, "Triple Spiked Wheel Symphony!"),
-      ],
-    }),
-  },
-  // 96: THE BURNING CHASM
-  {
-    name: "96: THE BURNING CHASM",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [floorSeg(0, 200), floorSeg(800, 960), wallL(), wallR(), roof()],
-      traps: [
-        new FireBrazier(250, 480, 70),
-        new FireBrazier(400, 480, 70),
-        new FireBrazier(550, 480, 70),
-        new FireBrazier(700, 480, 70),
-        new BlinkPlatform(R(300, 360, 100, 20), { interval: 1.2 }),
-        new BlinkPlatform(R(600, 360, 100, 20), { interval: 1.2, offset: 0.6 }),
-        new Note(100, 400, "Step only on the blinking platforms!"),
-      ],
-    }),
-  },
-  // 97: THE ULTIMATE MEMORY PUZZLE
-  {
-    name: "97: THE ULTIMATE MEMORY PUZZLE",
-    build: () => ({
-      handcrafted: true,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 880, y: 416 }]),
-      solids: [
-        floorSeg(0, 960),
-        R(400, 300, 20, 180),
-        wallL(), wallR(), roof()
-      ],
-      traps: [
-        new Button(200, 472, {
-          onPress: (g) => {
-            AudioFX.slam();
-            g.shake(6, 0.2);
-          }
-        }),
-        new MemoryPlatform(R(250, 400, 100, 20)),
-        new DelayedSpikes(500, 480, 140, { delay: 0.28 }),
-        new Note(100, 420, "Button unlocks path!"),
-      ],
-    }),
-  },
-  // 98: THE SPEEDRUNNER'S DELIGHT
-  {
-    name: "98: THE SPEEDRUNNER'S DELIGHT",
-    build: () => ({
-      handcrafted: true,
-      w: 2400,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 2300, y: 416 }]),
-      solids: [floorSeg(0, 2400), wallL(), wallR(2400), roof(30, 2400)],
-      traps: [
-        new Conveyor(R(200, 480, 400, 60), 1, { speed: 220 }),
-        new MitmitaPepperDash(650, 440),
-        new Spring(1000, 470, { vy: -650, vx: 300 }),
-        new Conveyor(R(1200, 480, 500, 60), 1, { speed: 260 }),
-        new Saw([{ x: 1800, y: 440 }, { x: 2100, y: 440 }], { r: 24, speed: 180 }),
-        new Note(100, 420, "MAXIMUM SPEED!"),
-      ],
-    }),
-  },
-  // 99: THE DEVIL'S PENULTIMATE TRIAL
-  {
-    name: "99: THE DEVIL'S PENULTIMATE TRIAL",
-    build: () => ({
-      handcrafted: true,
-      w: 2600,
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 2500, y: 416 }]),
-      solids: [
-        floorSeg(0, 400), floorSeg(700, 1300), floorSeg(1600, 2600),
-        wallL(), wallR(2600), roof(30, 2600)
-      ],
-      traps: [
-        new ChasingThornVines(200, 2400, { y: 480, maxH: 90, waveSpeed: 200 }),
-        new FallBlock(R(500, 34, 80, 40), R(450, 200, 60, 200), { floorY: 540 }),
-        new Crusher(R(900, 34, 80, 50), R(850, 200, 40, 200), { speedDown: 480, floorY: 480 }),
-        new GravityFlipZone(1400, 50, 300, 430),
-        new Saw([{ x: 1800, y: 440 }, { x: 2300, y: 440 }], { r: 24, speed: 170 }),
-        new Note(100, 400, "PENULTIMATE TRIAL - ONE MORE TO GO!"),
-      ],
-    }),
-  },
-  // 100: THE FINAL ETHIOPIAN LEGEND
-  {
-    name: "100: THE FINAL ETHIOPIAN LEGEND",
-    build: () => ({
-      handcrafted: true,
-      w: 3200,
-      spawn: { x: 60, y: 440 },
-      door: new Door(
-        [{ x: 3100, y: 416 }, { x: 2000, y: 416 }, { x: 3100, y: 416 }],
-        { fleeDist: 110 }
-      ),
-      solids: [
-        floorSeg(0, 600),
-        floorSeg(800, 1500),
-        floorSeg(1700, 2500),
-        floorSeg(2700, 3200),
-        R(1100, 320, 200, 20),
-        R(2100, 300, 200, 20),
-        wallL(), wallR(3200), roof(30, 3200)
-      ],
-      traps: [
-        new MitmitaPepperDash(200, 440),
-        new PopSpikes(400, 480, 100, R(300, 300, 40, 150), { delay: 0.38 }),
-        new Saw([{ x: 900, y: 454 }, { x: 1300, y: 454 }], { r: 22, speed: 160 }),
-        new GravityFlipZone(1800, 50, 400, 430),
-        new ChasingThornVines(2200, 3000, { y: 480, maxH: 100, waveSpeed: 210 }),
-        new JebenaBounce(2600, 450, { boostVY: -720 }),
-        new DelayedSpikes(2850, 480, 150, { delay: 0.25 }),
-        new Note(100, 400, "Welcome to the 3200px Finale! 🎉"),
-        new Note(1500, 400, "Halfway there! Keep going! 🇪🇹"),
-        new Note(3000, 400, "VICTORY AWAITS! 👑"),
-      ],
-    }),
-  },
-];
-
-// One continuous campaign: 100 levels total!
-const KARYA_LEVELS = [...LEVELS, ...MITMITA_LEVELS, ...MEMORY_LEVELS, ...ULTIMATE_LEVELS];
+// One continuous campaign: the original 30-level journey flows directly into
+// the 30-level Mitmita challenge set for a complete 60-level progression.
+const KARYA_LEVELS = [...LEVELS, ...MITMITA_LEVELS];
 
 const LEVEL_PACKS = {
   karya: {
     id: "karya",
-    name: "ETHIO LEVEL DEVIL",
+    name: "ETHIO DEVIL",
     icon: "🇪🇹",
     levels: KARYA_LEVELS,
+  },
+  mitmita: {
+    id: "mitmita",
+    name: "ሚጥሚጣ",
+    icon: "🌶️",
+    levels: MITMITA_LEVELS,
   },
 };
 
@@ -5665,7 +4636,7 @@ let currentPackId = "karya";
 function addCampaignSurprises(level, levelIndex) {
   level.traps = level.traps || [];
 
-  if (levelIndex === 29 || levelIndex === 30 || levelIndex === 59 || levelIndex >= 60 || level.w || level.handcrafted) {
+  if (levelIndex === 29) {
     return level;
   }
 
@@ -5781,16 +4752,16 @@ function addCampaignSurprises(level, levelIndex) {
 }
 
 const DEATH_LINES = [
-  "አይ ወንድሜ!", "እረ ተጠንቀቅ!", "እንዴ... ይሄንም አልጠበቅክም?", "እንደገና ሞክር!", "ቀጥል!", "ጎበዝ!",
-  "በጣም ጥሩ!", "ይሄ ገና መጀመሪያ ነው!", "አልተሳካም!", "ሌላ አንድ ሙከራ!", "አይዞህ!", "አሁን ገባህ!",
-  "ይሄ ቀላል አይደለም!", "በጥንቃቄ!", "እሺ... አሁን ገባህ!", "ቃርያ ይስቃል!", "እረ አትቸኩል!"
+  "OUCH.", "LOL.", "SKILL ISSUE.", "SO CLOSE.", "AGAIN?", "PERFECTLY PLANNED.",
+  "YOU FELL FOR IT.", "ቃርያ LAUGHS.", "CLASSIC.", "WHO PUT THAT THERE?",
+  "OOPS.", "TRY WALKING SLOWER.", "THAT ONE'S ON YOU.", "HE-HE.", "NICE ONE.",
 ];
 const ROASTS = [
-  [0, "በጣም ድንቅ! አንድም አልሞቱም!"],
-  [25, "ጥሩ ነው! ጎበዝ ተጫዋች!"],
-  [75, "ቃርያ በእያንዳንዱ ሞትዎ ተደስቷል!"],
-  [150, "በቀስታ መራመድ ይሻላል!"],
-  [9999, "ወለሉ አሁን በደንብ ያውቅዎታል!"],
+  [0, "wait... flawless?!"],
+  [25, "pretty respectable, honestly."],
+  [75, "ቃርያ enjoyed every single one."],
+  [150, "have you considered walking?"],
+  [9999, "the floor knows you personally now."],
 ];
 
 // ================================================================ ETHIOPIAN BACKGROUNDS (5 Themes per Level)
@@ -5885,116 +4856,12 @@ function drawFlyingBird(x, y, scale = 1, opacity = 0.65) {
   ctx.restore();
 }
 
-function drawTukulHut(x, y, scale = 1, opacity = 0.85) {
-  if (!ctx) return;
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(scale, scale);
-  ctx.globalAlpha = opacity;
-  // Round mud wall
-  ctx.fillStyle = "rgba(75, 45, 25, 0.9)";
-  ctx.fillRect(-18, -25, 36, 25);
-  // Arch doorway
-  ctx.fillStyle = "rgba(20, 10, 5, 0.95)";
-  ctx.beginPath();
-  ctx.arc(0, 0, 7, Math.PI, 0, false);
-  ctx.fillRect(-7, -12, 14, 12);
-  ctx.fill();
-  // Straw thatched roof cone
-  ctx.fillStyle = "rgba(180, 130, 50, 0.95)";
-  ctx.beginPath();
-  ctx.moveTo(0, -50);
-  ctx.lineTo(-26, -24);
-  ctx.lineTo(26, -24);
-  ctx.closePath();
-  ctx.fill();
-  // Straw texture lines
-  ctx.strokeStyle = "rgba(120, 80, 20, 0.6)";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(0, -50); ctx.lineTo(-15, -24);
-  ctx.moveTo(0, -50); ctx.lineTo(0, -24);
-  ctx.moveTo(0, -50); ctx.lineTo(15, -24);
-  ctx.stroke();
-  ctx.restore();
-}
-
-function drawJebenaBg(x, y, scale = 1, opacity = 0.85) {
-  if (!ctx) return;
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(scale, scale);
-  ctx.globalAlpha = opacity;
-  // Base straw ring
-  ctx.fillStyle = "rgba(160, 120, 40, 0.9)";
-  ctx.fillRect(-12, -4, 24, 4);
-  // Clay belly
-  ctx.fillStyle = "rgba(45, 20, 10, 0.95)";
-  ctx.beginPath();
-  ctx.arc(0, -18, 14, 0, Math.PI * 2);
-  ctx.fill();
-  // Neck
-  ctx.fillRect(-4, -36, 8, 18);
-  // Spout
-  ctx.beginPath();
-  ctx.moveTo(4, -28); ctx.lineTo(14, -34); ctx.lineTo(12, -26);
-  ctx.closePath();
-  ctx.fill();
-  // Handle
-  ctx.strokeStyle = "rgba(45, 20, 10, 0.95)";
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.arc(-8, -26, 8, Math.PI * 0.5, Math.PI * 1.5, false);
-  ctx.stroke();
-  // Rising steam
-  const now = Date.now() * 0.003;
-  ctx.strokeStyle = "rgba(255, 240, 210, 0.4)";
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(0, -36);
-  ctx.quadraticCurveTo(Math.sin(now) * 6, -48, Math.cos(now) * 4, -60);
-  ctx.stroke();
-  ctx.restore();
-}
-
-function drawCoffeePlantBg(x, y, scale = 1, opacity = 0.85) {
-  if (!ctx) return;
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(scale, scale);
-  ctx.globalAlpha = opacity;
-  // Stem
-  ctx.strokeStyle = "rgba(50, 30, 15, 0.9)";
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(0, 0); ctx.quadraticCurveTo(4, -15, 0, -30);
-  ctx.stroke();
-  // Leaves
-  ctx.fillStyle = "rgba(20, 80, 40, 0.9)";
-  const leaves = [[-12, -15, -0.4], [12, -20, 0.4], [-14, -28, -0.6], [14, -32, 0.6]];
-  for (const [lx, ly, rot] of leaves) {
-    ctx.save();
-    ctx.translate(lx, ly);
-    ctx.rotate(rot);
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 10, 4, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-  // Red coffee cherries
-  ctx.fillStyle = "#D32F2F";
-  ctx.beginPath(); ctx.arc(-4, -18, 3, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(4, -22, 3, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(0, -30, 3.5, 0, Math.PI * 2); ctx.fill();
-  ctx.restore();
-}
-
 function drawGeneratedEthiopianBackground(levelIdx = 0) {
   // Always return false to use the beautifully stylized, non-realistic 2D vector/pixel-art game backgrounds
   return false;
 }
 
-function drawEthiopianBackground(levelIdx = 0, camX = 0) {
+function drawEthiopianBackground(levelIdx = 0) {
   if (!ensureCanvas() || !ctx) return;
   ctx.save();
 
@@ -6003,20 +4870,21 @@ function drawEthiopianBackground(levelIdx = 0, camX = 0) {
     return;
   }
 
-  const themeIdx = Math.abs(levelIdx) % 8;
-  const atmosphereIdx = Math.floor(Math.abs(levelIdx) / 8) % 6;
-  const pCam = camX * 0.25;
+  const themeIdx = Math.abs(levelIdx) % 5;
+  const atmosphereIdx = Math.floor(Math.abs(levelIdx) / 5) % 6;
 
   if (themeIdx === 0) {
     // ---------------- THEME 0: SIMIEN MOUNTAINS & AMBAS (Golden Savanna Sunset)
+    // Multilayer Sky Gradient
     const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-    bgGrad.addColorStop(0, "#E25A2F");
-    bgGrad.addColorStop(0.4, "#F0AA4C");
-    bgGrad.addColorStop(0.8, "#FED682");
+    bgGrad.addColorStop(0, "#E25A2F"); // Deep orange-red at top
+    bgGrad.addColorStop(0.4, "#F0AA4C"); // Golden yellow mid-sky
+    bgGrad.addColorStop(0.8, "#FED682"); // Pale sunset near horizon
     bgGrad.addColorStop(1, "#EBB760");
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, W, H);
 
+    // Glowing Sun Disc (Radial Gradient)
     const sunX = W * 0.55;
     const sunY = 160;
     const sunGrad = ctx.createRadialGradient(sunX, sunY, 5, sunX, sunY, 180);
@@ -6028,232 +4896,601 @@ function drawEthiopianBackground(levelIdx = 0, camX = 0) {
     ctx.fillStyle = sunGrad;
     ctx.beginPath(); ctx.arc(sunX, sunY, 180, 0, Math.PI * 2); ctx.fill();
 
+    // High Altitude Wispy Clouds
     drawAtmosphericCloud(160, 80, 120, 10, 0.2);
     drawAtmosphericCloud(720, 110, 150, 12, 0.15);
+    drawAtmosphericCloud(400, 60, 90, 8, 0.1);
 
-    ctx.save();
-    ctx.translate(-pCam * 0.5, 0);
+    // Layer 1: Extremely Distant Mountains (Warm purple-pink haze)
     ctx.fillStyle = "rgba(125, 68, 55, 0.2)";
     ctx.beginPath();
-    ctx.moveTo(0, H - 40); ctx.lineTo(0, 280); ctx.lineTo(120, 260);
-    ctx.lineTo(180, 210); ctx.lineTo(310, 210); ctx.lineTo(360, 270);
-    ctx.lineTo(520, 250); ctx.lineTo(580, 190); ctx.lineTo(720, 190);
-    ctx.lineTo(780, 260); ctx.lineTo(W + 600, 230); ctx.lineTo(W + 600, H - 40);
-    ctx.closePath(); ctx.fill();
+    ctx.moveTo(0, H - 40);
+    ctx.lineTo(0, 280);
+    ctx.lineTo(120, 260);
+    ctx.lineTo(180, 210); // Far Amba 1
+    ctx.lineTo(310, 210);
+    ctx.lineTo(360, 270);
+    ctx.lineTo(520, 250);
+    ctx.lineTo(580, 190); // Far Amba 2
+    ctx.lineTo(720, 190);
+    ctx.lineTo(780, 260);
+    ctx.lineTo(W, 230);
+    ctx.lineTo(W, H - 40);
+    ctx.closePath();
+    ctx.fill();
 
+    // Layer 2: Simien Table Mountains / Ambas (Middle range)
     ctx.fillStyle = "rgba(132, 69, 31, 0.38)";
     ctx.beginPath();
-    ctx.moveTo(0, H - 40); ctx.lineTo(0, 340); ctx.lineTo(80, 300);
-    ctx.lineTo(140, 230); ctx.lineTo(240, 230); ctx.lineTo(280, 290);
-    ctx.lineTo(390, 260); ctx.lineTo(460, 200); ctx.lineTo(520, 280);
-    ctx.lineTo(590, 205); ctx.lineTo(710, 205); ctx.lineTo(760, 275);
-    ctx.lineTo(860, 245); ctx.lineTo(W + 600, 290); ctx.lineTo(W + 600, H - 40);
-    ctx.closePath(); ctx.fill();
-    ctx.restore();
+    ctx.moveTo(0, H - 40);
+    ctx.lineTo(0, 340);
+    ctx.lineTo(80, 300);
+    ctx.lineTo(140, 230); // Amba Peak
+    ctx.lineTo(240, 230); // Flat-topped summit
+    ctx.lineTo(280, 290);
+    ctx.lineTo(390, 260);
+    ctx.lineTo(460, 200); // Sharp jagged peak
+    ctx.lineTo(520, 280);
+    ctx.lineTo(590, 205); // Second large Amba
+    ctx.lineTo(710, 205);
+    ctx.lineTo(760, 275);
+    ctx.lineTo(860, 245);
+    ctx.lineTo(W, 290);
+    ctx.lineTo(W, H - 40);
+    ctx.closePath();
+    ctx.fill();
 
-    ctx.save();
-    ctx.translate(-pCam, 0);
+    // Layer 3: Foreground Cliffs & Ridges (Deeper brown-orange silhouettes)
+    ctx.fillStyle = "rgba(85, 41, 16, 0.32)";
+    ctx.beginPath();
+    ctx.moveTo(0, H - 20);
+    ctx.lineTo(0, 400);
+    ctx.lineTo(150, 340);
+    ctx.lineTo(320, 410);
+    ctx.lineTo(480, 350);
+    ctx.lineTo(620, 390);
+    ctx.lineTo(780, 320);
+    ctx.lineTo(W, 360);
+    ctx.lineTo(W, H - 20);
+    ctx.closePath();
+    ctx.fill();
+
+    // Acacia Tortilis Savanna Trees scattered on foreground ridges
     drawAcaciaTree(80, 400, 0.85);
+    drawAcaciaTree(130, 355, 0.55);
     drawAcaciaTree(490, 362, 0.65);
+    drawAcaciaTree(760, 332, 0.7);
     drawAcaciaTree(810, 336, 0.5);
+
+    // Gelada Baboon Family Silhouettes sitting on cliff edge
+    ctx.fillStyle = "rgba(62, 28, 10, 0.75)";
+    // Parent Baboon
+    ctx.beginPath(); ctx.arc(146, 334, 5, 0, Math.PI * 2); ctx.fill(); // Head
+    ctx.beginPath(); ctx.arc(143, 341, 8, 0, Math.PI * 2); ctx.fill(); // Body
+    ctx.fillRect(138, 341, 3, 8); // Back limb
+    // Child Baboon
+    ctx.beginPath(); ctx.arc(155, 336, 3.2, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(153, 341, 5, 0, Math.PI * 2); ctx.fill();
+
+    // Flying Eagles/Hawks soaring on thermals
     drawFlyingBird(120, 140, 1.2);
+    drawFlyingBird(180, 110, 0.8);
     drawFlyingBird(640, 90, 1.5);
-    ctx.restore();
+    drawFlyingBird(690, 115, 0.9);
 
   } else if (themeIdx === 1) {
     // ---------------- THEME 1: AXUM ANCIENT KINGDOM (Starlit Dawn Aurora)
+    // Celestial cosmic purple-blue gradient sky
     const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-    bgGrad.addColorStop(0, "#0B0616");
-    bgGrad.addColorStop(0.4, "#24133A");
-    bgGrad.addColorStop(0.8, "#51295D");
-    bgGrad.addColorStop(1, "#7D4367");
+    bgGrad.addColorStop(0, "#0B0616"); // Extremely dark violet at zenith
+    bgGrad.addColorStop(0.4, "#24133A"); // Deep royal grape purple
+    bgGrad.addColorStop(0.8, "#51295D"); // Nebula purple
+    bgGrad.addColorStop(1, "#7D4367"); // Soft warm horizon glow
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, W, H);
 
+    // Stars of varying sizes & glowing nebulae
+    // Background cosmic dust nebula
+    const nebGrad = ctx.createRadialGradient(W * 0.7, 120, 10, W * 0.7, 120, 200);
+    nebGrad.addColorStop(0, "rgba(220, 50, 180, 0.08)");
+    nebGrad.addColorStop(0.5, "rgba(100, 50, 200, 0.04)");
+    nebGrad.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = nebGrad;
+    ctx.beginPath(); ctx.arc(W * 0.7, 120, 200, 0, Math.PI * 2); ctx.fill();
+
+    // Twinkling stars
     ctx.fillStyle = "rgba(255, 245, 220, 0.85)";
-    const stars = [[90, 45, 1.8], [230, 30, 2.3], [420, 40, 2.0], [680, 35, 1.7], [890, 45, 1.9]];
+    const stars = [
+      [90, 45, 1.8], [140, 75, 1.2], [230, 30, 2.3], [280, 110, 1.0], [350, 60, 1.5],
+      [420, 40, 2.0], [490, 95, 1.3], [540, 50, 2.5], [620, 115, 1.1], [680, 35, 1.7],
+      [730, 80, 2.2], [810, 100, 1.4], [890, 45, 1.9], [930, 70, 2.1], [50, 120, 1.3]
+    ];
     for (const [sx, sy, sz] of stars) {
       ctx.beginPath(); ctx.arc(sx, sy, sz * 0.9, 0, Math.PI * 2); ctx.fill();
     }
 
-    ctx.save();
-    ctx.translate(-pCam * 0.5, 0);
+    // A beautiful shooting star with tail
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(400, 40);
+    ctx.lineTo(330, 85);
+    ctx.stroke();
+    // Head glow
+    ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+    ctx.beginPath(); ctx.arc(330, 85, 1.5, 0, Math.PI * 2); ctx.fill();
+
+    // Glowing Crescent Moon
+    const moonX = 180;
+    const moonY = 100;
+    // Faint full-disc phantom glow
+    ctx.fillStyle = "rgba(255, 235, 190, 0.05)";
+    ctx.beginPath(); ctx.arc(moonX, moonY, 26, 0, Math.PI * 2); ctx.fill();
+    // Active bright silver crescent
+    ctx.fillStyle = "rgba(255, 240, 200, 0.88)";
+    ctx.beginPath(); ctx.arc(moonX, moonY, 24, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#24133A"; // Mask color matches middle sky
+    ctx.beginPath(); ctx.arc(moonX + 8, moonY - 4, 22, 0, Math.PI * 2); ctx.fill();
+
+    // Distant mountain outline to anchor steles
     ctx.fillStyle = "rgba(42, 22, 48, 0.38)";
     ctx.beginPath();
-    ctx.moveTo(0, H - 40); ctx.lineTo(0, 390); ctx.lineTo(250, 320);
-    ctx.lineTo(500, 380); ctx.lineTo(750, 340); ctx.lineTo(W + 600, 395);
-    ctx.lineTo(W + 600, H - 40); ctx.closePath(); ctx.fill();
-    ctx.restore();
+    ctx.moveTo(0, H - 40);
+    ctx.lineTo(0, 390);
+    ctx.lineTo(250, 320);
+    ctx.lineTo(500, 380);
+    ctx.lineTo(750, 340);
+    ctx.lineTo(W, 395);
+    ctx.lineTo(W, H - 40);
+    ctx.closePath();
+    ctx.fill();
 
-    ctx.save();
-    ctx.translate(-pCam, 0);
+    // Stele 1: The Great Stele of Axum (Extremely Detailed Silhouette)
     const ax1X = 280, ax1Y = 460, ax1W = 38, ax1H = 220;
     ctx.fillStyle = "rgba(32, 17, 36, 0.75)";
     ctx.beginPath();
     ctx.moveTo(ax1X, ax1Y);
     ctx.lineTo(ax1X + 3, ax1Y - ax1H + 30);
+    // Tapering up to the classic semi-circular crown (Medri-Gabr)
     ctx.lineTo(ax1X + 5, ax1Y - ax1H);
     ctx.arc(ax1X + ax1W / 2, ax1Y - ax1H, ax1W / 2 - 5, Math.PI, 0, false);
     ctx.lineTo(ax1X + ax1W - 5, ax1Y - ax1H);
     ctx.lineTo(ax1X + ax1W - 3, ax1Y - ax1H + 30);
-    ctx.lineTo(ax1X + ax1W, ax1Y); ctx.closePath(); ctx.fill();
+    ctx.lineTo(ax1X + ax1W, ax1Y);
+    ctx.closePath();
+    ctx.fill();
+
+    // Carved details (multi-story decorative window grids)
+    ctx.fillStyle = "rgba(255, 225, 170, 0.22)";
+    ctx.strokeStyle = "rgba(10, 5, 12, 0.6)";
+    ctx.lineWidth = 1.2;
+    for (let story = 0; story < 8; story++) {
+      const wy = ax1Y - 32 - story * 24;
+      // Window frame rect
+      ctx.fillRect(ax1X + 8, wy, ax1W - 16, 12);
+      ctx.strokeRect(ax1X + 8, wy, ax1W - 16, 12);
+      // Center dividing beam
+      ctx.beginPath();
+      ctx.moveTo(ax1X + ax1W / 2, wy);
+      ctx.lineTo(ax1X + ax1W / 2, wy + 12);
+      ctx.stroke();
+    }
+    // Base Doorway Arch Carving
+    ctx.fillStyle = "rgba(12, 6, 15, 0.9)";
+    ctx.beginPath();
+    ctx.arc(ax1X + ax1W / 2, ax1Y, 7, Math.PI, 0, false);
+    ctx.fill();
+
+    // Stele 2 (Smaller, slightly offset in background distance)
+    const ax2X = 680, ax2Y = 460, ax2W = 28, ax2H = 160;
+    ctx.fillStyle = "rgba(22, 11, 25, 0.65)";
+    ctx.beginPath();
+    ctx.moveTo(ax2X, ax2Y);
+    ctx.lineTo(ax2X + 2, ax2Y - ax2H);
+    ctx.arc(ax2X + ax2W / 2, ax2Y - ax2H, ax2W / 2 - 2, Math.PI, 0, false);
+    ctx.lineTo(ax2X + ax2W - 2, ax2Y - ax2H);
+    ctx.lineTo(ax2X + ax2W, ax2Y);
+    ctx.closePath();
+    ctx.fill();
+    // Stele 2 carved bands
+    ctx.fillStyle = "rgba(255, 225, 170, 0.14)";
+    for (let story = 0; story < 5; story++) {
+      ctx.fillRect(ax2X + 6, ax2Y - 28 - story * 26, ax2W - 12, 9);
+    }
+
+    // framing ancient acacia tree silhouettes on the borders of the view
     drawAcaciaTree(80, 420, 1.15, 0.7);
     drawAcaciaTree(860, 430, 0.95, 0.7);
-    ctx.restore();
 
   } else if (themeIdx === 2) {
     // ---------------- THEME 2: LALIBELA ROCK-HEWN CHURCHES (Terracotta Red Earth)
+    // Red earth / dust dawn sky gradient
     const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-    bgGrad.addColorStop(0, "#4C1C0D");
-    bgGrad.addColorStop(0.5, "#803E24");
-    bgGrad.addColorStop(0.9, "#BC6843");
+    bgGrad.addColorStop(0, "#4C1C0D"); // Dark baked earth red
+    bgGrad.addColorStop(0.5, "#803E24"); // Rich terracotta orange
+    bgGrad.addColorStop(0.9, "#BC6843"); // Dusty pink-brown
     bgGrad.addColorStop(1, "#9E4F2F");
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, W, H);
 
-    ctx.save();
-    ctx.translate(-pCam * 0.5, 0);
+    // Warm Morning Sun with heavy atmospheric dust diffusion
+    const sunX = 720;
+    const sunY = 140;
+    const sunGrad = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, 130);
+    sunGrad.addColorStop(0, "rgba(255, 230, 170, 0.45)");
+    sunGrad.addColorStop(0.4, "rgba(235, 150, 90, 0.22)");
+    sunGrad.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = sunGrad;
+    ctx.beginPath(); ctx.arc(sunX, sunY, 130, 0, Math.PI * 2); ctx.fill();
+
+    // High clouds catching morning orange light
+    drawAtmosphericCloud(220, 90, 130, 12, 0.12);
+    drawAtmosphericCloud(620, 110, 100, 9, 0.1);
+
+    // Layer of distant rocky excavation pits & canyons
     ctx.fillStyle = "rgba(76, 28, 13, 0.32)";
     ctx.beginPath();
-    ctx.moveTo(0, H - 40); ctx.lineTo(0, 360);
-    ctx.quadraticCurveTo(150, 380, 300, 350); ctx.lineTo(520, 290);
-    ctx.lineTo(640, 360); ctx.lineTo(W + 600, 370); ctx.lineTo(W + 600, H - 40);
-    ctx.closePath(); ctx.fill();
-    ctx.restore();
+    ctx.moveTo(0, H - 40);
+    ctx.lineTo(0, 360);
+    ctx.quadraticCurveTo(150, 380, 300, 350);
+    ctx.lineTo(400, 350);
+    ctx.lineTo(520, 290); // Distant church roof peaks
+    ctx.lineTo(640, 360);
+    ctx.quadraticCurveTo(780, 330, W, 370);
+    ctx.lineTo(W, H - 40);
+    ctx.closePath();
+    ctx.fill();
 
-    ctx.save();
-    ctx.translate(-pCam, 0);
+    // Excavated Pit Rim Walls (gives the "Rock-Hewn" subterranean feel!)
+    ctx.fillStyle = "rgba(50, 18, 8, 0.55)";
+    ctx.beginPath();
+    ctx.moveTo(0, H - 20);
+    ctx.lineTo(0, 395);
+    ctx.lineTo(180, 410);
+    ctx.lineTo(260, 420); // Dropping into the Lalibela trench
+    ctx.lineTo(700, 420); // Trench bottom
+    ctx.lineTo(780, 400); // Back up to canyon edge
+    ctx.lineTo(W, 390);
+    ctx.lineTo(W, H - 20);
+    ctx.closePath();
+    ctx.fill();
+
+    // THE MONOLITHIC CROSS CHURCH: Bete Giyorgis (Church of St. George) Standing in the pit!
+    // Highly detailed silhouette showing three-dimensional tiered roof cross relief
     const lalX = 480, lalY = 460;
+    // Main church block body
     ctx.fillStyle = "rgba(42, 14, 6, 0.88)";
     ctx.fillRect(lalX - 55, lalY - 145, 110, 145);
+
+    // Roof details: Three tiered steps mimicking the famous cross-within-cross shape
+    // Step 1: Broad roof trim
     ctx.fillStyle = "rgba(62, 22, 10, 0.95)";
     ctx.fillRect(lalX - 60, lalY - 148, 120, 6);
+    // Step 2: Mid roof tier
     ctx.fillRect(lalX - 44, lalY - 156, 88, 8);
+    // Step 3: Top small cross tier
     ctx.fillRect(lalX - 22, lalY - 162, 44, 6);
+
+    // Embossed Cross on Roof (viewed slightly from above-front)
+    ctx.fillStyle = "rgba(235, 170, 120, 0.15)";
+    const arm = 14;
+    ctx.fillRect(lalX - arm / 2, lalY - 145, arm, 110);
+    ctx.fillRect(lalX - 45, lalY - 105, 90, arm);
+
+    // Detailed Arched Keyhole Windows (Axumite style double-arch)
+    ctx.fillStyle = "rgba(15, 5, 2, 0.95)";
+    for (let col = -1; col <= 1; col++) {
+      if (col === 0) continue; // Leaves space for vertical cross facade columns
+      const wx = lalX + col * 32 - 7;
+      for (let floor = 0; floor < 3; floor++) {
+        const wy = lalY - 32 - floor * 36;
+        // Window opening
+        ctx.beginPath();
+        ctx.arc(wx + 7, wy, 7, Math.PI, 0, false);
+        ctx.fillRect(wx, wy, 14, 16);
+        ctx.fill();
+        // Carved window cross relief detail inside
+        ctx.strokeStyle = "rgba(235, 170, 120, 0.28)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(wx + 7, wy - 5);
+        ctx.lineTo(wx + 7, wy + 16);
+        ctx.moveTo(wx, wy + 5);
+        ctx.lineTo(wx + 14, wy + 5);
+        ctx.stroke();
+      }
+    }
+
+    // Massive arched entrance doorway
+    ctx.fillStyle = "rgba(10, 2, 0, 0.98)";
+    ctx.beginPath();
+    ctx.arc(lalX, lalY, 14, Math.PI, 0, false);
+    ctx.fillRect(lalX - 14, lalY, 28, 18);
+    ctx.fill();
+
+    // Sparse, windblown dry acacia shrubbery around Lalibela pits
     drawAcaciaTree(140, 415, 0.45, 0.85);
-    ctx.restore();
+    drawAcaciaTree(820, 395, 0.55, 0.85);
+
+    // Eagles circling above St. George
+    drawFlyingBird(460, 120, 1.1);
+    drawFlyingBird(520, 150, 0.8);
 
   } else if (themeIdx === 3) {
     // ---------------- THEME 3: GONDAR FASIL GHEBBI CASTLE (Royal Twilight Blue)
+    // Deep royal indigo night sky
     const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-    bgGrad.addColorStop(0, "#080B13");
-    bgGrad.addColorStop(0.5, "#141D2D");
-    bgGrad.addColorStop(0.9, "#283B55");
+    bgGrad.addColorStop(0, "#080B13"); // Velvet black-blue
+    bgGrad.addColorStop(0.5, "#141D2D"); // Royal night blue
+    bgGrad.addColorStop(0.9, "#283B55"); // Soft horizon navy
     bgGrad.addColorStop(1, "#3E5777");
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, W, H);
 
-    const moonX = 260, moonY = 130;
+    // Glowing Silvery Full Moon
+    const moonX = 260;
+    const moonY = 130;
+    // Large ambient misty moon glow
+    const moonGlow = ctx.createRadialGradient(moonX, moonY, 10, moonX, moonY, 110);
+    moonGlow.addColorStop(0, "rgba(235, 245, 255, 0.35)");
+    moonGlow.addColorStop(0.3, "rgba(200, 220, 255, 0.15)");
+    moonGlow.addColorStop(0.7, "rgba(100, 140, 220, 0.05)");
+    moonGlow.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = moonGlow;
+    ctx.beginPath(); ctx.arc(moonX, moonY, 110, 0, Math.PI * 2); ctx.fill();
+
+    // Solid Silver Moon Disc with faint crater painting
     ctx.fillStyle = "#EAF2FA";
     ctx.beginPath(); ctx.arc(moonX, moonY, 36, 0, Math.PI * 2); ctx.fill();
+    // Soft organic gray crater textures
+    ctx.fillStyle = "#CEDCEB";
+    const craters = [[-12, -10, 6], [14, 8, 8], [-6, 16, 5], [12, -14, 4], [-20, 4, 3]];
+    for (const [cx_off, cy_off, cr] of craters) {
+      ctx.beginPath();
+      ctx.arc(moonX + cx_off, moonY + cy_off, cr, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
-    ctx.save();
-    ctx.translate(-pCam, 0);
+    // Low, drifting, misty night clouds behind castle turrets
+    drawAtmosphericCloud(520, 200, 220, 15, 0.08);
+    drawAtmosphericCloud(800, 160, 140, 10, 0.06);
+
+    // Distant mountain ridge silhouette
+    ctx.fillStyle = "rgba(12, 19, 32, 0.45)";
+    ctx.beginPath();
+    ctx.moveTo(0, H - 40);
+    ctx.lineTo(0, 380);
+    ctx.lineTo(300, 340);
+    ctx.lineTo(600, 375);
+    ctx.lineTo(820, 350);
+    ctx.lineTo(W, 390);
+    ctx.lineTo(W, H - 40);
+    ctx.closePath();
+    ctx.fill();
+
+    // GONDAR CASTLE: Fasilides' Castle Keep & Turrets (Extremely detailed silhouette)
     const casX = 520, casY = 460;
+    // Foundation fortress wall
     ctx.fillStyle = "rgba(8, 14, 24, 0.82)";
     ctx.fillRect(casX - 80, casY - 30, 280, 30);
+
+    // Main Central Square Keep Castle
     ctx.fillRect(casX, casY - 140, 120, 110);
+
+    // Crenellations (battlements) along the central block roof
+    ctx.fillStyle = "rgba(8, 14, 24, 0.82)";
+    const battlementW = 10;
+    const battlementH = 8;
+    for (let c = 0; c < 7; c++) {
+      ctx.fillRect(casX + 4 + c * 17, casY - 148, battlementW, battlementH);
+    }
+
+    // Left Circular Corner Turret with egg-shaped cupola dome
+    const turretLeftX = casX - 30;
+    const turretLeftY = casY - 150;
+    ctx.fillRect(turretLeftX, turretLeftY, 30, 120);
+    // Circular dome top
+    ctx.beginPath();
+    ctx.arc(turretLeftX + 15, turretLeftY, 15, Math.PI, 0, false);
+    ctx.fill();
+    // Wooden spire & flagpole
+    ctx.strokeStyle = "rgba(8, 14, 24, 0.82)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(turretLeftX + 15, turretLeftY - 15);
+    ctx.lineTo(turretLeftX + 15, turretLeftY - 32);
+    ctx.stroke();
+
+    // Right Circular Corner Turret (matching left)
+    const turretRightX = casX + 120;
+    const turretRightY = casY - 150;
+    ctx.fillRect(turretRightX, turretRightY, 30, 120);
+    ctx.beginPath();
+    ctx.arc(turretRightX + 15, turretRightY, 15, Math.PI, 0, false);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(turretRightX + 15, turretRightY - 15);
+    ctx.lineTo(turretRightX + 15, turretRightY - 32);
+    ctx.stroke();
+
+    // Central watchtower (second tier)
+    const midX = casX + 30;
+    const midY = casY - 170;
+    ctx.fillRect(midX, midY, 60, 30);
+    for (let c = 0; c < 4; c++) {
+      ctx.fillRect(midX + 2 + c * 15, midY - 6, 7, 6);
+    }
+
+    // Windows with actual glowing golden light radiating from inside!
+    // Creates a magnificent, cozy royal night vibe.
     ctx.fillStyle = "#FED100";
+    ctx.shadowColor = "#FED100";
+    // 2 Arched windows on the main castle block
+    const winY1 = casY - 100;
     ctx.beginPath();
-    ctx.arc(casX + 35, casY - 100, 6, Math.PI, 0, false);
-    ctx.fillRect(casX + 29, casY - 100, 12, 14);
+    ctx.arc(casX + 35, winY1, 6, Math.PI, 0, false);
+    ctx.fillRect(casX + 29, winY1, 12, 14);
+    ctx.arc(casX + 85, winY1, 6, Math.PI, 0, false);
+    ctx.fillRect(casX + 79, winY1, 12, 14);
+    // 1 Arched window on the left and right turret
+    ctx.arc(turretLeftX + 15, turretLeftY + 40, 4, Math.PI, 0, false);
+    ctx.fillRect(turretLeftX + 11, turretLeftY + 40, 8, 10);
+    ctx.arc(turretRightX + 15, turretRightY + 40, 4, Math.PI, 0, false);
+    ctx.fillRect(turretRightX + 11, turretRightY + 40, 8, 10);
     ctx.fill();
+
+    // Reset shadow parameters immediately to prevent gameplay canvas leakage
+    ctx.shadowColor = "transparent";
+    ctx.shadowBlur = 0;
+
+    // Faint brickwork textures on Gondar castle walls
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(casX + 15, casY - 70, 18, 8);
+    ctx.strokeRect(casX + 75, casY - 50, 22, 8);
+    ctx.strokeRect(turretLeftX + 6, turretLeftY + 70, 14, 6);
+
+    // Old growth Acacia trees framing the castle grounds
     drawAcaciaTree(110, 410, 0.75, 0.65);
-    ctx.restore();
-
-  } else if (themeIdx === 4) {
-    // ---------------- THEME 4: HARAR JUGOL & LAKE TANA (Oasis Emerald Sunset)
-    const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-    bgGrad.addColorStop(0, "#072023");
-    bgGrad.addColorStop(0.4, "#133E3B");
-    bgGrad.addColorStop(0.8, "#2F7C73");
-    bgGrad.addColorStop(1, "#549E93");
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, W, H);
-
-    ctx.save();
-    ctx.translate(-pCam, 0);
-    const waterY = 410, waterH = 50;
-    ctx.fillStyle = "rgba(10, 36, 32, 0.6)";
-    ctx.fillRect(0, waterY, W + 600, waterH);
-    const boatX = 350, boatY = waterY + 16;
-    ctx.fillStyle = "rgba(12, 34, 30, 0.9)";
-    ctx.beginPath();
-    ctx.moveTo(boatX - 35, boatY); ctx.quadraticCurveTo(boatX, boatY + 12, boatX + 35, boatY);
-    ctx.closePath(); ctx.fill();
-    ctx.restore();
-
-  } else if (themeIdx === 5) {
-    // ---------------- THEME 5: HARAR JUGOL ANCIENT WALLED CITY (Amber Sunset)
-    const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-    bgGrad.addColorStop(0, "#3E1E05");
-    bgGrad.addColorStop(0.5, "#7A3D0B");
-    bgGrad.addColorStop(0.9, "#C2701F");
-    bgGrad.addColorStop(1, "#E89B3D");
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, W, H);
-
-    ctx.save();
-    ctx.translate(-pCam, 0);
-    const gateX = 400, gateY = 460;
-    ctx.fillStyle = "rgba(40, 20, 8, 0.85)";
-    ctx.fillRect(gateX, gateY - 110, 200, 110);
-    ctx.fillRect(gateX - 25, gateY - 135, 40, 135);
-    ctx.fillRect(gateX + 185, gateY - 135, 40, 135);
-    ctx.fillStyle = "rgba(15, 6, 2, 0.95)";
-    ctx.beginPath();
-    ctx.arc(gateX + 100, gateY - 25, 35, Math.PI, 0, false);
-    ctx.fillRect(gateX + 65, gateY - 25, 70, 25);
-    ctx.fill();
-    drawAcaciaTree(120, 420, 0.8, 0.7);
-    ctx.restore();
-
-  } else if (themeIdx === 6) {
-    // ---------------- THEME 6: BUNA COFFEE FARM & TUKUL VILLAGE (Dawn Gold)
-    const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-    bgGrad.addColorStop(0, "#1F2B14");
-    bgGrad.addColorStop(0.4, "#455C26");
-    bgGrad.addColorStop(0.8, "#8DA348");
-    bgGrad.addColorStop(1, "#CBD681");
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, W, H);
-
-    ctx.save();
-    ctx.translate(-pCam, 0);
-    drawTukulHut(220, 460, 1.2, 0.9);
-    drawTukulHut(680, 460, 1.0, 0.85);
-    drawJebenaBg(320, 460, 1.1, 0.9);
-    drawCoffeePlantBg(120, 460, 1.3, 0.9);
-    drawCoffeePlantBg(480, 460, 1.1, 0.85);
-    drawCoffeePlantBg(800, 460, 1.2, 0.85);
-    ctx.restore();
+    drawAcaciaTree(860, 415, 0.8, 0.65);
 
   } else {
-    // ---------------- THEME 7: BALE MOUNTAINS & SACRED MONASTERY (Emerald Mist)
+    // ---------------- THEME 4: HARAR JUGOL & LAKE TANA (Oasis Emerald Sunset)
+    // Deep emerald lagoon Sunset
     const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-    bgGrad.addColorStop(0, "#0A1D1A");
-    bgGrad.addColorStop(0.4, "#173E36");
-    bgGrad.addColorStop(0.8, "#326E61");
-    bgGrad.addColorStop(1, "#5FA394");
+    bgGrad.addColorStop(0, "#072023"); // Deep emerald shadow
+    bgGrad.addColorStop(0.4, "#133E3B"); // Rich tropical sea-green
+    bgGrad.addColorStop(0.8, "#2F7C73"); // Glowing aqua emerald
+    bgGrad.addColorStop(1, "#549E93"); // Bright pale horizon turquoise
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, W, H);
 
-    ctx.save();
-    ctx.translate(-pCam * 0.5, 0);
-    ctx.fillStyle = "rgba(10, 35, 30, 0.4)";
-    ctx.beginPath();
-    ctx.moveTo(0, H - 40); ctx.lineTo(0, 320); ctx.lineTo(200, 250);
-    ctx.lineTo(450, 310); ctx.lineTo(700, 230); ctx.lineTo(W + 600, 340);
-    ctx.lineTo(W + 600, H - 40); ctx.closePath(); ctx.fill();
-    ctx.restore();
+    // Crimson-Orange Sun sinking into Lake Tana
+    const sunX = W * 0.35;
+    const sunY = 150;
+    const sunGrad = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, 110);
+    sunGrad.addColorStop(0, "#FFE599");
+    sunGrad.addColorStop(0.2, "#FF9966");
+    sunGrad.addColorStop(0.5, "rgba(225, 50, 50, 0.32)");
+    sunGrad.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = sunGrad;
+    ctx.beginPath(); ctx.arc(sunX, sunY, 110, 0, Math.PI * 2); ctx.fill();
 
-    ctx.save();
-    ctx.translate(-pCam, 0);
-    drawTukulHut(180, 460, 1.1, 0.85);
-    drawFlyingBird(350, 120, 1.4);
-    drawFlyingBird(420, 150, 1.0);
-    drawAcaciaTree(760, 420, 1.0, 0.75);
-    ctx.restore();
+    // Clouds reflecting the teal sunset
+    drawAtmosphericCloud(140, 110, 120, 10, 0.1);
+    drawAtmosphericCloud(760, 90, 160, 14, 0.12);
+
+    // Lake Tana Water horizon (subtle reflections and wave glimmers)
+    const waterY = 410;
+    const waterH = 50;
+    const waterGrad = ctx.createLinearGradient(0, waterY, 0, waterY + waterH);
+    waterGrad.addColorStop(0, "rgba(10, 36, 32, 0.6)");
+    waterGrad.addColorStop(0.6, "rgba(16, 54, 48, 0.45)");
+    waterGrad.addColorStop(1, "rgba(35, 88, 78, 0.2)");
+    ctx.fillStyle = waterGrad;
+    ctx.fillRect(0, waterY, W, waterH);
+
+    // Golden sun reflection ripples in the water
+    ctx.fillStyle = "rgba(255, 230, 150, 0.22)";
+    const rippleRows = [
+      [sunX - 60, waterY + 6, 120, 2],
+      [sunX - 45, waterY + 14, 90, 2],
+      [sunX - 80, waterY + 22, 160, 1.8],
+      [sunX - 30, waterY + 30, 60, 1.5],
+      [sunX - 55, waterY + 38, 110, 1.5],
+      [sunX - 20, waterY + 44, 40, 1.2]
+    ];
+    for (const [rx, ry, rw, rh] of rippleRows) {
+      ctx.beginPath();
+      ctx.ellipse(rx + rw / 2, ry, rw / 2, rh, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Classic papyrus Tankwa boat silhouetted on Lake Tana
+    const boatX = sunX + 80;
+    const boatY = waterY + 16;
+    ctx.fillStyle = "rgba(12, 34, 30, 0.9)";
+    ctx.beginPath();
+    // Distinctive organic upward curved papyrus bow and stern
+    ctx.moveTo(boatX - 35, boatY);
+    ctx.quadraticCurveTo(boatX, boatY + 12, boatX + 35, boatY);
+    ctx.quadraticCurveTo(boatX + 44, boatY - 14, boatX + 48, boatY - 18); // Bow curve
+    ctx.quadraticCurveTo(boatX + 25, boatY + 6, boatX - 25, boatY + 6);
+    ctx.quadraticCurveTo(boatX - 42, boatY - 8, boatX - 46, boatY - 12); // Stern curve
+    ctx.closePath();
+    ctx.fill();
+
+    // Tankwa Fisherman Silhouette holding paddle
+    ctx.beginPath();
+    ctx.arc(boatX - 4, boatY - 11, 3.5, 0, Math.PI * 2); // Head
+    ctx.fill();
+    ctx.fillRect(boatX - 6, boatY - 7, 5, 10); // Torso
+    // Paddle line crossing water
+    ctx.strokeStyle = "rgba(12, 34, 30, 0.9)";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(boatX - 12, boatY - 15);
+    ctx.lineTo(boatX + 2, boatY + 14);
+    ctx.stroke();
+
+    // Ancient stone Harar Wall Gate Silhouette
+    const gateX = 640, gateY = 460;
+    ctx.fillStyle = "rgba(12, 34, 30, 0.85)";
+    // Wall structure
+    ctx.fillRect(gateX, gateY - 100, 180, 100);
+    // Left Watchtower column
+    ctx.fillRect(gateX - 20, gateY - 120, 36, 120);
+    // Right Watchtower column
+    ctx.fillRect(gateX + 164, gateY - 120, 36, 120);
+
+    // Crenellations along Harar Gate Wall
+    for (let c = 0; c < 6; c++) {
+      ctx.fillRect(gateX + 10 + c * 28, gateY - 110, 16, 10);
+    }
+
+    // Majestic Archway Opening
+    ctx.fillStyle = "rgba(6, 18, 15, 0.98)";
+    ctx.beginPath();
+    ctx.arc(gateX + 90, gateY - 20, 32, Math.PI, 0, false);
+    ctx.fillRect(gateX + 58, gateY - 20, 64, 20);
+    ctx.fill();
+
+    // Exotic Tropical Palm Tree Silhouettes flanking the Lake oasis
+    const drawPalmTree = (px, py, hScale = 1) => {
+      ctx.save();
+      ctx.translate(px, py);
+      ctx.scale(hScale, hScale);
+      ctx.fillStyle = "rgba(12, 34, 30, 0.95)";
+      
+      // Slanted textured trunk
+      ctx.beginPath();
+      ctx.moveTo(-3, 0);
+      ctx.quadraticCurveTo(8, -40, 12, -80);
+      ctx.lineTo(16, -80);
+      ctx.quadraticCurveTo(12, -40, 3, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      // Curved tropical palm fronds branching out from head
+      ctx.strokeStyle = "rgba(12, 34, 30, 0.95)";
+      ctx.lineWidth = 3;
+      const fronds = [
+        [-15, -15, -28, -25], [-24, -4, -36, -8], [-12, 10, -22, 14],
+        [15, -15, 28, -25], [24, -4, 36, -8], [12, 10, 22, 14],
+        [0, -20, 0, -32]
+      ];
+      for (const f of fronds) {
+        ctx.beginPath();
+        ctx.moveTo(14, -80);
+        ctx.quadraticCurveTo(14 + f[0], -80 + f[1], 14 + f[2], -80 + f[3]);
+        ctx.stroke();
+      }
+      ctx.restore();
+    };
+    drawPalmTree(140, 415, 0.9);
+    drawPalmTree(180, 415, 0.65);
+    drawPalmTree(860, 420, 1.15);
+
   }
 
   // Common Horizon Floor Base (Gently blended shadow under elements)
@@ -6382,7 +5619,7 @@ const Game = {
     stains = [];
     particles.length = 0;
     setElText("hud-levelname", def.name);
-    setElText("hud-levelnum", `ደረጃ ${i + 1} / ${pack.levels.length}`);
+    setElText("hud-levelnum", `${pack.name} - ${i + 1}`);
   },
 
   spawnPlayer() {
@@ -6601,7 +5838,7 @@ const Game = {
     this.camX = camX;
 
     // Render Ethiopian cultural and historical background varying per level
-    drawEthiopianBackground(this.levelIndex || 0, camX);
+    drawEthiopianBackground(this.levelIndex || 0);
 
     ctx.save();
     if (this.shakeAmt > 0) {
@@ -6701,7 +5938,7 @@ const Game = {
       ctx.font = `900 52px ${FONT}`;
       ctx.textAlign = "center";
       const pack = LEVEL_PACKS[currentPackId] || LEVEL_PACKS.karya;
-      ctx.fillText(this.levelIndex + 1 >= pack.levels.length ? "አሸነፉ!" : "በጣም ጥሩ! ቀጣይ...", W / 2, H / 2 - 40);
+      ctx.fillText(this.levelIndex + 1 >= pack.levels.length ? "አሸነፍክ!" : "FINE. NEXT.", W / 2, H / 2 - 40);
       ctx.globalAlpha = 1;
     }
 
@@ -7167,7 +6404,7 @@ function updateDeathHud() {
 
 function updatePauseMenuStats() {
   const pack = LEVEL_PACKS[currentPackId] || LEVEL_PACKS.karya;
-  setElText("pause-level-info", `${pack.name} · ደረጃ ${Game.levelIndex + 1}: ${Game.level ? Game.level.name : ""}`);
+  setElText("pause-level-info", `${pack.name} · LEVEL ${Game.levelIndex + 1}: ${Game.level ? Game.level.name : ""}`);
   setElText("pause-geez-deaths", toGeezNumeral(Game.deaths || 0));
   setElText("pause-total-deaths", Game.deaths || 0);
 
@@ -7253,38 +6490,18 @@ function setFsIcon() {
   const el = document.getElementById("ic-fs");
   if (el) el.innerHTML = document.fullscreenElement ? FS_ON : FS_OFF;
 }
-function requestLandscapeOrientation() {
-  try {
-    if (screen.orientation && typeof screen.orientation.lock === "function") {
-      screen.orientation.lock("landscape").catch(() => {});
-    } else if (screen.lockOrientation) {
-      screen.lockOrientation("landscape");
-    }
-  } catch {}
-}
-
 function toggleFullscreen() {
   const d = document;
   const el = d.documentElement;
   try {
     if (!d.fullscreenElement) {
-      const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
-      if (req) {
-        req.call(el);
-        requestLandscapeOrientation();
-      }
+      (el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen)?.call(el);
     } else {
       (d.exitFullscreen || d.webkitExitFullscreen || d.msExitFullscreen)?.call(d);
     }
   } catch {}
 }
-document.addEventListener("fullscreenchange", () => {
-  setFsIcon();
-  if (document.fullscreenElement) {
-    requestLandscapeOrientation();
-  }
-  fit();
-});
+document.addEventListener("fullscreenchange", () => { setFsIcon(); fit(); });
 
 function wireTopbar() {
   const bchar = document.getElementById("btn-char");
@@ -7337,30 +6554,39 @@ function setTouchControlsVisible(v) {
 }
 
 function selectCategory(packId) {
-  if (!LEVEL_PACKS[packId]) packId = "karya";
   currentPackId = packId;
-  const pack = LEVEL_PACKS[packId];
+  const btnKarya = document.getElementById("cat-btn-karya");
+  const btnMitmita = document.getElementById("cat-btn-mitmita");
   const gridLabel = document.getElementById("grid-label");
   const playBtn = document.getElementById("play-btn");
 
-  document.querySelectorAll("[id^='cat-btn-'], .cat-btn").forEach((btn) => {
-    const p = btn.dataset.pack || btn.id.replace("cat-btn-", "");
-    btn.classList.toggle("active", p === packId);
-  });
+  if (btnKarya) btnKarya.classList.toggle("active", packId === "karya");
+  if (btnMitmita) btnMitmita.classList.toggle("active", packId === "mitmita");
 
-  if (gridLabel) gridLabel.textContent = `ቃርያ ኢትዮ ዴቪል (100 ደረጃዎች)`;
-  if (playBtn) playBtn.textContent = "ጉዞውን ጀምር";
+  const pack = LEVEL_PACKS[packId] || LEVEL_PACKS.karya;
+  if (gridLabel) gridLabel.textContent = `${pack.name} (${pack.levels.length} LEVELS)`;
+  if (playBtn) playBtn.textContent = "START JOURNEY";
 
   buildLevelGrid();
 }
 
 function wireCategorySelector() {
+  const btnKarya = document.getElementById("cat-btn-karya");
+  const btnMitmita = document.getElementById("cat-btn-mitmita");
+
+  if (btnKarya) btnKarya.onclick = (e) => { e.preventDefault(); selectCategory("karya"); };
+  if (btnMitmita) btnMitmita.onclick = (e) => { e.preventDefault(); selectCategory("mitmita"); };
+
+  // Delegated fallback listener for extra reliability across mounts
   document.addEventListener("click", (e) => {
-    const catBtn = e.target.closest("[id^='cat-btn-'], .cat-btn");
-    if (catBtn) {
+    const karyaBtn = e.target.closest("#cat-btn-karya, .cat-btn-karya");
+    const mitmitaBtn = e.target.closest("#cat-btn-mitmita, .cat-btn-mitmita");
+    if (karyaBtn) {
       e.preventDefault();
-      const packId = catBtn.dataset.pack || catBtn.id.replace("cat-btn-", "");
-      selectCategory(packId);
+      selectCategory("karya");
+    } else if (mitmitaBtn) {
+      e.preventDefault();
+      selectCategory("mitmita");
     }
   });
 }
@@ -7389,7 +6615,6 @@ function buildLevelGrid() {
 
 function startGame(i, packId = currentPackId) {
   AudioFX.init();
-  requestLandscapeOrientation();
   if (IS_TOUCH && !document.fullscreenElement) toggleFullscreen();
   document.getElementById("menu")?.classList.add("hidden");
   document.getElementById("pause-menu")?.classList.add("hidden");
@@ -7495,13 +6720,6 @@ function initGame() {
   loadProgress();
   updateDeathHud();
   selectCategory("karya");
-  const rotateOverlay = document.getElementById("rotate-overlay");
-  if (rotateOverlay) {
-    rotateOverlay.addEventListener("click", () => {
-      toggleFullscreen();
-      requestLandscapeOrientation();
-    });
-  }
   fit();
 }
 
