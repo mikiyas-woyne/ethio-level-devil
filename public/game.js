@@ -3299,11 +3299,7 @@ const LEVELS = [
         // Moving platform for a smooth, skill-based crossing
         new MovingPlatform(R(550, 360, 110, 16), { toX: 680, speed: 85, pause: 0.3 }),
         // Pop spikes near door platform requiring timed jump
-<<<<<<< HEAD
         new PopSpikes(830, 480, 60, R(760, 350, 20, 150), { delay: 0.38 }),
-=======
-        new PopSpikes(830, 480, 60, R(760, 350, 20, 150), { delay: 0.05 }),
->>>>>>> 6726158d6cdfcc85bc091aefe644321880286e47
         new Note(120, 430, "no trampolines, pure skill!"),
         new Note(450, 270, "watch out for the spiked wheels!"),
       ],
@@ -3368,11 +3364,7 @@ const MITMITA_LEVELS = [
         new Saw([{ x: 1500, y: 430 }, { x: 1500, y: 150 }], { r: 24, speed: 180 }),
         // Conveyor belt pushes player backward towards spikes
         new Conveyor(R(1420, 480, 280, 60), { dir: -1, force: 200 }),
-<<<<<<< HEAD
         new PopSpikes(1620, 480, 60, R(1520, 300, 20, 180), { delay: 0.38 }),
-=======
-        new PopSpikes(1620, 480, 60, R(1520, 300, 20, 180), { delay: 0.05 }),
->>>>>>> 6726158d6cdfcc85bc091aefe644321880286e47
 
         // --- SECTION 4 SURPRISES (x: 1800 - 2400) ---
         new Note(1900, 420, "ALMOST THERE... OR ARE YOU?"),
@@ -4767,11 +4759,7 @@ class MemoryPlatform {
 }
 
 function makeTerrainUpAndDown(level, levelIndex) {
-<<<<<<< HEAD
   if (levelIndex === 29 || levelIndex === 30 || levelIndex === 59 || levelIndex >= 60 || level.w || level.handcrafted) {
-=======
-  if (levelIndex === 29 || levelIndex === 30 || levelIndex === 59 || level.w) {
->>>>>>> 6726158d6cdfcc85bc091aefe644321880286e47
     return level;
   }
 
@@ -6611,17 +6599,10 @@ const Game = {
     const pX = this.player ? this.player.x + this.player.w / 2 : 0;
     const camX = clamp(pX - W / 2, 0, Math.max(0, levelW - W));
     this.camX = camX;
-<<<<<<< HEAD
 
     // Render Ethiopian cultural and historical background varying per level
     drawEthiopianBackground(this.levelIndex || 0, camX);
 
-=======
-
-    // Render Ethiopian cultural and historical background varying per level
-    drawEthiopianBackground(this.levelIndex || 0);
-
->>>>>>> 6726158d6cdfcc85bc091aefe644321880286e47
     ctx.save();
     if (this.shakeAmt > 0) {
       ctx.translate(rand(-this.shakeAmt, this.shakeAmt), rand(-this.shakeAmt, this.shakeAmt));
@@ -6720,11 +6701,7 @@ const Game = {
       ctx.font = `900 52px ${FONT}`;
       ctx.textAlign = "center";
       const pack = LEVEL_PACKS[currentPackId] || LEVEL_PACKS.karya;
-<<<<<<< HEAD
       ctx.fillText(this.levelIndex + 1 >= pack.levels.length ? "አሸነፉ!" : "በጣም ጥሩ! ቀጣይ...", W / 2, H / 2 - 40);
-=======
-      ctx.fillText(this.levelIndex + 1 >= pack.levels.length ? "አሸነፍክ!" : "FINE. NEXT.", W / 2, H / 2 - 40);
->>>>>>> 6726158d6cdfcc85bc091aefe644321880286e47
       ctx.globalAlpha = 1;
     }
 

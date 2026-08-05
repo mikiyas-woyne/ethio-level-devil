@@ -769,7 +769,6 @@ button#play-btn:active, button#end-menu-btn:active {
 #rotate-hint.show { display: block; }
 @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
-<<<<<<< HEAD
 /* Landscape orientation mandatory overlay */
 .rotate-overlay {
   position: fixed;
@@ -813,8 +812,6 @@ button#play-btn:active, button#end-menu-btn:active {
   }
 }
 
-=======
->>>>>>> 6726158d6cdfcc85bc091aefe644321880286e47
 /* small screens: tighten the level grid */
 @media (max-width: 540px) {
   #level-grid { grid-template-columns: repeat(10, 1fr); width: min(420px, 94%); gap: 5px; }
