@@ -1,22 +1,4 @@
-import { useEffect } from 'react';
-
 export default function App() {
-  useEffect(() => {
-    // Check if script already exists to avoid duplicate script injection
-    let script = document.getElementById('level-devil-game-script') as HTMLScriptElement | null;
-    if (!script) {
-      script = document.createElement('script');
-      script.id = 'level-devil-game-script';
-      script.src = '/game.js';
-      script.async = true;
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      // Cleanup script on unmount if necessary
-    };
-  }, []);
-
   return (
     <div className="app-shell">
       {/* TOP CONTROL BAR (always visible) */}
@@ -60,8 +42,9 @@ export default function App() {
         {/* PAUSE MENU MODAL */}
         <div id="pause-menu" className="hidden">
           <div className="menu-inner pause-inner">
-            <div className="pause-badge">ቃርያ</div>
-            <h2 className="pause-title">GAME PAUSED</h2>
+            <div className="pause-badge">ቃርያ · ETHIO DEVIL</div>
+            <h2 className="pause-title">ጨዋታው ቆሟል</h2>
+            <p className="pause-title-sub">GAME PAUSED</p>
             <p id="pause-level-info" className="pause-sub">LEVEL 1: NOTHING TO SEE HERE</p>
 
             {/* Death Stats Card inside Pause Menu */}
@@ -72,40 +55,44 @@ export default function App() {
               </div>
               <div className="pause-stat-total">
                 <span className="skull">&#9760;</span>
-                <span id="pause-total-deaths">0</span> TOTAL DEATHS
+                <span id="pause-level-deaths">0</span> LEVEL DEATHS / <span id="pause-total-deaths">0</span> TOTAL
               </div>
             </div>
 
             {/* Primary Action Buttons */}
             <div className="pause-actions">
               <button id="pause-resume-btn" className="pause-action-btn primary">
-                ▶ RESUME
+                ▶ ቀጥል (RESUME)
               </button>
               <button id="pause-restart-btn" className="pause-action-btn secondary">
-                ↻ RESTART LEVEL
+                ↻ እንደገና ጀምር (RESTART)
+              </button>
+              <button id="pause-skip-btn" className="pause-action-btn skip disabled" disabled title="Requires >10 deaths on this level">
+                <span className="skip-btn-label">⏭ ደረጃውን ይለፉ (SKIP LEVEL)</span>
+                <span id="pause-skip-counter" className="skip-counter">(0/10 deaths)</span>
               </button>
               <button id="pause-menu-btn" className="pause-action-btn danger">
-                ☰ MAIN MENU
+                ☰ ዋና ማውጫ (MAIN MENU)
               </button>
             </div>
 
             {/* Settings & Options inside Pause Menu */}
-            <div className="pause-settings-title">SETTINGS & OPTIONS</div>
+            <div className="pause-settings-title">ቅንብሮች (SETTINGS)</div>
             <div className="pause-settings-grid">
               <button id="pbtn-char" className="p-setting-btn" title="Toggle Character">
-                <span id="pic-char">🧑🏽 Character</span>
+                <span id="pic-char">🧑🏽 ባህሪ</span>
               </button>
               <button id="pbtn-counter" className="p-setting-btn" title="Toggle Ge'ez Death Display">
-                <span id="pic-counter">🇪🇹 Ge'ez Counter</span>
+                <span id="pic-counter">🇪🇹 ግዕዝ ቆጣሪ</span>
               </button>
               <button id="pbtn-theme" className="p-setting-btn" title="Toggle Light/Dark Theme">
-                <span id="pic-theme">🌙 Theme</span>
+                <span id="pic-theme">🌙 ገጽታ</span>
               </button>
               <button id="pbtn-mute" className="p-setting-btn" title="Toggle Sound">
-                <span id="pic-mute">🔊 Sound</span>
+                <span id="pic-mute">🔊 ድምፅ</span>
               </button>
               <button id="pbtn-fs" className="p-setting-btn" title="Toggle Fullscreen">
-                <span id="pic-fs">⛶ Fullscreen</span>
+                <span id="pic-fs">⛶ ሙሉ ስክሪን</span>
               </button>
             </div>
           </div>
@@ -121,19 +108,19 @@ export default function App() {
               <span className="title-amharic">ቃርያ</span>
               <span className="title-english">ETHIO LEVEL DEVIL</span>
             </h1>
-            <p className="subtitle">60 unpredictable levels · one Ethiopian journey</p>
+            <p className="subtitle">60 unpredictable levels · 60 አዝናኝና አስደናቂ ደረጃዎች</p>
             <div className="culture-route" aria-label="Ethiopian places featured in the game">
               <span>SIMIEN</span><i></i><span>AXUM</span><i></i><span>LALIBELA</span><i></i><span>GONDAR</span><i></i><span>HARAR</span><i></i><span>TANA</span>
             </div>
 
-            <button id="play-btn">START JOURNEY</button>
+            <button id="play-btn">ጉዞ ይጀምሩ · START JOURNEY</button>
             <div className="grid-heading">
               <span>60 LEVEL CAMPAIGN</span>
-              <span className="grid-heading-amharic">ኢትዮጵያ</span>
+              <span className="grid-heading-amharic">የ60 ደረጃዎች ጉዞ</span>
             </div>
             <div id="level-grid"></div>
             <p className="menu-deaths">
-              የሞት ብዛት · total deaths: <span id="menu-deaths">0</span>
+              የሞት ብዛት · TOTAL DEATHS: <span id="menu-deaths">0</span>
             </p>
             <p className="controls-hint">
               &larr; &rarr; / A D move &nbsp;&middot;&nbsp; &uarr; / W / SPACE jump &nbsp;&middot;&nbsp; T theme
@@ -145,14 +132,39 @@ export default function App() {
         <div id="end-screen" className="hidden">
           <div className="menu-inner">
             <h1 className="end-title">
-              YOU CONQUERED<br />ETHIO LEVEL DEVIL
+              እንኳን ደስ አለዎት!<br />YOU CONQUERED ETHIO LEVEL DEVIL
             </h1>
-            <p className="end-sub">እንኳን ደስ አለዎት · victory across Ethiopia.</p>
+            <p className="end-sub">የ60ዎቹንም ደረጃዎች በድል አጠናቅቀዋል · VICTORY ACROSS ETHIOPIA</p>
             <p className="end-stats">
-              you died <span id="end-deaths">0</span> times. <span id="end-roast"></span>
+              የሞት ብዛት: <span id="end-deaths">0</span> times. <span id="end-roast"></span>
             </p>
-            <button id="end-menu-btn">BACK TO MENU</button>
+            <button id="end-menu-btn">ወደ ዋና ማውጫ · BACK TO MENU</button>
           </div>
+        </div>
+      </div>
+
+      {/* FULL-SCREEN MANDATORY LANDSCAPE ROTATION MODAL */}
+      <div id="landscape-modal" className="hidden">
+        <div className="landscape-modal-content">
+          <div className="rotate-device-icon">
+            <svg viewBox="0 0 100 100" width="90" height="90">
+              <rect x="35" y="15" width="30" height="60" rx="6" fill="none" stroke="#FED100" strokeWidth="4" className="phone-rect-portrait"/>
+              <path d="M 65 30 A 30 30 0 0 1 70 65" fill="none" stroke="#009A44" strokeWidth="4" strokeDasharray="6 4" strokeLinecap="round"/>
+              <polygon points="68,70 78,65 72,56" fill="#009A44"/>
+              <rect x="20" y="35" width="60" height="30" rx="6" fill="none" stroke="#E10600" strokeWidth="4" className="phone-rect-landscape"/>
+            </svg>
+          </div>
+          <h2 className="rotate-amharic-title">እባክዎን ስልክዎን አግድም ያዙሩ</h2>
+          <p className="rotate-english-sub">PLEASE ROTATE YOUR DEVICE TO LANDSCAPE MODE</p>
+          <div className="rotate-flag-bar">
+            <span className="green"></span>
+            <span className="yellow"></span>
+            <span className="red"></span>
+          </div>
+          <p className="rotate-note">ጨዋታው በአግድም ስክሪን ብቻ ይሰራል (Game operates in landscape mode only)</p>
+          <button id="btn-force-landscape" className="rotate-action-btn">
+            🔄 ወደ አግድም ያድርጉ · ROTATE LANDSCAPE
+          </button>
         </div>
       </div>
 

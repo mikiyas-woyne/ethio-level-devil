@@ -214,16 +214,61 @@ const heldJump = () => keys["Space"] || keys["ArrowUp"] || keys["KeyW"] || touch
 
 // ---------------------------------------------------------------- particles
 const particles = [];
+
 function spawnBlood(x, y) {
-  for (let i = 0; i < 26; i++) {
-    const a = rand(-Math.PI, 0), s = rand(120, 420);
+  for (let i = 0; i < 35; i++) {
+    const a = rand(-Math.PI, 0), s = rand(120, 520);
     particles.push({
       x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s,
-      r: rand(2.5, 6), life: rand(0.5, 1.1), t: 0,
-      color: Math.random() < 0.8 ? theme.blood : theme.bloodDark, grav: true,
+      r: rand(2.5, 7), life: rand(0.5, 1.2), t: 0,
+      color: Math.random() < 0.75 ? theme.blood : theme.bloodDark, grav: true,
     });
   }
 }
+
+function spawnExplosion(x, y) {
+  // Blood + Ethiopian Tricolor Embers + Sparkles
+  spawnBlood(x, y);
+  const ethioColors = ["#009A44", "#FED100", "#E10600", "#FFFFFF", "#FAC835"];
+  for (let i = 0; i < 40; i++) {
+    const a = rand(0, Math.PI * 2);
+    const s = rand(150, 600);
+    particles.push({
+      x, y,
+      vx: Math.cos(a) * s,
+      vy: Math.sin(a) * s - 80,
+      r: rand(3, 8),
+      life: rand(0.6, 1.3),
+      t: 0,
+      color: ethioColors[Math.floor(Math.random() * ethioColors.length)],
+      grav: true,
+      sparkle: true,
+    });
+  }
+}
+
+function spawnRunDust(x, y, dir) {
+  if (Math.random() > 0.45) return;
+  particles.push({
+    x: x - dir * 6, y: y,
+    vx: -dir * rand(30, 80), vy: rand(-30, -10),
+    r: rand(2, 4), life: rand(0.2, 0.4), t: 0,
+    color: theme.dust, grav: false,
+  });
+}
+
+function spawnJumpDust(x, y) {
+  for (let i = 0; i < 10; i++) {
+    const dir = (i % 2 === 0 ? 1 : -1);
+    particles.push({
+      x: x + dir * rand(2, 8), y,
+      vx: dir * rand(40, 120), vy: rand(-60, -10),
+      r: rand(2.5, 5), life: rand(0.25, 0.45), t: 0,
+      color: theme.dust, grav: false,
+    });
+  }
+}
+
 function spawnSpicyParticle(x, y) {
   for (let i = 0; i < 4; i++) {
     const a = rand(-Math.PI, Math.PI), s = rand(20, 80);
@@ -235,6 +280,7 @@ function spawnSpicyParticle(x, y) {
     });
   }
 }
+
 function spawnDust(x, y, n = 6, color = null) {
   for (let i = 0; i < n; i++) {
     particles.push({
@@ -243,6 +289,27 @@ function spawnDust(x, y, n = 6, color = null) {
     });
   }
 }
+
+function spawnCelebrationParticles(x, y) {
+  const colors = ["#009A44", "#FED100", "#E10600", "#FFFFFF", "#FFD700", "#FF4081", "#00E676"];
+  for (let i = 0; i < 60; i++) {
+    const a = rand(-Math.PI, 0);
+    const s = rand(180, 550);
+    particles.push({
+      x: x + rand(-20, 20),
+      y: y + rand(-20, 20),
+      vx: Math.cos(a) * s,
+      vy: Math.sin(a) * s,
+      r: rand(3, 8),
+      life: rand(0.8, 1.8),
+      t: 0,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      grav: true,
+      confetti: true,
+    });
+  }
+}
+
 function spawnPoof(x, y) {
   for (let i = 0; i < 14; i++) {
     const a = rand(0, Math.PI * 2), s = rand(40, 160);
@@ -252,23 +319,29 @@ function spawnPoof(x, y) {
     });
   }
 }
+
 function updateParticles(dt) {
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i];
     p.t += dt;
     if (p.t > p.life) { particles.splice(i, 1); continue; }
-    if (p.grav) p.vy += 1300 * dt;
+    if (p.grav) p.vy += 1200 * dt;
     p.x += p.vx * dt;
     p.y += p.vy * dt;
   }
 }
+
 function drawParticles() {
   for (const p of particles) {
-    ctx.globalAlpha = 1 - p.t / p.life;
+    ctx.globalAlpha = Math.max(0, 1 - p.t / p.life);
     ctx.fillStyle = p.color;
     ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fill();
+    if (p.confetti) {
+      ctx.fillRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 1.5);
+    } else {
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
   ctx.globalAlpha = 1;
 }
@@ -1314,6 +1387,103 @@ class InvertZone {
     ctx.translate(this.rect.x + this.rect.w / 2, this.rect.y + 60);
     ctx.rotate(Math.PI);
     ctx.fillText("?", 0, 0);
+    ctx.restore();
+  }
+}
+
+class GravityZone {
+  // Region or pad that sets or flips player gravity (dir = -1 for Anti-Gravity UP, 1 for Normal DOWN, "toggle" to flip)
+  constructor(rect, opts = {}) {
+    this.rect = { ...rect };
+    this.targetDir = opts.dir ?? -1;
+    this.pad = opts.pad ?? false;
+    this.reset();
+  }
+  reset() {
+    this.cool = 0;
+    this.t = 0;
+  }
+  update(dt, g) {
+    this.t += dt;
+    this.cool = Math.max(0, this.cool - dt);
+    const p = g.player;
+    if (p && aabb(p, this.rect)) {
+      if (this.targetDir === "toggle") {
+        if (this.cool <= 0) {
+          p.gravityScale = (p.gravityScale || 1) * -1;
+          this.cool = 0.45;
+          AudioFX.poof();
+          spawnDust(p.x + p.w / 2, p.y + p.h / 2, 10, "#00E676");
+        }
+      } else {
+        if (p.gravityScale !== this.targetDir) {
+          p.gravityScale = this.targetDir;
+          AudioFX.poof();
+          spawnDust(p.x + p.w / 2, p.y + p.h / 2, 10, "#00E676");
+        }
+      }
+    }
+  }
+  solids() { return []; }
+  kills() { return []; }
+  draw() {
+    const r = this.rect;
+    ctx.save();
+    if (this.pad) {
+      // Draw glowing Anti-Gravity Floor / Ceiling Pad
+      ctx.fillStyle = theme.metal || "#3A3A3A";
+      ctx.fillRect(r.x, r.y, r.w, r.h);
+      
+      const glow = Math.sin(this.t * 6) * 0.3 + 0.7;
+      ctx.fillStyle = this.targetDir === -1 ? `rgba(0, 230, 118, ${glow})` : `rgba(255, 209, 0, ${glow})`;
+      ctx.fillRect(r.x + 3, r.y + 2, r.w - 6, r.h - 4);
+      
+      // Arrow indicator
+      ctx.strokeStyle = "#FFFFFF";
+      ctx.lineWidth = 2.5;
+      const cx = r.x + r.w / 2;
+      const cy = r.y + r.h / 2;
+      ctx.beginPath();
+      if (this.targetDir === -1) {
+        ctx.moveTo(cx, cy + 5); ctx.lineTo(cx, cy - 5);
+        ctx.moveTo(cx - 5, cy); ctx.lineTo(cx, cy - 5); ctx.lineTo(cx + 5, cy);
+      } else {
+        ctx.moveTo(cx, cy - 5); ctx.lineTo(cx, cy + 5);
+        ctx.moveTo(cx - 5, cy); ctx.lineTo(cx, cy + 5); ctx.lineTo(cx + 5, cy);
+      }
+      ctx.stroke();
+    } else {
+      // Draw anti-gravity atmospheric field box
+      ctx.strokeStyle = this.targetDir === -1 ? "#00E676" : "#FED100";
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 6]);
+      ctx.strokeRect(r.x, r.y, r.w, r.h);
+      
+      ctx.fillStyle = this.targetDir === -1 ? "rgba(0, 230, 118, 0.08)" : "rgba(254, 209, 0, 0.08)";
+      ctx.fillRect(r.x, r.y, r.w, r.h);
+      
+      // Floating direction arrows inside field
+      ctx.setLineDash([]);
+      ctx.fillStyle = this.targetDir === -1 ? "rgba(0, 230, 118, 0.45)" : "rgba(254, 209, 0, 0.45)";
+      const count = Math.max(1, Math.floor(r.w / 40));
+      for (let i = 0; i < count; i++) {
+        const ax = r.x + (i + 0.5) * (r.w / count);
+        const progress = (this.t * 50 + i * 30) % Math.max(1, r.h);
+        const ay = this.targetDir === -1 ? r.y + r.h - progress : r.y + progress;
+        
+        ctx.beginPath();
+        if (this.targetDir === -1) {
+          ctx.moveTo(ax, ay - 6);
+          ctx.lineTo(ax - 5, ay + 4);
+          ctx.lineTo(ax + 5, ay + 4);
+        } else {
+          ctx.moveTo(ax, ay + 6);
+          ctx.lineTo(ax - 5, ay - 4);
+          ctx.lineTo(ax + 5, ay - 4);
+        }
+        ctx.fill();
+      }
+    }
     ctx.restore();
   }
 }
@@ -2912,18 +3082,48 @@ const LEVELS = [
       ],
     }),
   },
-  // ---------------------------------------------------- 9  (NEW: spring)
+  // ---------------------------------------------------- 9  (ANTI-GRAVITY DEFY)
   {
-    name: "TEFF SPRING",
+    name: "TEFF ANTI-GRAVITY",
     build: () => ({
-      spawn: { x: 60, y: 440 },
-      door: new Door([{ x: 884, y: 226 }]),
-      solids: [floorSeg(0, 440), R(480, 290, 480, 16), wallL(), wallR()],
+      spawn: { x: 50, y: 440 },
+      door: new Door([{ x: 880, y: 416 }]),
+      solids: [
+        // Start platform
+        floorSeg(0, 160),
+        // Ceiling track 1
+        R(160, 80, 280, 20),
+        // Mid-air sliding conveyor ground platform
+        new Conveyor(R(430, 320, 220, 20), { dir: 1, force: 110 }),
+        // Upper ceiling track 2
+        R(600, 80, 200, 20),
+        // Destination exit platform
+        floorSeg(780, 960),
+        // Bottom pit floor
+        R(160, 520, 620, 20),
+        wallL(), wallR()
+      ],
       traps: [
-        new Spring(360, 480, { power: -1220 }),
-        new FireBrazier(650, 290, { w: 68, h: 28, flameH: 55 }),
-        new Note(160, 430, "trampoline time"),
-        new PopSpikes(780, 290, 60, R(580, 200, 18, 90), { delay: 0.3 }),
+        // 1. Anti-Gravity Pad on start platform (dir: -1, sits right on top of floor at y=480)
+        new GravityZone(R(100, 466, 45, 14), { dir: -1, pad: true }),
+        // Bottom pit static spikes
+        new StaticSpikes(160, 520, 620, { dir: "up", size: 28 }),
+        // Gliding saw blade along ceiling track 1
+        new Saw([{ x: 230, y: 125 }, { x: 350, y: 125 }], { r: 20, speed: 110 }),
+        // 2. Normal Gravity Pad on ceiling track 1 (dir: 1, attached to underside of ceiling at y=100)
+        new GravityZone(R(390, 100, 45, 14), { dir: 1, pad: true }),
+        // Pop-up spear on mid-air sliding conveyor platform
+        new PopSpikes(510, 320, 42, R(440, 260, 80, 100), { delay: 0.1 }),
+        // 3. Anti-Gravity Pad on mid-air sliding platform (dir: -1, sits on top of platform at y=320)
+        new GravityZone(R(600, 306, 45, 14), { dir: -1, pad: true }),
+        // Gliding saw blade along ceiling track 2
+        new Saw([{ x: 630, y: 125 }, { x: 740, y: 125 }], { r: 20, speed: 120 }),
+        // 4. Normal Gravity Pad on ceiling track 2 (dir: 1, attached to underside of ceiling at y=100)
+        new GravityZone(R(750, 100, 45, 14), { dir: 1, pad: true }),
+        // Final pop-up spear near exit door
+        new PopSpikes(830, 480, 40, R(790, 380, 50, 100), { delay: 0.15 }),
+        new Note(60, 410, "step on green pad to flip gravity! ↑", { size: 14 }),
+        new Note(450, 260, "sliding ground ahead!", { size: 13 }),
       ],
     }),
   },
@@ -2938,7 +3138,8 @@ const LEVELS = [
         new InvertZone(R(280, 0, 420, 480)),
         new StaticSpikes(355, 540, 70, { dir: "up", size: 40 }),
         new StaticSpikes(545, 540, 70, { dir: "up", size: 40 }),
-        new PopSpikes(700, 480, 64, R(648, 330, 16, 150), { delay: 0.4 }),
+        // Trigger box placed in reasonable walking path before pop spikes so player can react
+        new PopSpikes(700, 480, 64, R(620, 380, 60, 100), { delay: 0.2 }),
         new Note(490, 300, "sdrawkcab", { size: 18 }),
       ],
     }),
@@ -4654,6 +4855,12 @@ function addCampaignSurprises(level, levelIndex) {
       if (trap instanceof FireBrazier) {
         return { center: trap.x, radius: trap.w / 2 };
       }
+      if (trap instanceof Spring || trap instanceof ChiliSpring) {
+        return { center: trap.x + trap.w / 2, radius: trap.w / 2 + 50 };
+      }
+      if (trap instanceof Button || trap instanceof Teleporter || trap instanceof FakeDoor) {
+        return { center: (trap.x || 0) + (trap.w || 30) / 2, radius: (trap.w || 30) / 2 + 40 };
+      }
       return null;
     })
     .filter(Boolean);
@@ -4752,9 +4959,24 @@ function addCampaignSurprises(level, levelIndex) {
 }
 
 const DEATH_LINES = [
-  "OUCH.", "LOL.", "SKILL ISSUE.", "SO CLOSE.", "AGAIN?", "PERFECTLY PLANNED.",
-  "YOU FELL FOR IT.", "ቃርያ LAUGHS.", "CLASSIC.", "WHO PUT THAT THERE?",
-  "OOPS.", "TRY WALKING SLOWER.", "THAT ONE'S ON YOU.", "HE-HE.", "NICE ONE.",
+  "አይ ወንድሜ!",
+  "እረ ተጠንቀቅ!",
+  "እንዴ... ይሄንም አልጠበቅክም?",
+  "እንደገና ሞክር!",
+  "ቀጥል!",
+  "ጎበዝ!",
+  "በጣም ጥሩ!",
+  "ይሄ ገና መጀመሪያ ነው!",
+  "አልተሳካም!",
+  "ሌላ አንድ ሙከራ!",
+  "አይዞህ!",
+  "አሁን ገባህ!",
+  "ይሄ ቀላል አይደለም!",
+  "በጥንቃቄ!",
+  "አይዞህ፣ ከስህተት ይማራሉ!",
+  "ቃርያ ይስቅብሃል!",
+  "SKILL ISSUE, ወንድሜ!",
+  "SO CLOSE, ግን አልተሳካም!"
 ];
 const ROASTS = [
   [0, "wait... flawless?!"],
@@ -5535,39 +5757,57 @@ function drawGeezDeathCounter(deaths) {
   const geezStr = toGeezNumeral(deaths);
   const interpretStr = `${deaths} death${deaths === 1 ? '' : 's'}`;
 
-  const cx = W / 2;
-  const cy = 26;
+  let cx = W / 2;
+  let cy = 26;
   const boxW = 126;
   const boxH = 34;
 
+  const shakeT = Game.deathShakeT || 0;
+  let scale = 1;
+  let isFlashingRed = false;
+
+  if (shakeT > 0) {
+    const p = shakeT / 0.5; // 1.0 down to 0
+    const intensity = p * 7;
+    cx += Math.sin(shakeT * 50) * intensity;
+    cy += Math.cos(shakeT * 38) * (intensity * 0.6);
+    scale = 1 + Math.sin(p * Math.PI) * 0.18; // smooth pop up to 1.18x
+    if (p > 0.35) {
+      isFlashingRed = true;
+    }
+  }
+
+  ctx.translate(cx, cy);
+  ctx.scale(scale, scale);
+
   // Background Glass Pill
-  ctx.fillStyle = "rgba(22, 14, 10, 0.82)";
-  ctx.strokeStyle = "rgba(216, 180, 120, 0.55)";
-  ctx.lineWidth = 1.5;
-  roundRect(cx - boxW / 2, cy - boxH / 2, boxW, boxH, 17);
+  ctx.fillStyle = isFlashingRed ? "rgba(45, 10, 8, 0.92)" : "rgba(22, 14, 10, 0.82)";
+  ctx.strokeStyle = isFlashingRed ? "#E10600" : "rgba(216, 180, 120, 0.55)";
+  ctx.lineWidth = isFlashingRed ? 2.5 : 1.5;
+  roundRect(-boxW / 2, -boxH / 2, boxW, boxH, 17);
   ctx.fill();
   ctx.stroke();
 
   // Ethiopian Flag Accent Bar on top
   const stripeW = 42;
   const stripeH = 2.5;
-  const sx = cx - stripeW / 2;
-  const sy = cy - boxH / 2 + 2;
+  const sx = -stripeW / 2;
+  const sy = -boxH / 2 + 2;
   ctx.fillStyle = "#009A44"; ctx.fillRect(sx, sy, stripeW / 3, stripeH);
   ctx.fillStyle = "#FED100"; ctx.fillRect(sx + stripeW / 3, sy, stripeW / 3, stripeH);
   ctx.fillStyle = "#E10600"; ctx.fillRect(sx + stripeW * 2 / 3, sy, stripeW / 3, stripeH);
 
   // Ge'ez Numeral (Primary Display)
-  ctx.fillStyle = "#FED100";
+  ctx.fillStyle = isFlashingRed ? "#FF4D4D" : "#FED100";
   ctx.font = "bold 15px 'Noto Sans Ethiopic', 'Segoe UI Historic', 'Ethiopic', sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(`ሞት: ${geezStr}`, cx, cy - 3);
+  ctx.fillText(`ሞት: ${geezStr}`, 0, -3);
 
   // Small Interpreter Counter below
-  ctx.fillStyle = "#D8C2A0";
+  ctx.fillStyle = isFlashingRed ? "#FFB3B3" : "#D8C2A0";
   ctx.font = "10px sans-serif";
-  ctx.fillText(`(${interpretStr})`, cx, cy + 9);
+  ctx.fillText(`(${interpretStr})`, 0, 9);
 
   ctx.restore();
 }
@@ -5580,6 +5820,7 @@ const Game = {
   level: null,
   player: null,
   deaths: 0,
+  deathShakeT: 0,
   invertControls: false,
   flags: {},
   deathT: 0,
@@ -5598,19 +5839,23 @@ const Game = {
     if (this.state === "play") {
       this.state = "paused";
       document.getElementById("pause-menu")?.classList.remove("hidden");
+      setTouchControlsVisible(false);
       updatePauseMenuStats();
     } else if (this.state === "paused") {
       this.state = "play";
       document.getElementById("pause-menu")?.classList.add("hidden");
+      setTouchControlsVisible(true);
     }
   },
 
-  loadLevel(i, packId = currentPackId) {
+  loadLevel(i, packId = currentPackId, keepLevelDeaths = false) {
     currentPackId = packId;
     const pack = LEVEL_PACKS[packId] || LEVEL_PACKS.karya;
     this.currentPack = pack;
     this.levelIndex = i;
-    this.levelDeaths = 0;
+    if (!keepLevelDeaths) {
+      this.levelDeaths = 0;
+    }
     const def = pack.levels[i] || pack.levels[0];
     this.flags = {};
     this.level = addCampaignSurprises(def.build(), i);
@@ -5625,10 +5870,11 @@ const Game = {
   spawnPlayer() {
     const s = this.level.spawn;
     this.player = {
-      x: s.x, y: s.y - 6, w: 22, h: 22,
+      x: s.x, y: s.y - 22, w: 22, h: 22,
       vx: 0, vy: 0,
       grounded: false, coyote: 0, face: 1,
       squash: 0, jumping: false,
+      gravityScale: 1,
     };
   },
 
@@ -5636,23 +5882,42 @@ const Game = {
     if (manual) {
       this.levelDeaths = (this.levelDeaths || 0) + 1;
       this.deaths++;
+      this.deathShakeT = 0.5;
       saveProgress();
-      updateDeathHud();
+      updateDeathHud(true);
     }
-    this.loadLevel(this.levelIndex, currentPackId);
+    this.loadLevel(this.levelIndex, currentPackId, true);
     this.state = "play";
+  },
+
+  skipLevel() {
+    if ((this.levelDeaths || 0) <= 10) return;
+    this.state = "betweenLevels";
+    document.getElementById("pause-menu")?.classList.add("hidden");
+    const pack = LEVEL_PACKS[currentPackId] || LEVEL_PACKS.karya;
+    saveLevelDone(currentPackId, this.levelIndex);
+    AudioFX.win();
+    if (this.levelIndex + 1 >= pack.levels.length) {
+      this.startWipe(() => showEnd());
+    } else {
+      this.startWipe(() => {
+        this.loadLevel(this.levelIndex + 1, currentPackId, false);
+        this.state = "play";
+      });
+    }
   },
 
   die(x, y) {
     if (this.state !== "play") return;
     this.levelDeaths = (this.levelDeaths || 0) + 1;
     this.deaths++;
+    this.deathShakeT = 0.5;
     saveProgress();
-    updateDeathHud();
+    updateDeathHud(true);
     AudioFX.death();
-    spawnBlood(x, y);
+    spawnExplosion(x, y);
     addStain(x, Math.min(y + 20, 478));
-    this.shake(9, 0.3);
+    this.shake(12, 0.35);
     this.state = "dead";
     this.deathT = 0;
     this.deathLine = DEATH_LINES[Math.floor(Math.random() * DEATH_LINES.length)];
@@ -5662,6 +5927,10 @@ const Game = {
     this.state = "win";
     this.winT = 0;
     AudioFX.win();
+    const doorX = this.level && this.level.door ? (this.level.door.pos.x + this.level.door.w / 2) : 880;
+    const doorY = this.level && this.level.door ? (this.level.door.pos.y + this.level.door.h / 2) : 400;
+    spawnCelebrationParticles(doorX, doorY);
+    this.shake(4, 0.15);
     saveLevelDone(currentPackId, this.levelIndex);
   },
 
@@ -5672,6 +5941,7 @@ const Game = {
     this.time += dt;
     this.shakeT = Math.max(0, this.shakeT - dt);
     if (this.shakeT <= 0) this.shakeAmt = 0;
+    this.deathShakeT = Math.max(0, (this.deathShakeT || 0) - dt);
     updateParticles(dt);
 
     if (this.wipeDir !== 0) {
@@ -5691,7 +5961,7 @@ const Game = {
       this.deathT += dt;
       for (const t of this.level.traps) t.update(dt, this);
       if (this.deathT > 0.85) {
-        this.startWipe(() => { this.loadLevel(this.levelIndex, currentPackId); this.state = "play"; });
+        this.startWipe(() => { this.loadLevel(this.levelIndex, currentPackId, true); this.state = "play"; });
         this.state = "respawning";
       }
     } else if (this.state === "win") {
@@ -5700,13 +5970,13 @@ const Game = {
       if (prevWinT < 0.55 && this.winT >= 0.55) {
         AudioFX.slam();
       }
-      if (this.winT > 0.8) {
+      if (this.winT > 1.1) {
         this.state = "betweenLevels";
         const pack = LEVEL_PACKS[currentPackId] || LEVEL_PACKS.karya;
         if (this.levelIndex + 1 >= pack.levels.length) {
           this.startWipe(() => showEnd());
         } else {
-          this.startWipe(() => { this.loadLevel(this.levelIndex + 1, currentPackId); this.state = "play"; });
+          this.startWipe(() => { this.loadLevel(this.levelIndex + 1, currentPackId, false); this.state = "play"; });
         }
       }
     }
@@ -5751,21 +6021,34 @@ const Game = {
     if (target > p.vx) p.vx = Math.min(target, p.vx + accel * dt);
     else if (target < p.vx) p.vx = Math.max(target, p.vx - accel * dt);
 
+    const gScale = p.gravityScale || 1;
+
+    if (p.grounded && Math.abs(p.vx) > 30) {
+      spawnRunDust(p.x + p.w / 2, gScale > 0 ? p.y + p.h : p.y, p.face);
+    }
+
     jumpBuffered = Math.max(0, jumpBuffered - dt);
     p.coyote = p.grounded ? 0.1 : Math.max(0, p.coyote - dt);
+
     if (jumpBuffered > 0 && p.coyote > 0) {
-      p.vy = -665;
+      p.vy = -665 * gScale;
       p.grounded = false;
       p.coyote = 0;
       p.jumping = true;
       jumpBuffered = 0;
       AudioFX.jump();
-      spawnDust(p.x + p.w / 2, p.y + p.h, 4);
+      spawnJumpDust(p.x + p.w / 2, gScale > 0 ? p.y + p.h : p.y);
     }
-    if (p.vy >= 0) p.jumping = false;
-    if (!heldJump() && p.jumping && p.vy < -220) { p.vy = -220; p.jumping = false; }
 
-    p.vy = Math.min(p.vy + 2250 * dt, 1040);
+    if (gScale > 0) {
+      if (p.vy >= 0) p.jumping = false;
+      if (!heldJump() && p.jumping && p.vy < -220) { p.vy = -220; p.jumping = false; }
+      p.vy = Math.min(p.vy + 2250 * dt, 1040);
+    } else {
+      if (p.vy <= 0) p.jumping = false;
+      if (!heldJump() && p.jumping && p.vy > 220) { p.vy = 220; p.jumping = false; }
+      p.vy = Math.max(p.vy - 2250 * dt, -1040);
+    }
 
     const solids = this.collectSolids();
     const wasGrounded = p.grounded;
@@ -5785,12 +6068,22 @@ const Game = {
     for (const s of solids) {
       if (aabb(p, s)) {
         if (p.vy > 0) {
-          p.y = s.y - p.h;
-          p.grounded = true;
-          if (!wasGrounded && p.vy > 350) { AudioFX.land(); spawnDust(p.x + p.w / 2, p.y + p.h, 5); p.squash = 0.12; }
+          if (gScale > 0) {
+            p.y = s.y - p.h;
+            p.grounded = true;
+            if (!wasGrounded && p.vy > 350) { AudioFX.land(); spawnDust(p.x + p.w / 2, p.y + p.h, 5); p.squash = 0.12; }
+          } else {
+            p.y = s.y - p.h;
+          }
           p.vy = 0;
         } else if (p.vy < 0) {
-          p.y = s.y + s.h;
+          if (gScale < 0) {
+            p.y = s.y + s.h;
+            p.grounded = true;
+            if (!wasGrounded && p.vy < -350) { AudioFX.land(); spawnDust(p.x + p.w / 2, p.y, 5); p.squash = 0.12; }
+          } else {
+            p.y = s.y + s.h;
+          }
           p.vy = 0;
         }
       }
@@ -5810,7 +6103,7 @@ const Game = {
       }
     }
 
-    if (p.y > H + 40) {
+    if (p.y > H + 60 || p.y < -120) {
       this.levelDeaths = (this.levelDeaths || 0) + 1;
       this.deaths++;
       saveProgress();
@@ -5845,9 +6138,38 @@ const Game = {
       ctx.translate(rand(-this.shakeAmt, this.shakeAmt), rand(-this.shakeAmt, this.shakeAmt));
     }
 
-    // World Space rendering with camera transform
+    // World Space rendering with camera transform & win house zoom
     ctx.save();
-    ctx.translate(-camX, 0);
+    
+    let worldScale = 1;
+    let transX = -camX;
+    let transY = 0;
+
+    if ((this.state === "win" || this.state === "betweenLevels") && this.level?.door) {
+      const door = this.level.door;
+      const doorX = door.pos.x + door.w / 2;
+      const doorY = door.pos.y + door.h / 2 - 10;
+      
+      const zoomT = clamp(this.winT / 0.85, 0, 1);
+      // Smoothstep easing for cinematic zoom
+      const easeZoom = zoomT * zoomT * (3 - 2 * zoomT);
+      
+      worldScale = 1 + easeZoom * 1.5; // Smooth zoom up to 2.5x focus on house
+      
+      const normFocusX = camX + W / 2;
+      const normFocusY = H / 2;
+      
+      const focusX = normFocusX + (doorX - normFocusX) * easeZoom;
+      const focusY = normFocusY + (doorY - normFocusY) * easeZoom;
+      
+      transX = W / 2 - focusX * worldScale;
+      transY = H / 2 - focusY * worldScale;
+    }
+
+    ctx.translate(transX, transY);
+    if (worldScale !== 1) {
+      ctx.scale(worldScale, worldScale);
+    }
 
     if (this.level) {
       ctx.strokeStyle = theme.grid;
@@ -5995,12 +6317,17 @@ const Game = {
     const stretchY = isJumping ? clamp(1 + Math.abs(p.vy) / 2200, 1, 1.25) : squashY;
     const sx = 1 / stretchY;
 
-    // Position center-bottom
+    const gScale = p.gravityScale || 1;
+
+    // Position center-bottom or center-top if inverted
     const runBounce = isMoving ? -Math.abs(Math.sin(time * 18)) * 2.5 : 0;
-    const by = drawBy + runBounce;
+    const by = (gScale < 0 ? p.y : drawBy) + (gScale < 0 ? -runBounce : runBounce);
 
     ctx.save();
     ctx.translate(drawCx, by);
+    if (gScale < 0) {
+      ctx.scale(1, -1);
+    }
     ctx.globalAlpha = enterAlpha;
 
     // Lean body into movement or jump direction
@@ -6395,18 +6722,61 @@ function loadProgress() {
     if (old) localStorage.setItem("fd_done_karya", old);
   }
 }
-function updateDeathHud() {
+function updateDeathHud(shake = false) {
   setElText("hud-deaths", Game.deaths);
   setElText("menu-deaths", Game.deaths);
   setElText("pause-total-deaths", Game.deaths);
+  setElText("pause-level-deaths", Game.levelDeaths || 0);
   setElText("pause-geez-deaths", toGeezNumeral(Game.deaths));
+
+  if (shake) {
+    const targets = [
+      document.getElementById("hud-deaths"),
+      document.getElementById("menu-deaths"),
+      document.getElementById("pause-geez-deaths"),
+      document.getElementById("pause-total-deaths"),
+      document.getElementById("pause-level-deaths"),
+      document.getElementById("btn-counter")
+    ];
+    targets.forEach(el => {
+      if (el) {
+        el.classList.remove("death-shake-anim");
+        void el.offsetWidth;
+        el.classList.add("death-shake-anim");
+      }
+    });
+  }
 }
 
 function updatePauseMenuStats() {
   const pack = LEVEL_PACKS[currentPackId] || LEVEL_PACKS.karya;
+  const lDeaths = Game.levelDeaths || 0;
   setElText("pause-level-info", `${pack.name} · LEVEL ${Game.levelIndex + 1}: ${Game.level ? Game.level.name : ""}`);
   setElText("pause-geez-deaths", toGeezNumeral(Game.deaths || 0));
   setElText("pause-total-deaths", Game.deaths || 0);
+  setElText("pause-level-deaths", lDeaths);
+
+  const skipBtn = document.getElementById("pause-skip-btn");
+  const skipCounter = document.getElementById("pause-skip-counter");
+
+  if (skipBtn) {
+    if (lDeaths > 10) {
+      skipBtn.disabled = false;
+      skipBtn.removeAttribute("disabled");
+      skipBtn.classList.remove("disabled");
+      skipBtn.classList.add("unlocked");
+      if (skipCounter) skipCounter.textContent = `(ዝግጁ ነው / UNLOCKED! - ${lDeaths} deaths)`;
+      skipBtn.title = "ደረጃውን ይለፉ (Skip Level - Unlocked!)";
+    } else {
+      skipBtn.disabled = true;
+      skipBtn.setAttribute("disabled", "true");
+      skipBtn.classList.add("disabled");
+      skipBtn.classList.remove("unlocked");
+      const needed = 10 - lDeaths + 1;
+      if (skipCounter) skipCounter.textContent = `(${lDeaths}/10 deaths - need ${needed} more)`;
+      skipBtn.title = `Skip unlocks after >10 deaths on this level (${lDeaths}/10)`;
+    }
+  }
 
   const pc = document.getElementById("pbtn-counter");
   const pt = document.getElementById("pbtn-theme");
@@ -6431,6 +6801,15 @@ function wirePauseMenu() {
     btnRestart.addEventListener("click", () => {
       document.getElementById("pause-menu")?.classList.add("hidden");
       Game.restartLevel(true);
+    });
+  }
+
+  const btnSkip = document.getElementById("pause-skip-btn");
+  if (btnSkip) {
+    btnSkip.addEventListener("click", () => {
+      if ((Game.levelDeaths || 0) > 10) {
+        Game.skipLevel();
+      }
     });
   }
 
@@ -6550,7 +6929,8 @@ function initTouchControls() {
 
 function setTouchControlsVisible(v) {
   const touchEl = document.getElementById("touch-controls");
-  if (touchEl) touchEl.classList.toggle("hidden", !(v && IS_TOUCH));
+  const isPortrait = (IS_TOUCH || window.innerWidth < 600) && window.innerWidth < window.innerHeight;
+  if (touchEl) touchEl.classList.toggle("hidden", !(v && IS_TOUCH && !isPortrait && Game.state === "play"));
 }
 
 function selectCategory(packId) {
@@ -6576,20 +6956,121 @@ function wireCategorySelector() {
 
   if (btnKarya) btnKarya.onclick = (e) => { e.preventDefault(); selectCategory("karya"); };
   if (btnMitmita) btnMitmita.onclick = (e) => { e.preventDefault(); selectCategory("mitmita"); };
-
-  // Delegated fallback listener for extra reliability across mounts
-  document.addEventListener("click", (e) => {
-    const karyaBtn = e.target.closest("#cat-btn-karya, .cat-btn-karya");
-    const mitmitaBtn = e.target.closest("#cat-btn-mitmita, .cat-btn-mitmita");
-    if (karyaBtn) {
-      e.preventDefault();
-      selectCategory("karya");
-    } else if (mitmitaBtn) {
-      e.preventDefault();
-      selectCategory("mitmita");
-    }
-  });
 }
+
+// Global delegated click listener for robust UI interaction across mounts/re-renders
+document.addEventListener("click", (e) => {
+  const target = e.target;
+  if (!target || !(target instanceof Element)) return;
+
+  const playBtn = target.closest("#play-btn");
+  if (playBtn) {
+    e.preventDefault();
+    startGame(0, currentPackId);
+    return;
+  }
+
+  const endBtn = target.closest("#end-menu-btn");
+  if (endBtn) {
+    e.preventDefault();
+    showMenu();
+    return;
+  }
+
+  const btnPause = target.closest("#btn-pause");
+  if (btnPause) {
+    e.preventDefault();
+    Game.togglePause();
+    return;
+  }
+
+  const btnResume = target.closest("#pause-resume-btn");
+  if (btnResume) {
+    e.preventDefault();
+    Game.togglePause();
+    return;
+  }
+
+  const btnRestart = target.closest("#pause-restart-btn");
+  if (btnRestart) {
+    e.preventDefault();
+    document.getElementById("pause-menu")?.classList.add("hidden");
+    Game.restartLevel(true);
+    return;
+  }
+
+  const btnSkip = target.closest("#pause-skip-btn");
+  if (btnSkip) {
+    e.preventDefault();
+    if ((Game.levelDeaths || 0) > 10) {
+      Game.skipLevel();
+    }
+    return;
+  }
+
+  const btnMenu = target.closest("#pause-menu-btn");
+  if (btnMenu) {
+    e.preventDefault();
+    document.getElementById("pause-menu")?.classList.add("hidden");
+    showMenu();
+    return;
+  }
+
+  const bchar = target.closest("#btn-char, #pbtn-char");
+  if (bchar) {
+    e.preventDefault();
+    toggleCharacter();
+    updatePauseMenuStats();
+    return;
+  }
+
+  const bc = target.closest("#btn-counter, #pbtn-counter");
+  if (bc) {
+    e.preventDefault();
+    toggleDeathCounter();
+    updatePauseMenuStats();
+    return;
+  }
+
+  const bt = target.closest("#btn-theme, #pbtn-theme");
+  if (bt) {
+    e.preventDefault();
+    toggleTheme();
+    updatePauseMenuStats();
+    return;
+  }
+
+  const bm = target.closest("#btn-mute, #pbtn-mute");
+  if (bm) {
+    e.preventDefault();
+    AudioFX.init();
+    setMuteIcon(AudioFX.toggleMute());
+    updatePauseMenuStats();
+    return;
+  }
+
+  const bf = target.closest("#btn-fs, #pbtn-fs");
+  if (bf) {
+    e.preventDefault();
+    toggleFullscreen();
+    updatePauseMenuStats();
+    return;
+  }
+
+  const karyaBtn = target.closest("#cat-btn-karya, .cat-btn-karya");
+  if (karyaBtn) {
+    e.preventDefault();
+    selectCategory("karya");
+    return;
+  }
+
+  const mitmitaBtn = target.closest("#cat-btn-mitmita, .cat-btn-mitmita");
+  if (mitmitaBtn) {
+    e.preventDefault();
+    selectCategory("mitmita");
+    return;
+  }
+});
 
 function buildLevelGrid() {
   const grid = document.getElementById("level-grid");
@@ -6660,6 +7141,18 @@ function wireButtons() {
   if (pBtn) pBtn.addEventListener("click", () => startGame(0, currentPackId));
   const eBtn = document.getElementById("end-menu-btn");
   if (eBtn) eBtn.addEventListener("click", showMenu);
+  
+  const flBtn = document.getElementById("btn-force-landscape");
+  if (flBtn) {
+    flBtn.addEventListener("click", () => {
+      if (!document.fullscreenElement) {
+        toggleFullscreen();
+      }
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(() => {});
+      }
+    });
+  }
 }
 
 // ---------------------------------------------------------------- layout / overlays sizing
@@ -6668,6 +7161,25 @@ function fit() {
   if (!cv) return;
   const vw = window.innerWidth;
   const vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+
+  // Lock orientation to landscape if supported by browser
+  if (screen.orientation && screen.orientation.lock && IS_TOUCH) {
+    screen.orientation.lock('landscape').catch(() => {});
+  }
+
+  // Check portrait vs landscape on touch or small devices
+  const isPortraitMobile = (IS_TOUCH || vw < 600) && vw < vh;
+  const landscapeModal = document.getElementById("landscape-modal");
+  if (landscapeModal) {
+    landscapeModal.classList.toggle("hidden", !isPortraitMobile);
+  }
+
+  if (isPortraitMobile) {
+    setTouchControlsVisible(false);
+  } else if (Game.state === "play") {
+    setTouchControlsVisible(true);
+  }
+
   const pad = IS_TOUCH ? 0 : 36;
   const scale = Math.min((vw - pad) / W, (vh - pad) / H);
   const cw = Math.round(W * scale), ch = Math.round(H * scale);
@@ -6698,6 +7210,7 @@ function fit() {
 }
 addEventListener("resize", fit);
 if (window.visualViewport) window.visualViewport.addEventListener("resize", fit);
+addEventListener("orientationchange", () => setTimeout(fit, 100));
 
 // ---------------------------------------------------------------- boot
 function initGame() {
@@ -6733,12 +7246,23 @@ if (document.readyState === "loading") {
 let last = performance.now();
 function frame(now) {
   ensureCanvas();
+  const grid = document.getElementById("level-grid");
+  if (grid && grid.children.length === 0) {
+    buildLevelGrid();
+  }
   if (ctx) {
     let dt = (now - last) / 1000;
     last = now;
     dt = Math.min(dt, 1 / 30);
-    Game.update(dt);
-    Game.draw();
+    
+    // Only update and draw if not blocked by portrait modal
+    const landscapeModal = document.getElementById("landscape-modal");
+    const isPortrait = landscapeModal && !landscapeModal.classList.contains("hidden");
+    
+    if (!isPortrait) {
+      Game.update(dt);
+      Game.draw();
+    }
   }
   requestAnimationFrame(frame);
 }
