@@ -1,23 +1,33 @@
 export default function App() {
   return (
     <div className="app-shell">
-      {/* TOP CONTROL BAR (always visible) */}
+      {/* TOP CONTROL BAR (Settings Dropdown) */}
       <div id="topbar">
-        <button id="btn-char" className="ic-btn" aria-label="Toggle character" title="Toggle Character">
-          <span id="ic-char"></span>
+        <button id="btn-settings" className="ic-btn" aria-label="Settings" title="Settings / ቅንብሮች">
+          <span id="ic-settings">⚙️</span>
         </button>
-        <button id="btn-counter" className="ic-btn active" aria-label="Toggle death counter" title="Toggle Ge'ez Death Counter">
-          <span id="ic-counter"></span>
-        </button>
-        <button id="btn-theme" className="ic-btn" aria-label="Toggle theme">
-          <span id="ic-theme"></span>
-        </button>
-        <button id="btn-mute" className="ic-btn" aria-label="Toggle sound">
-          <span id="ic-mute"></span>
-        </button>
-        <button id="btn-fs" className="ic-btn" aria-label="Toggle fullscreen">
-          <span id="ic-fs"></span>
-        </button>
+        <div id="settings-dropdown" className="settings-dropdown hidden">
+          <button id="btn-char" className="sd-item" aria-label="Toggle character" title="Toggle Character">
+            <span id="ic-char">🧑🏽</span>
+            <span id="pic-char-label">ባህሪ (Character)</span>
+          </button>
+          <button id="btn-counter" className="sd-item active" aria-label="Toggle death counter" title="Toggle Ge'ez Death Counter">
+            <span id="ic-counter">፩</span>
+            <span>ግዕዝ ቆጣሪ (Counter)</span>
+          </button>
+          <button id="btn-theme" className="sd-item" aria-label="Toggle theme" title="Toggle Light/Dark Theme">
+            <span id="ic-theme">🌙</span>
+            <span>ገጽታ (Theme)</span>
+          </button>
+          <button id="btn-mute" className="sd-item" aria-label="Toggle sound" title="Toggle Sound">
+            <span id="ic-mute">🔊</span>
+            <span>ድምፅ (Sound)</span>
+          </button>
+          <button id="btn-fs" className="sd-item" aria-label="Toggle fullscreen" title="Toggle Fullscreen">
+            <span id="ic-fs">⛶</span>
+            <span>ሙሉ ስክሪን (Full)</span>
+          </button>
+        </div>
       </div>
 
       <div id="stage">
@@ -32,6 +42,10 @@ export default function App() {
             <span id="hud-levelname">NOTHING TO SEE HERE</span>
           </div>
           <div className="hud-right">
+            <button id="hud-restart" className="hud-btn" aria-label="Quick Restart" title="Quick Restart Level (R)">
+              <span className="hud-btn-icon">↻</span>
+              <span className="hud-btn-text">RESTART</span>
+            </button>
             <button id="btn-pause" className="pause-btn" aria-label="Pause game" title="Pause Game (ESC / P)">
               <span className="pause-icon">⏸</span>
               <span className="pause-text">PAUSE</span>
@@ -172,7 +186,7 @@ export default function App() {
       <div id="touch-controls" className="hidden">
         <div className="tc-group tc-move">
           <button id="tc-left" className="tc-btn" aria-label="Move left">
-            <svg viewBox="0 0 24 24" width="30" height="30">
+            <svg viewBox="0 0 24 24" width="28" height="28">
               <path
                 d="M15 5 L7 12 L15 19"
                 fill="none"
@@ -184,7 +198,7 @@ export default function App() {
             </svg>
           </button>
           <button id="tc-right" className="tc-btn" aria-label="Move right">
-            <svg viewBox="0 0 24 24" width="30" height="30">
+            <svg viewBox="0 0 24 24" width="28" height="28">
               <path
                 d="M9 5 L17 12 L9 19"
                 fill="none"
@@ -197,20 +211,8 @@ export default function App() {
           </button>
         </div>
         <div className="tc-group tc-actions">
-          <button id="tc-restart" className="tc-btn tc-small" aria-label="Restart level">
-            <svg viewBox="0 0 24 24" width="20" height="20">
-              <path
-                d="M4 12 a8 8 0 1 1 2.4 5.7 M4 12 V6 M4 12 H10"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
           <button id="tc-jump" className="tc-btn tc-jump" aria-label="Jump">
-            <svg viewBox="0 0 24 24" width="34" height="34">
+            <svg viewBox="0 0 24 24" width="36" height="36">
               <path
                 d="M5 15 L12 7 L19 15"
                 fill="none"

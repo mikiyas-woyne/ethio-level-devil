@@ -6882,7 +6882,32 @@ function toggleFullscreen() {
 }
 document.addEventListener("fullscreenchange", () => { setFsIcon(); fit(); });
 
+function toggleSettingsDropdown(forceState) {
+  const dd = document.getElementById("settings-dropdown");
+  const btn = document.getElementById("btn-settings");
+  if (!dd) return;
+  const shouldShow = forceState !== undefined ? forceState : dd.classList.contains("hidden");
+  dd.classList.toggle("hidden", !shouldShow);
+  if (btn) btn.classList.toggle("active", shouldShow);
+}
+
 function wireTopbar() {
+  const btnSettings = document.getElementById("btn-settings");
+  if (btnSettings) {
+    btnSettings.onclick = (e) => {
+      e.stopPropagation();
+      toggleSettingsDropdown();
+    };
+  }
+
+  // Click outside topbar closes settings dropdown
+  document.addEventListener("click", (e) => {
+    const topbar = document.getElementById("topbar");
+    if (topbar && !topbar.contains(e.target)) {
+      toggleSettingsDropdown(false);
+    }
+  });
+
   const bchar = document.getElementById("btn-char");
   const bc = document.getElementById("btn-counter");
   const bt = document.getElementById("btn-theme");
@@ -6962,6 +6987,21 @@ function wireCategorySelector() {
 document.addEventListener("click", (e) => {
   const target = e.target;
   if (!target || !(target instanceof Element)) return;
+
+  const btnSettings = target.closest("#btn-settings");
+  if (btnSettings) {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleSettingsDropdown();
+    return;
+  }
+
+  const hudRestart = target.closest("#hud-restart");
+  if (hudRestart) {
+    e.preventDefault();
+    if (Game.state === "play") Game.restartLevel(true);
+    return;
+  }
 
   const playBtn = target.closest("#play-btn");
   if (playBtn) {
@@ -7199,9 +7239,8 @@ function fit() {
 
   const topbar = document.getElementById("topbar");
   if (topbar) {
-    const inset = vw <= 680 ? 8 : 12;
-    topbar.style.top = `calc(50% - ${ch / 2}px + ${inset}px)`;
-    topbar.style.right = `calc(50% - ${cw / 2}px + ${inset}px)`;
+    topbar.style.top = "max(10px, env(safe-area-inset-top, 10px))";
+    topbar.style.right = "max(12px, env(safe-area-inset-right, 12px))";
   }
 
   // portrait rotate hint
