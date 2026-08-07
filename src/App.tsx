@@ -1,15 +1,22 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function App() {
   const [splashHidden, setSplashHidden] = useState(false);
   const [splashFading, setSplashFading] = useState(false);
 
-  const dismissSplash = () => {
+  const dismissSplash = (e?: React.SyntheticEvent) => {
+    if (e) {
+      if (e.cancelable) e.preventDefault();
+      e.stopPropagation();
+    }
+    if (typeof window !== "undefined" && (window as any).AudioFX?.init) {
+      try { (window as any).AudioFX.init(); } catch {}
+    }
     if (splashFading || splashHidden) return;
     setSplashFading(true);
     setTimeout(() => {
       setSplashHidden(true);
-    }, 500);
+    }, 450);
   };
 
   useEffect(() => {

@@ -206,15 +206,17 @@ addEventListener("keyup", (e) => (keys[e.code] = false));
 
 // touch input (mobile)
 const touch = { left: false, right: false, jump: false };
-let IS_TOUCH = (("ontouchstart" in window) || (navigator.maxTouchPoints > 0)) && matchMedia("(pointer: coarse)").matches;
+let IS_TOUCH = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0) || ("ontouchend" in document);
 window.addEventListener("touchstart", () => {
   IS_TOUCH = true;
-  setTouchControlsVisible(true);
+  try { AudioFX.init(); } catch {}
+  if (typeof Game !== "undefined" && Game.state === "play") setTouchControlsVisible(true);
 }, { passive: true });
 window.addEventListener("pointerdown", (e) => {
   if (e.pointerType === "touch" || e.pointerType === "pen") {
     IS_TOUCH = true;
-    setTouchControlsVisible(true);
+    try { AudioFX.init(); } catch {}
+    if (typeof Game !== "undefined" && Game.state === "play") setTouchControlsVisible(true);
   }
 }, { passive: true });
 
@@ -7007,6 +7009,16 @@ function initTouchControls() {
   touchEl.addEventListener("touchend", handleTouch, { passive: false });
   touchEl.addEventListener("touchcancel", handleTouch, { passive: false });
 
+  window.addEventListener("touchmove", (e) => {
+    if (Game.state === "play") handleTouch(e);
+  }, { passive: false });
+  window.addEventListener("touchend", (e) => {
+    if (Game.state === "play") handleTouch(e);
+  }, { passive: false });
+  window.addEventListener("touchcancel", (e) => {
+    if (Game.state === "play") handleTouch(e);
+  }, { passive: false });
+
   // Pointer events support
   const handlePointerDown = (e) => {
     if (e.pointerType === "touch" || e.pointerType === "pen") {
@@ -7042,7 +7054,8 @@ function initTouchControls() {
 function setTouchControlsVisible(v) {
   const touchEl = document.getElementById("touch-controls");
   if (touchEl) {
-    touchEl.classList.toggle("hidden", !(v && IS_TOUCH && Game.state === "play"));
+    const isMobile = IS_TOUCH || ("ontouchstart" in window) || (navigator.maxTouchPoints > 0) || ("ontouchend" in document);
+    touchEl.classList.toggle("hidden", !(v && isMobile && Game.state === "play"));
   }
 }
 
@@ -7191,6 +7204,16 @@ document.addEventListener("click", (e) => {
     selectCategory("mitmita");
     return;
   }
+
+  const levelBtn = target.closest("#level-grid button");
+  if (levelBtn && !levelBtn.disabled) {
+    e.preventDefault();
+    const num = parseInt(levelBtn.textContent || "1", 10);
+    if (!isNaN(num) && num > 0) {
+      startGame(num - 1, currentPackId);
+    }
+    return;
+  }
 });
 
 function buildLevelGrid() {
@@ -7210,18 +7233,21 @@ function buildLevelGrid() {
     b.textContent = i + 1;
     b.disabled = i > unlockedUpTo;
     if (done[i]) b.classList.add("done");
-    b.addEventListener("click", () => startGame(i, currentPackId));
+    b.addEventListener("click", (e) => {
+      e.preventDefault();
+      startGame(i, currentPackId);
+    });
     grid.appendChild(b);
   }
 }
 
 function startGame(i, packId = currentPackId) {
-  AudioFX.init();
-  if (IS_TOUCH && !document.fullscreenElement) toggleFullscreen();
+  try { AudioFX.init(); } catch {}
   document.getElementById("menu")?.classList.add("hidden");
   document.getElementById("pause-menu")?.classList.add("hidden");
   document.getElementById("end-screen")?.classList.add("hidden");
   document.getElementById("hud")?.classList.remove("hidden");
+  IS_TOUCH = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0) || ("ontouchend" in document);
   setTouchControlsVisible(true);
   if (i === 0) {
     Game.deaths = 0;
