@@ -7015,7 +7015,8 @@ function initTouchControls() {
   if (!touchEl) return;
 
   const handleTouch = (e) => {
-    if (e.cancelable) e.preventDefault();
+    const isControlBtn = e.target && (e.target.closest("#tc-left") || e.target.closest("#tc-right") || e.target.closest("#tc-jump"));
+    if (isControlBtn && e.cancelable) e.preventDefault();
     if (e.stopPropagation) e.stopPropagation();
     IS_TOUCH = true;
     try { AudioFX.init(); } catch {}
@@ -7055,6 +7056,9 @@ function initTouchControls() {
     touchEl.addEventListener(type, handleTouch, { passive: false });
   });
 
+  window.addEventListener("touchstart", (e) => {
+    if (typeof Game !== "undefined" && Game.state === "play") handleTouch(e);
+  }, { passive: false });
   window.addEventListener("touchmove", (e) => {
     if (typeof Game !== "undefined" && Game.state === "play") handleTouch(e);
   }, { passive: false });
@@ -7089,7 +7093,9 @@ function initTouchControls() {
     }
   };
 
-  touchEl.addEventListener("pointerdown", handlePointerDown, { passive: true });
+  window.addEventListener("pointerdown", (e) => {
+    if (typeof Game !== "undefined" && Game.state === "play") handlePointerDown(e);
+  }, { passive: true });
   window.addEventListener("pointermove", handlePointerMove, { passive: true });
   window.addEventListener("pointerup", handlePointerUp, { passive: true });
   window.addEventListener("pointercancel", handlePointerUp, { passive: true });
