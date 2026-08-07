@@ -72,6 +72,7 @@ body {
 }
 
 .app-shell {
+  position: relative;
   width: 100%;
   height: 100vh;
   height: 100dvh;
@@ -80,6 +81,18 @@ body {
   align-items: center;
   justify-content: center;
   background: transparent;
+}
+
+.app-shell:fullscreen {
+  width: 100% !important;
+  height: 100% !important;
+  background: var(--bg) !important;
+}
+
+.app-shell:-webkit-full-screen {
+  width: 100% !important;
+  height: 100% !important;
+  background: var(--bg) !important;
 }
 
 #stage {
@@ -107,7 +120,7 @@ canvas#game {
 
 /* ---------------------------------------------------------------- topbar */
 #topbar {
-  position: fixed;
+  position: absolute;
   top: max(10px, env(safe-area-inset-top, 10px));
   right: max(12px, env(safe-area-inset-right, 12px));
   z-index: 50;
@@ -826,7 +839,7 @@ button#play-btn:active, button#end-menu-btn:active {
 
 /* ---------------------------------------------------------------- touch controls (float over canvas) */
 #touch-controls {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 30;
   pointer-events: none;
@@ -871,7 +884,7 @@ button#play-btn:active, button#end-menu-btn:active {
 
 /* rotate hint */
 #rotate-hint {
-  position: fixed;
+  position: absolute;
   bottom: 96px;
   left: 50%;
   transform: translateX(-50%);
@@ -895,7 +908,7 @@ button#play-btn:active, button#end-menu-btn:active {
 
 /* ---------------------------------------------------------------- MANDATORY LANDSCAPE MODAL */
 #landscape-modal {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 100;
   background: #080B13;
@@ -1146,7 +1159,7 @@ button#play-btn:active, button#end-menu-btn:active {
    AXUMIT STUDIO BRANDING & OPENING SPLASH
    ============================================================ */
 #topbar-left {
-  position: fixed;
+  position: absolute;
   top: max(10px, env(safe-area-inset-top, 10px));
   left: max(12px, env(safe-area-inset-left, 12px));
   z-index: 50;

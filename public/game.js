@@ -6801,7 +6801,7 @@ function updatePauseMenuStats() {
   if (pc) pc.classList.toggle("active", showDeathCounter);
   if (pt) pt.classList.toggle("active", theme.bg === "#1C1410" || document.body.dataset.theme === "dark");
   if (pm) pm.classList.toggle("active", AudioFX.isMuted());
-  if (pf) pf.classList.toggle("active", !!document.fullscreenElement);
+  if (pf) pf.classList.toggle("active", !!(document.fullscreenElement || document.webkitFullscreenElement));
 }
 
 function wirePauseMenu() {
@@ -6882,20 +6882,29 @@ function setMuteIcon(muted) {
 }
 function setFsIcon() {
   const el = document.getElementById("ic-fs");
-  if (el) el.innerHTML = document.fullscreenElement ? FS_ON : FS_OFF;
+  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  if (el) el.innerHTML = isFs ? FS_ON : FS_OFF;
 }
 function toggleFullscreen() {
   const d = document;
-  const el = d.documentElement;
+  const el = d.querySelector(".app-shell") || d.documentElement;
   try {
-    if (!d.fullscreenElement) {
+    if (!d.fullscreenElement && !d.webkitFullscreenElement) {
       (el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen)?.call(el);
     } else {
       (d.exitFullscreen || d.webkitExitFullscreen || d.msExitFullscreen)?.call(d);
     }
   } catch {}
 }
-document.addEventListener("fullscreenchange", () => { setFsIcon(); fit(); });
+const onFsChange = () => {
+  setFsIcon();
+  fit();
+  setTimeout(fit, 100);
+  setTimeout(fit, 300);
+  setTimeout(fit, 500);
+};
+document.addEventListener("fullscreenchange", onFsChange);
+document.addEventListener("webkitfullscreenchange", onFsChange);
 
 function toggleSettingsDropdown(forceState) {
   const dd = document.getElementById("settings-dropdown");
@@ -7329,7 +7338,7 @@ function wireButtons() {
   const flBtn = document.getElementById("btn-force-landscape");
   if (flBtn) {
     flBtn.addEventListener("click", () => {
-      if (!document.fullscreenElement) {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
         toggleFullscreen();
       }
       if (screen.orientation && screen.orientation.lock) {
