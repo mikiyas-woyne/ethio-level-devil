@@ -42,10 +42,6 @@ export default function App() {
             <span id="hud-levelname">NOTHING TO SEE HERE</span>
           </div>
           <div className="hud-right">
-            <button id="hud-restart" className="hud-btn" aria-label="Quick Restart" title="Quick Restart Level (R)">
-              <span className="hud-btn-icon">↻</span>
-              <span className="hud-btn-text">RESTART</span>
-            </button>
             <button id="btn-pause" className="pause-btn" aria-label="Pause game" title="Pause Game (ESC / P)">
               <span className="pause-icon">⏸</span>
               <span className="pause-text">PAUSE</span>
@@ -157,36 +153,11 @@ export default function App() {
         </div>
       </div>
 
-      {/* FULL-SCREEN MANDATORY LANDSCAPE ROTATION MODAL */}
-      <div id="landscape-modal" className="hidden">
-        <div className="landscape-modal-content">
-          <div className="rotate-device-icon">
-            <svg viewBox="0 0 100 100" width="90" height="90">
-              <rect x="35" y="15" width="30" height="60" rx="6" fill="none" stroke="#FED100" strokeWidth="4" className="phone-rect-portrait"/>
-              <path d="M 65 30 A 30 30 0 0 1 70 65" fill="none" stroke="#009A44" strokeWidth="4" strokeDasharray="6 4" strokeLinecap="round"/>
-              <polygon points="68,70 78,65 72,56" fill="#009A44"/>
-              <rect x="20" y="35" width="60" height="30" rx="6" fill="none" stroke="#E10600" strokeWidth="4" className="phone-rect-landscape"/>
-            </svg>
-          </div>
-          <h2 className="rotate-amharic-title">እባክዎን ስልክዎን አግድም ያዙሩ</h2>
-          <p className="rotate-english-sub">PLEASE ROTATE YOUR DEVICE TO LANDSCAPE MODE</p>
-          <div className="rotate-flag-bar">
-            <span className="green"></span>
-            <span className="yellow"></span>
-            <span className="red"></span>
-          </div>
-          <p className="rotate-note">ጨዋታው በአግድም ስክሪን ብቻ ይሰራል (Game operates in landscape mode only)</p>
-          <button id="btn-force-landscape" className="rotate-action-btn">
-            🔄 ወደ አግድም ያድርጉ · ROTATE LANDSCAPE
-          </button>
-        </div>
-      </div>
-
       {/* TOUCH CONTROLS (mobile only) */}
       <div id="touch-controls" className="hidden">
         <div className="tc-group tc-move">
           <button id="tc-left" className="tc-btn" aria-label="Move left">
-            <svg viewBox="0 0 24 24" width="28" height="28">
+            <svg viewBox="0 0 24 24" width="36" height="36">
               <path
                 d="M15 5 L7 12 L15 19"
                 fill="none"
@@ -198,7 +169,7 @@ export default function App() {
             </svg>
           </button>
           <button id="tc-right" className="tc-btn" aria-label="Move right">
-            <svg viewBox="0 0 24 24" width="28" height="28">
+            <svg viewBox="0 0 24 24" width="36" height="36">
               <path
                 d="M9 5 L17 12 L9 19"
                 fill="none"
@@ -212,7 +183,7 @@ export default function App() {
         </div>
         <div className="tc-group tc-actions">
           <button id="tc-jump" className="tc-btn tc-jump" aria-label="Jump">
-            <svg viewBox="0 0 24 24" width="36" height="36">
+            <svg viewBox="0 0 24 24" width="44" height="44">
               <path
                 d="M5 15 L12 7 L19 15"
                 fill="none"

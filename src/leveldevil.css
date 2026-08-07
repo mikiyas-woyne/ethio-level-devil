@@ -833,17 +833,17 @@ button#play-btn:active, button#end-menu-btn:active {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 0 max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-bottom));
+  padding: 0 max(20px, env(safe-area-inset-left, 20px)) max(20px, env(safe-area-inset-bottom, 20px));
 }
-.tc-group { display: flex; align-items: flex-end; gap: 12px; pointer-events: none; }
+.tc-group { display: flex; align-items: flex-end; gap: 16px; pointer-events: none; }
 .tc-actions { align-items: center; }
 .tc-btn {
   pointer-events: auto;
   display: grid;
   place-items: center;
-  width: 58px; height: 58px;
+  width: 72px; height: 72px;
   border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border: 1.8px solid rgba(255, 255, 255, 0.4);
   background: rgba(10, 20, 25, 0.22); /* Ultra-clear glass so underlying game character is 100% visible! */
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
@@ -851,20 +851,20 @@ button#play-btn:active, button#end-menu-btn:active {
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   transition: transform 0.08s ease, background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
 }
 .tc-btn.held, .tc-btn:active {
-  background: rgba(254, 209, 0, 0.45);
+  background: rgba(254, 209, 0, 0.5);
   color: #16110a;
   border-color: #FED100;
   transform: scale(0.92);
-  box-shadow: 0 0 16px rgba(254, 209, 0, 0.6);
+  box-shadow: 0 0 18px rgba(254, 209, 0, 0.65);
 }
 .tc-jump {
-  width: 70px; height: 70px;
-  border-color: rgba(254, 209, 0, 0.5);
-  background: rgba(254, 209, 0, 0.16);
+  width: 86px; height: 86px;
+  border-color: rgba(254, 209, 0, 0.65);
+  background: rgba(254, 209, 0, 0.2);
   color: #FED100;
 }
 .tc-small { width: 50px; height: 50px; opacity: 0.85; }
