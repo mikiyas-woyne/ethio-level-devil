@@ -6939,6 +6939,7 @@ function wireTopbar() {
 }
 
 // ---------------------------------------------------------------- touch controls
+const activeTouchesById = new Map();
 const activeTouchPointers = new Map();
 
 function reevaluateTouchButtons(touchEvent) {
@@ -6951,25 +6952,31 @@ function reevaluateTouchButtons(touchEvent) {
   const rectRight = tcRight.getBoundingClientRect();
   const rectJump = tcJump.getBoundingClientRect();
 
-  // Generous padding (18px extra hit box around touch buttons for easy response)
-  const pad = 18;
+  // Generous hit-box padding (20px) for responsive mobile controls
+  const pad = 20;
 
   let newLeft = false;
   let newRight = false;
   let newJump = false;
 
-  // 1. Scan native touch points if available
+  // 1. Sync from native touchEvent if available
   if (touchEvent && touchEvent.touches) {
+    activeTouchesById.clear();
     for (let i = 0; i < touchEvent.touches.length; i++) {
       const t = touchEvent.touches[i];
-      const x = t.clientX, y = t.clientY;
-      if (x >= rectLeft.left - pad && x <= rectLeft.right + pad && y >= rectLeft.top - pad && y <= rectLeft.bottom + pad) newLeft = true;
-      if (x >= rectRight.left - pad && x <= rectRight.right + pad && y >= rectRight.top - pad && y <= rectRight.bottom + pad) newRight = true;
-      if (x >= rectJump.left - pad && x <= rectJump.right + pad && y >= rectJump.top - pad && y <= rectJump.bottom + pad) newJump = true;
+      activeTouchesById.set(t.identifier, { x: t.clientX, y: t.clientY });
     }
   }
 
-  // 2. Scan active pointer map points
+  // 2. Evaluate all active tracked touch identifiers
+  for (const [, pt] of activeTouchesById.entries()) {
+    const x = pt.x, y = pt.y;
+    if (x >= rectLeft.left - pad && x <= rectLeft.right + pad && y >= rectLeft.top - pad && y <= rectLeft.bottom + pad) newLeft = true;
+    if (x >= rectRight.left - pad && x <= rectRight.right + pad && y >= rectRight.top - pad && y <= rectRight.bottom + pad) newRight = true;
+    if (x >= rectJump.left - pad && x <= rectJump.right + pad && y >= rectJump.top - pad && y <= rectJump.bottom + pad) newJump = true;
+  }
+
+  // 3. Evaluate pointer map (fallback for desktop emulation)
   for (const [, pt] of activeTouchPointers.entries()) {
     const x = pt.x, y = pt.y;
     if (x >= rectLeft.left - pad && x <= rectLeft.right + pad && y >= rectLeft.top - pad && y <= rectLeft.bottom + pad) newLeft = true;
@@ -6993,30 +7000,60 @@ function reevaluateTouchButtons(touchEvent) {
 
 function initTouchControls() {
   const touchEl = document.getElementById("touch-controls");
+  const tcLeft = document.getElementById("tc-left");
+  const tcRight = document.getElementById("tc-right");
+  const tcJump = document.getElementById("tc-jump");
   if (!touchEl) return;
 
   const handleTouch = (e) => {
-    e.preventDefault();
+    if (e.cancelable) e.preventDefault();
     if (e.stopPropagation) e.stopPropagation();
     IS_TOUCH = true;
-    AudioFX.init();
+    try { AudioFX.init(); } catch {}
+
+    if (e.type === "touchstart" || e.type === "touchmove") {
+      if (e.changedTouches) {
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          const t = e.changedTouches[i];
+          activeTouchesById.set(t.identifier, { x: t.clientX, y: t.clientY });
+        }
+      }
+    } else if (e.type === "touchend" || e.type === "touchcancel") {
+      if (e.changedTouches) {
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          const t = e.changedTouches[i];
+          activeTouchesById.delete(t.identifier);
+        }
+      }
+    }
+
+    if (e.touches) {
+      activeTouchesById.clear();
+      for (let i = 0; i < e.touches.length; i++) {
+        const t = e.touches[i];
+        activeTouchesById.set(t.identifier, { x: t.clientX, y: t.clientY });
+      }
+    }
+
     reevaluateTouchButtons(e);
   };
 
-  // Listen to native multi-touch events on touch controls overlay & window
-  touchEl.addEventListener("touchstart", handleTouch, { passive: false });
-  touchEl.addEventListener("touchmove", handleTouch, { passive: false });
-  touchEl.addEventListener("touchend", handleTouch, { passive: false });
-  touchEl.addEventListener("touchcancel", handleTouch, { passive: false });
+  const touchEvents = ["touchstart", "touchmove", "touchend", "touchcancel"];
+  touchEvents.forEach((type) => {
+    if (tcLeft) tcLeft.addEventListener(type, handleTouch, { passive: false });
+    if (tcRight) tcRight.addEventListener(type, handleTouch, { passive: false });
+    if (tcJump) tcJump.addEventListener(type, handleTouch, { passive: false });
+    touchEl.addEventListener(type, handleTouch, { passive: false });
+  });
 
   window.addEventListener("touchmove", (e) => {
-    if (Game.state === "play") handleTouch(e);
+    if (typeof Game !== "undefined" && Game.state === "play") handleTouch(e);
   }, { passive: false });
   window.addEventListener("touchend", (e) => {
-    if (Game.state === "play") handleTouch(e);
+    if (typeof Game !== "undefined" && Game.state === "play") handleTouch(e);
   }, { passive: false });
   window.addEventListener("touchcancel", (e) => {
-    if (Game.state === "play") handleTouch(e);
+    if (typeof Game !== "undefined" && Game.state === "play") handleTouch(e);
   }, { passive: false });
 
   // Pointer events support
@@ -7025,7 +7062,7 @@ function initTouchControls() {
       IS_TOUCH = true;
     }
     activeTouchPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    AudioFX.init();
+    try { AudioFX.init(); } catch {}
     reevaluateTouchButtons(e);
   };
 
