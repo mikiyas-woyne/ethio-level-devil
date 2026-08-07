@@ -1,7 +1,34 @@
+import { useState, useEffect } from "react";
+
 export default function App() {
+  const [splashHidden, setSplashHidden] = useState(false);
+  const [splashFading, setSplashFading] = useState(false);
+
+  const dismissSplash = () => {
+    if (splashFading || splashHidden) return;
+    setSplashFading(true);
+    setTimeout(() => {
+      setSplashHidden(true);
+    }, 500);
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      dismissSplash();
+    }, 1800);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="app-shell">
-      {/* TOP CONTROL BAR (Settings Dropdown) */}
+      {/* TOP CONTROL BAR */}
+      <div id="topbar-left">
+        <div id="axumit-top-brand" title="Axumit Studio">
+          <img src="/axumit-logo.svg" className="axumit-top-logo" alt="Axumit Studio Logo" />
+          <span className="axumit-top-name">AXUMIT STUDIO</span>
+        </div>
+      </div>
+
       <div id="topbar">
         <button id="btn-settings" className="ic-btn" aria-label="Settings" title="Settings / ቅንብሮች">
           <span id="ic-settings">⚙️</span>
@@ -31,6 +58,28 @@ export default function App() {
       </div>
 
       <div id="stage">
+        {/* AXUMIT STUDIO OPENING SPLASH SCREEN */}
+        {!splashHidden && (
+          <div
+            id="axumit-splash"
+            className={`axumit-splash-overlay ${splashFading ? "fade-out" : ""}`}
+            onClick={dismissSplash}
+            onTouchStart={dismissSplash}
+          >
+            <div className="axumit-splash-box">
+              <div className="axumit-logo-wrapper">
+                <img src="/axumit-logo.svg" alt="Axumit Studio" className="axumit-splash-logo" />
+              </div>
+              <h1 className="axumit-splash-title">AXUMIT STUDIO</h1>
+              <p className="axumit-splash-subtitle">P R E S E N T S</p>
+              <div className="axumit-splash-bar">
+                <div className="axumit-splash-fill"></div>
+              </div>
+              <p className="axumit-splash-hint">CLICK / TAP TO PLAY</p>
+            </div>
+          </div>
+        )}
+
         <canvas id="game" width={960} height={540}></canvas>
 
         {/* HUD */}
@@ -52,7 +101,10 @@ export default function App() {
         {/* PAUSE MENU MODAL */}
         <div id="pause-menu" className="hidden">
           <div className="menu-inner pause-inner">
-            <div className="pause-badge">ቃርያ · ETHIO DEVIL</div>
+            <div className="pause-badge">
+              <img src="/axumit-logo.svg" className="axumit-badge-icon" alt="" />
+              <span>AXUMIT STUDIO · ቃርያ DEVIL</span>
+            </div>
             <h2 className="pause-title">ጨዋታው ቆሟል</h2>
             <p className="pause-title-sub">GAME PAUSED</p>
             <p id="pause-level-info" className="pause-sub">LEVEL 1: NOTHING TO SEE HERE</p>
@@ -111,8 +163,9 @@ export default function App() {
         {/* MENU */}
         <div id="menu">
           <div className="menu-inner">
-            <div className="brand-mark" aria-hidden="true">
-              <span className="brand-mark-center">✦</span>
+            <div className="axumit-menu-header">
+              <img src="/axumit-logo.svg" className="axumit-menu-logo" alt="Axumit Studio" />
+              <span className="axumit-menu-company">AXUMIT STUDIO PRESENTS</span>
             </div>
             <h1 className="title">
               <span className="title-amharic">ቃርያ</span>
@@ -135,6 +188,10 @@ export default function App() {
             <p className="controls-hint">
               &larr; &rarr; / A D move &nbsp;&middot;&nbsp; &uarr; / W / SPACE jump &nbsp;&middot;&nbsp; T theme
             </p>
+            <div className="axumit-menu-footer">
+              <img src="/axumit-logo.svg" className="axumit-footer-logo" alt="" />
+              <span>&copy; AXUMIT STUDIO · ALL RIGHTS RESERVED</span>
+            </div>
           </div>
         </div>
 

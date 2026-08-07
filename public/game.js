@@ -206,7 +206,17 @@ addEventListener("keyup", (e) => (keys[e.code] = false));
 
 // touch input (mobile)
 const touch = { left: false, right: false, jump: false };
-const IS_TOUCH = matchMedia("(pointer: coarse)").matches || "ontouchstart" in window;
+let IS_TOUCH = (("ontouchstart" in window) || (navigator.maxTouchPoints > 0)) && matchMedia("(pointer: coarse)").matches;
+window.addEventListener("touchstart", () => {
+  IS_TOUCH = true;
+  setTouchControlsVisible(true);
+}, { passive: true });
+window.addEventListener("pointerdown", (e) => {
+  if (e.pointerType === "touch" || e.pointerType === "pen") {
+    IS_TOUCH = true;
+    setTouchControlsVisible(true);
+  }
+}, { passive: true });
 
 const heldLeft = () => keys["ArrowLeft"] || keys["KeyA"] || touch.left;
 const heldRight = () => keys["ArrowRight"] || keys["KeyD"] || touch.right;
@@ -5868,6 +5878,9 @@ const Game = {
   },
 
   spawnPlayer() {
+    touch.left = false;
+    touch.right = false;
+    touch.jump = false;
     const s = this.level.spawn;
     this.player = {
       x: s.x, y: s.y - 22, w: 22, h: 22,
@@ -6924,38 +6937,113 @@ function wireTopbar() {
 }
 
 // ---------------------------------------------------------------- touch controls
-function bindHold(id, on, off) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const press = (e) => { e.preventDefault(); el.classList.add("held"); AudioFX.init(); on(); };
-  const release = (e) => { e.preventDefault(); el.classList.remove("held"); off(); };
-  el.addEventListener("pointerdown", press);
-  el.addEventListener("pointerup", release);
-  el.addEventListener("pointercancel", release);
-  el.addEventListener("pointerleave", release);
-  el.addEventListener("contextmenu", (e) => e.preventDefault());
+const activeTouchPointers = new Map();
+
+function reevaluateTouchButtons(touchEvent) {
+  const tcLeft = document.getElementById("tc-left");
+  const tcRight = document.getElementById("tc-right");
+  const tcJump = document.getElementById("tc-jump");
+  if (!tcLeft || !tcRight || !tcJump) return;
+
+  const rectLeft = tcLeft.getBoundingClientRect();
+  const rectRight = tcRight.getBoundingClientRect();
+  const rectJump = tcJump.getBoundingClientRect();
+
+  // Generous padding (18px extra hit box around touch buttons for easy response)
+  const pad = 18;
+
+  let newLeft = false;
+  let newRight = false;
+  let newJump = false;
+
+  // 1. Scan native touch points if available
+  if (touchEvent && touchEvent.touches) {
+    for (let i = 0; i < touchEvent.touches.length; i++) {
+      const t = touchEvent.touches[i];
+      const x = t.clientX, y = t.clientY;
+      if (x >= rectLeft.left - pad && x <= rectLeft.right + pad && y >= rectLeft.top - pad && y <= rectLeft.bottom + pad) newLeft = true;
+      if (x >= rectRight.left - pad && x <= rectRight.right + pad && y >= rectRight.top - pad && y <= rectRight.bottom + pad) newRight = true;
+      if (x >= rectJump.left - pad && x <= rectJump.right + pad && y >= rectJump.top - pad && y <= rectJump.bottom + pad) newJump = true;
+    }
+  }
+
+  // 2. Scan active pointer map points
+  for (const [, pt] of activeTouchPointers.entries()) {
+    const x = pt.x, y = pt.y;
+    if (x >= rectLeft.left - pad && x <= rectLeft.right + pad && y >= rectLeft.top - pad && y <= rectLeft.bottom + pad) newLeft = true;
+    if (x >= rectRight.left - pad && x <= rectRight.right + pad && y >= rectRight.top - pad && y <= rectRight.bottom + pad) newRight = true;
+    if (x >= rectJump.left - pad && x <= rectJump.right + pad && y >= rectJump.top - pad && y <= rectJump.bottom + pad) newJump = true;
+  }
+
+  // Handle jump buffer when jump newly pressed
+  if (newJump && !touch.jump) {
+    jumpBuffered = 0.12;
+  }
+
+  touch.left = newLeft;
+  touch.right = newRight;
+  touch.jump = newJump;
+
+  tcLeft.classList.toggle("held", newLeft);
+  tcRight.classList.toggle("held", newRight);
+  tcJump.classList.toggle("held", newJump);
 }
 
 function initTouchControls() {
-  bindHold("tc-left", () => (touch.left = true), () => (touch.left = false));
-  bindHold("tc-right", () => (touch.right = true), () => (touch.right = false));
-  bindHold("tc-jump",
-    () => { touch.jump = true; jumpBuffered = 0.12; },
-    () => (touch.jump = false)
-  );
-  const tcR = document.getElementById("tc-restart");
-  if (tcR) {
-    tcR.addEventListener("pointerdown", (e) => {
-      e.preventDefault();
-      if (Game.state === "play") Game.restartLevel(true);
-    });
-  }
+  const touchEl = document.getElementById("touch-controls");
+  if (!touchEl) return;
+
+  const handleTouch = (e) => {
+    e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+    IS_TOUCH = true;
+    AudioFX.init();
+    reevaluateTouchButtons(e);
+  };
+
+  // Listen to native multi-touch events on touch controls overlay & window
+  touchEl.addEventListener("touchstart", handleTouch, { passive: false });
+  touchEl.addEventListener("touchmove", handleTouch, { passive: false });
+  touchEl.addEventListener("touchend", handleTouch, { passive: false });
+  touchEl.addEventListener("touchcancel", handleTouch, { passive: false });
+
+  // Pointer events support
+  const handlePointerDown = (e) => {
+    if (e.pointerType === "touch" || e.pointerType === "pen") {
+      IS_TOUCH = true;
+    }
+    activeTouchPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    AudioFX.init();
+    reevaluateTouchButtons(e);
+  };
+
+  const handlePointerMove = (e) => {
+    if (activeTouchPointers.has(e.pointerId)) {
+      activeTouchPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      reevaluateTouchButtons(e);
+    }
+  };
+
+  const handlePointerUp = (e) => {
+    if (activeTouchPointers.has(e.pointerId)) {
+      activeTouchPointers.delete(e.pointerId);
+      reevaluateTouchButtons(e);
+    }
+  };
+
+  touchEl.addEventListener("pointerdown", handlePointerDown, { passive: true });
+  window.addEventListener("pointermove", handlePointerMove, { passive: true });
+  window.addEventListener("pointerup", handlePointerUp, { passive: true });
+  window.addEventListener("pointercancel", handlePointerUp, { passive: true });
+
+  touchEl.addEventListener("contextmenu", (e) => e.preventDefault());
 }
 
 function setTouchControlsVisible(v) {
   const touchEl = document.getElementById("touch-controls");
-  const isPortrait = (IS_TOUCH || window.innerWidth < 600) && window.innerWidth < window.innerHeight;
-  if (touchEl) touchEl.classList.toggle("hidden", !(v && IS_TOUCH && !isPortrait && Game.state === "play"));
+  if (touchEl) {
+    touchEl.classList.toggle("hidden", !(v && IS_TOUCH && Game.state === "play"));
+  }
 }
 
 function selectCategory(packId) {
@@ -6993,13 +7081,6 @@ document.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
     toggleSettingsDropdown();
-    return;
-  }
-
-  const hudRestart = target.closest("#hud-restart");
-  if (hudRestart) {
-    e.preventDefault();
-    if (Game.state === "play") Game.restartLevel(true);
     return;
   }
 
@@ -7207,16 +7288,7 @@ function fit() {
     screen.orientation.lock('landscape').catch(() => {});
   }
 
-  // Check portrait vs landscape on touch or small devices
-  const isPortraitMobile = (IS_TOUCH || vw < 600) && vw < vh;
-  const landscapeModal = document.getElementById("landscape-modal");
-  if (landscapeModal) {
-    landscapeModal.classList.toggle("hidden", !isPortraitMobile);
-  }
-
-  if (isPortraitMobile) {
-    setTouchControlsVisible(false);
-  } else if (Game.state === "play") {
+  if (Game.state === "play") {
     setTouchControlsVisible(true);
   }
 
@@ -7229,7 +7301,8 @@ function fit() {
   const h = document.getElementById("hud");
   const e = document.getElementById("end-screen");
   const pm = document.getElementById("pause-menu");
-  for (const el of [m, h, e, pm]) {
+  const splash = document.getElementById("axumit-splash");
+  for (const el of [m, h, e, pm, splash]) {
     if (!el) continue;
     el.style.width = cw + "px";
     el.style.height = el === h ? "auto" : ch + "px";
@@ -7251,13 +7324,28 @@ addEventListener("resize", fit);
 if (window.visualViewport) window.visualViewport.addEventListener("resize", fit);
 addEventListener("orientationchange", () => setTimeout(fit, 100));
 
+function initAxumitSplash() {
+  const splash = document.getElementById("axumit-splash");
+  if (!splash) return;
+  const hideSplash = () => {
+    if (splash.classList.contains("fade-out")) return;
+    splash.classList.add("fade-out");
+    setTimeout(() => {
+      splash.classList.add("hidden");
+    }, 550);
+  };
+  setTimeout(hideSplash, 2100);
+  splash.addEventListener("click", hideSplash);
+  splash.addEventListener("touchstart", hideSplash, { passive: true });
+}
+
 // ---------------------------------------------------------------- boot
 function initGame() {
   ensureCanvas();
   (function initTheme() {
     let saved = null;
     try { saved = localStorage.getItem("fd_theme"); } catch {}
-    if (!saved) saved = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    if (!saved) saved = "dark";
     applyTheme(saved, false);
     let savedChar = null;
     try { savedChar = localStorage.getItem("fd_char"); } catch {}
@@ -7272,6 +7360,7 @@ function initGame() {
   loadProgress();
   updateDeathHud();
   selectCategory("karya");
+  initAxumitSplash();
   fit();
 }
 

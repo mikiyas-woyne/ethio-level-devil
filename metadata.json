@@ -1,6 +1,6 @@
 {
   "name": "Ethio Level Devil",
-  "description": "A modern Ethiopian surprise platformer featuring 60 mischievous levels inspired by the country's landscapes, history, colors, and culture.",
+  "description": "Created by Axumit Studio. A modern Ethiopian surprise platformer featuring 60 mischievous levels inspired by the country's landscapes, history, colors, and culture.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
